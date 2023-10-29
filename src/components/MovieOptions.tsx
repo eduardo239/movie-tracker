@@ -9,21 +9,23 @@ const MovieOptions = ({ movie, id }: { movie: MovieDetails; id: string }) => {
 
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList } = useMovie();
+  const { addMovieToList, movieTracker } = useMovie();
 
   const handleAdd = (listType: "saw" | "see" | "block") => {
-    console.log(movie);
     if (user) {
       if (movie) {
         const content: AddMovieToList = {
           type: "movie",
-          list: listType,
+          list: {
+            see: listType === "see" ? true : false,
+            saw: listType === "saw" ? true : false,
+            block: listType === "block" ? true : false,
+          },
           movieId: id,
           userId: user.uid,
           poster: `${apiPosterUrl}${movie.poster_path}`,
           title: movie.title,
         };
-        console.log(content);
         addMovieToList(content);
       } else {
         //TODO: movie id not found
@@ -32,19 +34,31 @@ const MovieOptions = ({ movie, id }: { movie: MovieDetails; id: string }) => {
       //TODO: user not found
     }
   };
-
+  console.log(movieTracker?.list);
   return (
     <div className="flex gap">
       {isAuthenticated ? (
         <>
-          <button className="btn btn-primary" onClick={() => handleAdd("see")}>
+          <button
+            className={`btn  ${
+              movieTracker?.list?.see ? "btn-primary" : "btn-secondary"
+            }`}
+            onClick={() => handleAdd("see")}
+          >
             <FiClock /> I Will See
           </button>
-          <button className="btn btn-primary" onClick={() => handleAdd("saw")}>
+          <button
+            className={`btn  ${
+              movieTracker?.list?.saw ? "btn-primary" : "btn-secondary"
+            }`}
+            onClick={() => handleAdd("saw")}
+          >
             <FiCheckCircle /> I Saw
           </button>
           <button
-            className="btn btn-primary"
+            className={`btn  ${
+              movieTracker?.list?.block ? "btn-primary" : "btn-secondary"
+            }`}
             onClick={() => handleAdd("block")}
           >
             <FiSlash /> Block

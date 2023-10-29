@@ -23,6 +23,9 @@
   --color-border-gray: #2d2d2e;
   --color-border-active: #f277de;
 
+  --color-disabled: #def;
+  --color-bg-disabled: #abc;
+
   --font-size-sm: 0.85rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.2rem;
@@ -122,6 +125,11 @@ button {
 button:hover {
   cursor: pointer;
 }
+button:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-bg-disabled);
+  color: var(--color-disabled);
+}
 img {
   display: block;
   margin: 0;
@@ -168,6 +176,10 @@ hr {
 }
 
 .btn-primary {
+  background-color: var(--color-border-gray);
+  color: var(--color-light);
+}
+.btn-secondary {
   background-color: var(--color-link-active);
   color: var(--color-light);
 }

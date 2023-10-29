@@ -47,7 +47,3 @@ export interface UserAuthForm {
   value: string;
   setState: React.Dispatch<React.SetStateAction<string>>;
 }
-
-export interface IListType {
-  type?: "see" | "saw" | "block";
-}

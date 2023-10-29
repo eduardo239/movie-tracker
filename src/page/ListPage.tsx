@@ -3,14 +3,13 @@ import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FiEye, FiTrash } from "react-icons/fi";
-import { IListType } from "../abstract/interfaces";
 
 const ListPage = () => {
   const navigate = useNavigate();
   const { movieList: movies, getMovieList, deleteMovie } = useMovie();
   const { user } = useAuth();
 
-  const [listType, setListType] = useState<IListType>({ type: "see" });
+  const [listType, setListType] = useState<"see" | "saw" | "block">("see");
 
   useEffect(() => {
     if (user) {
@@ -22,21 +21,15 @@ const ListPage = () => {
   return (
     <section>
       <div className="flex">
-        <button
-          className="btn btn-primary"
-          onClick={() => setListType({ type: "see" })}
-        >
+        <button className="btn btn-primary" onClick={() => setListType("see")}>
           See
         </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => setListType({ type: "saw" })}
-        >
+        <button className="btn btn-primary" onClick={() => setListType("saw")}>
           Saw
         </button>
         <button
           className="btn btn-primary"
-          onClick={() => setListType({ type: "block" })}
+          onClick={() => setListType("block")}
         >
           Block
         </button>
@@ -48,7 +41,9 @@ const ListPage = () => {
             {/* <td>poster</td> */}
             <td>ID</td>
             <td>Title</td>
-            <td>List</td>
+            <td>See</td>
+            <td>Saw</td>
+            <td>Block</td>
             <td>Media</td>
             <td colSpan={2}>Options</td>
           </tr>
@@ -66,12 +61,16 @@ const ListPage = () => {
               </td> */}
                 <td>{movie.movieId}</td>
                 <td>{movie.title}</td>
-                <td>{movie.list}</td>
+                <td>{movie.list.see ? "true" : "false"}</td>
+                <td>{movie.list.saw ? "true" : "false"}</td>
+                <td>{movie.list.block ? "true" : "false"}</td>
                 <td>{movie.type}</td>
                 <td>
                   <button
                     className="btn btn-primary"
-                    onClick={() => deleteMovie(movie.id, movie.userId)}
+                    onClick={() =>
+                      deleteMovie(movie.id, movie.userId, listType)
+                    }
                   >
                     <FiTrash />
                   </button>

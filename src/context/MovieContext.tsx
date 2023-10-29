@@ -6,11 +6,9 @@ import {
   doc,
   getDocs,
   query,
-  setDoc,
-  updateDoc,
   where,
 } from "firebase/firestore";
-import React, {
+import {
   createContext,
   useContext,
   ReactNode,
@@ -18,11 +16,14 @@ import React, {
   useEffect,
 } from "react";
 import { db } from "../config/firebase";
-import { IListType } from "../abstract/interfaces";
 
 export interface AddMovieToList {
   type: "movie" | "tv";
-  list: "see" | "saw" | "block";
+  list: {
+    see?: boolean;
+    saw?: boolean;
+    block?: boolean;
+  };
   movieId: string;
   userId: string;
   poster: string;
@@ -31,9 +32,15 @@ export interface AddMovieToList {
 
 interface MovieContextType {
   movieList: DocumentData[];
+  movieTracker: DocumentData | null;
   addMovieToList: (content: AddMovieToList) => void;
-  getMovieList: (userId: string, listType?: IListType) => void;
-  deleteMovie: (movieId: string, userId: string) => void;
+  getMovieList: (userId: string, listType: "see" | "saw" | "block") => void;
+  getTracker: (movieId: string, userId: string) => void;
+  deleteMovie: (
+    movieId: string,
+    userId: string,
+    actualList: "see" | "saw" | "block"
+  ) => void;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -44,35 +51,57 @@ interface MovieProviderProps {
 
 export function MovieProvider({ children }: MovieProviderProps) {
   const [movieList, setMovieList] = useState<DocumentData[]>([]);
+  const [movieTracker, setMovieTracker] = useState<DocumentData | null>(null);
 
   const addMovieToList = async (content: AddMovieToList) => {
+    // check if exists
+
+    // save if not exists
     const docRef = await addDoc(collection(db, "tracker"), content);
-    console.log(docRef);
+
+    // update if exists
   };
 
   const getMovieList = async (
     userId: string,
-    listType: IListType = { type: "see" }
+    listType: "see" | "saw" | "block"
   ) => {
     const q = query(
       collection(db, "tracker"),
       where("userId", "==", userId),
-      where("list", "==", listType.type)
+      where(`list.${listType}`, "==", true)
     );
 
     const querySnapshot = await getDocs(q);
     const list: DocumentData[] = [];
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
       list.push({ id: doc.id, ...doc.data() });
     });
     setMovieList(list);
-    console.log(list);
   };
 
-  const deleteMovie = async (movieId: string, userId: string) => {
+  const deleteMovie = async (
+    movieId: string,
+    userId: string,
+    actualList: "see" | "saw" | "block"
+  ) => {
     await deleteDoc(doc(db, "tracker", movieId));
-    getMovieList(userId, { type: "see" });
+    getMovieList(userId, actualList);
+  };
+
+  const getTracker = async (movieId: string, userId: string) => {
+    const q = query(
+      collection(db, "tracker"),
+      where("userId", "==", userId),
+      where("movieId", "==", movieId)
+    );
+    let doc_: DocumentData = {};
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      doc_ = { id: doc.id, ...doc.data() };
+    });
+    setMovieTracker(doc_);
   };
 
   useEffect(() => {
@@ -84,8 +113,10 @@ export function MovieProvider({ children }: MovieProviderProps) {
       value={{
         addMovieToList,
         getMovieList,
+        getTracker,
         deleteMovie,
         movieList,
+        movieTracker,
       }}
     >
       {children}
