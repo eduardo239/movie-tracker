@@ -18,6 +18,7 @@ import React, {
   useEffect,
 } from "react";
 import { db } from "../config/firebase";
+import { IListType } from "../abstract/interfaces";
 
 export interface AddMovieToList {
   type: "movie" | "tv";
@@ -31,7 +32,7 @@ export interface AddMovieToList {
 interface MovieContextType {
   movieList: DocumentData[];
   addMovieToList: (content: AddMovieToList) => void;
-  getMovieList: (userId: string) => void;
+  getMovieList: (userId: string, listType?: IListType) => void;
   deleteMovie: (movieId: string, userId: string) => void;
 }
 
@@ -49,8 +50,15 @@ export function MovieProvider({ children }: MovieProviderProps) {
     console.log(docRef);
   };
 
-  const getMovieList = async (userId: string) => {
-    const q = query(collection(db, "tracker"), where("userId", "==", userId));
+  const getMovieList = async (
+    userId: string,
+    listType: IListType = { type: "see" }
+  ) => {
+    const q = query(
+      collection(db, "tracker"),
+      where("userId", "==", userId),
+      where("list", "==", listType.type)
+    );
 
     const querySnapshot = await getDocs(q);
     const list: DocumentData[] = [];
@@ -59,11 +67,12 @@ export function MovieProvider({ children }: MovieProviderProps) {
       list.push({ id: doc.id, ...doc.data() });
     });
     setMovieList(list);
+    console.log(list);
   };
 
   const deleteMovie = async (movieId: string, userId: string) => {
     await deleteDoc(doc(db, "tracker", movieId));
-    getMovieList(userId);
+    getMovieList(userId, { type: "see" });
   };
 
   useEffect(() => {
