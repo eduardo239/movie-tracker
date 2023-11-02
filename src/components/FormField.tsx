@@ -1,4 +1,4 @@
-import { UserAuthForm } from "../abstract/interfaces";
+import { IUserAuthForm } from "../abstract/interfaces";
 
 const FormField = ({
   label,
@@ -7,7 +7,7 @@ const FormField = ({
   value,
   setState,
   ...args
-}: React.ComponentProps<"input"> & UserAuthForm) => {
+}: React.ComponentProps<"input"> & IUserAuthForm) => {
   return (
     <div className="form-field">
       <label htmlFor={id}>{label}</label>

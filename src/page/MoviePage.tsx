@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { MovieDetails, MovieTrailers } from "../abstract/interfaces";
+import { IMovieDetails, IMovieTrailers } from "../abstract/interfaces";
 import { fetchData, fetchTrailers } from "../fetch/tmdb";
 import Trailer from "../components/Trailer";
 import MovieOptions from "../components/MovieOptions";
@@ -8,25 +8,14 @@ import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
 
 const MoviePage = () => {
-  const { getTracker } = useMovie();
   const { user } = useAuth();
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
   const [id, _] = useSearchParams();
-  const [trailers, setTrailers] = useState<MovieTrailers | null>(null);
-  const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const _id = id.get("id");
-      if (user && _id) {
-        getTracker(_id, user.uid);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, id]);
+  const [trailers, setTrailers] = useState<IMovieTrailers | null>(null);
+  const [movieDetails, setMovieDetails] = useState<IMovieDetails | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -83,9 +72,7 @@ const MoviePage = () => {
           )}
 
           <div className="p-md">
-            {id.get("id") && (
-              <MovieOptions movie={movieDetails} id={id.get("id") + ""} />
-            )}
+            {id.get("id") && <MovieOptions movie={movieDetails} />}
 
             <h3>
               {movieDetails.title} ({movieDetails.release_date.split("-")[0]}){" "}

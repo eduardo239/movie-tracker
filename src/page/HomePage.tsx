@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 
 import { useEffect, useState } from "react";
-import { MovieDetails } from "../abstract/interfaces";
+import { IMovieDetails } from "../abstract/interfaces";
 
 const HomePage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  const [movies, setMovies] = useState<MovieDetails[] | null>(null);
+  const [movies, setMovies] = useState<IMovieDetails[] | null>(null);
   const [page, setPage] = useState<number>(1);
 
   useEffect(() => {

@@ -1,32 +1,41 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FiCheckCircle, FiClock, FiLogIn, FiSlash } from "react-icons/fi";
-import { AddMovieToList, useMovie } from "../context/MovieContext";
-import { MovieDetails } from "../abstract/interfaces";
+import { useMovie } from "../context/MovieContext";
+import {
+  IAddMovieToList,
+  IMovieDetails,
+  TListType,
+} from "../abstract/interfaces";
+import { useEffect } from "react";
 
-const MovieOptions = ({ movie, id }: { movie: MovieDetails; id: string }) => {
+const MovieOptions = ({ movie }: { movie: IMovieDetails }) => {
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList, movieTracker } = useMovie();
+  const { addMovieToList, trackerList, getTracker } = useMovie();
 
-  const handleAdd = (listType: "saw" | "see" | "block") => {
+  const handleAdd = (listType: TListType, savedStatus: boolean = false) => {
+    const listType_ = {
+      see: listType === "see",
+      saw: listType === "saw",
+      block: listType === "block",
+    };
+
     if (user) {
       if (movie) {
-        const content: AddMovieToList = {
-          type: "movie",
-          list: {
-            see: listType === "see" ? true : false,
-            saw: listType === "saw" ? true : false,
-            block: listType === "block" ? true : false,
-          },
-          movieId: id,
+        const content: IAddMovieToList = {
+          mediaType: "movie",
+          listType: listType_,
+          movieId: movie.id + "",
           userId: user.uid,
           poster: `${apiPosterUrl}${movie.poster_path}`,
           title: movie.title,
         };
         addMovieToList(content);
+
+        getTracker(movie.id + "", user.uid);
       } else {
         //TODO: movie id not found
       }
@@ -34,34 +43,45 @@ const MovieOptions = ({ movie, id }: { movie: MovieDetails; id: string }) => {
       //TODO: user not found
     }
   };
-  console.log(movieTracker?.list);
+
+  useEffect(() => {
+    (async () => {
+      if (user && movie.id) {
+        getTracker(movie.id + "", user.uid);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, movie.id]);
+
   return (
     <div className="flex gap">
       {isAuthenticated ? (
         <>
           <button
             className={`btn  ${
-              movieTracker?.list?.see ? "btn-primary" : "btn-secondary"
+              trackerList?.listType?.see ? "btn-primary" : "btn-secondary"
             }`}
-            onClick={() => handleAdd("see")}
+            onClick={() => handleAdd("see", trackerList?.listType?.see)}
           >
-            <FiClock /> I Will See
+            <FiClock /> {trackerList?.listType?.see ? "Remove" : "I Will See"}
           </button>
           <button
             className={`btn  ${
-              movieTracker?.list?.saw ? "btn-primary" : "btn-secondary"
+              trackerList?.listType?.saw ? "btn-primary" : "btn-secondary"
             }`}
-            onClick={() => handleAdd("saw")}
+            onClick={() => handleAdd("saw", trackerList?.listType?.saw)}
           >
-            <FiCheckCircle /> I Saw
+            <FiCheckCircle />{" "}
+            {trackerList?.listType?.saw ? "Remove" : "I've seen"}
           </button>
           <button
             className={`btn  ${
-              movieTracker?.list?.block ? "btn-primary" : "btn-secondary"
+              trackerList?.listType?.block ? "btn-primary" : "btn-secondary"
             }`}
-            onClick={() => handleAdd("block")}
+            onClick={() => handleAdd("block", trackerList?.listType?.block)}
           >
-            <FiSlash /> Block
+            <FiSlash />
+            {trackerList?.listType?.block ? "Remove" : "I don't want to see"}
           </button>
         </>
       ) : (

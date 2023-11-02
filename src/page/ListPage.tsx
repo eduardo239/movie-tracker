@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { FiEye, FiTrash } from "react-icons/fi";
+import { Link, useNavigate } from "react-router-dom";
+import { FiEye, FiTrash, FiClock, FiCheck, FiMinus } from "react-icons/fi";
+import { TListType } from "../abstract/interfaces";
 
 const ListPage = () => {
   const navigate = useNavigate();
   const { movieList: movies, getMovieList, deleteMovie } = useMovie();
   const { user } = useAuth();
 
-  const [listType, setListType] = useState<"see" | "saw" | "block">("see");
+  const [listType, setListType] = useState<TListType>("all");
 
   useEffect(() => {
     if (user) {
-      getMovieList(user.uid, listType);
+      if (listType === "all") {
+        getMovieList(user.uid, listType, true);
+      } else {
+        getMovieList(user.uid, listType, false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, listType]);
@@ -21,6 +26,9 @@ const ListPage = () => {
   return (
     <section>
       <div className="flex">
+        <button className="btn btn-primary" onClick={() => setListType("all")}>
+          All
+        </button>
         <button className="btn btn-primary" onClick={() => setListType("see")}>
           See
         </button>
@@ -38,7 +46,6 @@ const ListPage = () => {
       <table>
         <thead>
           <tr>
-            {/* <td>poster</td> */}
             <td>ID</td>
             <td>Title</td>
             <td>See</td>
@@ -52,19 +59,14 @@ const ListPage = () => {
           movies.map((movie) => (
             <tbody key={movie.id}>
               <tr>
-                {/* <td>
-                <img
-                  className="poster-sm"
-                  src={movie.poster}
-                  alt={movie.title}
-                />
-              </td> */}
                 <td>{movie.movieId}</td>
-                <td>{movie.title}</td>
-                <td>{movie.list.see ? "true" : "false"}</td>
-                <td>{movie.list.saw ? "true" : "false"}</td>
-                <td>{movie.list.block ? "true" : "false"}</td>
-                <td>{movie.type}</td>
+                <td>
+                  <Link to={`/movies?id=${movie.movieId}`}>{movie.title}</Link>
+                </td>
+                <td>{movie.listType.see ? <FiCheck /> : <FiMinus />}</td>
+                <td>{movie.listType.saw ? <FiCheck /> : <FiMinus />}</td>
+                <td>{movie.listType.block ? <FiCheck /> : <FiMinus />}</td>
+                <td>{movie.typeType}</td>
                 <td>
                   <button
                     className="btn btn-primary"
