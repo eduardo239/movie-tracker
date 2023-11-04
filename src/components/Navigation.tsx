@@ -6,7 +6,7 @@ const Navigation = () => {
 
   return (
     <nav className="navigation-container">
-      <Link to="/all">Home</Link>
+      <Link to={`/all?media=movie&page=1`}>Home</Link>
 
       <Link to="/list">List</Link>
 

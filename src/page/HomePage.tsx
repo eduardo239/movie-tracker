@@ -15,8 +15,6 @@ const HomePage = () => {
   // Get the 'page' query parameter
   const pageQuery = queryParams.get("page");
   const pageMediaType = queryParams.get("media");
-  console.log(pageMediaType);
-  console.log(pageQuery);
 
   const [searchResults, setSearchResults] = useState<IMovieDetails[] | null>(
     null
@@ -70,7 +68,8 @@ const HomePage = () => {
 
   useEffect(() => {
     // on home click, fetch default
-  }, []);
+    if (pageQuery) setPage(parseInt(pageQuery));
+  }, [pageQuery]);
 
   if (loading)
     return (

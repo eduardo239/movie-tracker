@@ -10,7 +10,7 @@ import {
 } from "../abstract/interfaces";
 import { useEffect } from "react";
 
-const MovieOptions = ({ movie }: { movie: IMovieDetails }) => {
+const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
   const navigate = useNavigate();
@@ -47,12 +47,14 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails }) => {
 
   useEffect(() => {
     (async () => {
-      if (user && movie.id) {
-        getUserMovieTracker(movie.id + "", user.uid);
+      if (movie) {
+        if (user && movie.id) {
+          getUserMovieTracker(movie.id + "", user.uid);
+        }
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, movie.id]);
+  }, [user, movie]);
 
   return (
     <div className="flex gap">
