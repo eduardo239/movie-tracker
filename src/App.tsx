@@ -20,8 +20,10 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/all" element={<HomePage />} />
+          <Route path="/search" element={<HomePage />} />
           <Route path="/movies" element={<MoviePage />} />
-          <Route path="/tvs" element={<TvPage />} />
+          <Route path="/tv" element={<TvPage />} />
           <Route path="/list" element={<ListPage />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />

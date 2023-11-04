@@ -26,3 +26,18 @@ export async function fetchTrailers(
   });
   return response;
 }
+
+export async function fetchCast(
+  type: "movie" | "tv",
+  movieId: string | null
+): Promise<AxiosResponse> {
+  const response = await axios.get(
+    `${tmdbBaseUrl}/${type}/${movieId}/credits`,
+    {
+      params: {
+        api_key: apiKey,
+      },
+    }
+  );
+  return response;
+}

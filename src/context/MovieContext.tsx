@@ -23,12 +23,12 @@ interface MovieContextType {
   movieList: DocumentData[];
   trackerList: DocumentData | null;
   addMovieToList: (content: IAddMovieToList) => void;
-  getMovieList: (
+  getUserMovieList: (
     userId: string,
     listType: TListType,
     fullList: boolean
   ) => void;
-  getTracker: (movieId: string, userId: string) => void;
+  getUserMovieTracker: (movieId: string, userId: string) => void;
   deleteMovie: (movieId: string, userId: string, actualList: TListType) => void;
 }
 
@@ -75,13 +75,13 @@ export function MovieProvider({ children }: MovieProviderProps) {
           listType: content.listType,
         });
 
-        getTracker(content.movieId, content.userId);
+        getUserMovieTracker(content.movieId, content.userId);
       }
     }
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const getMovieList = async (
+  const getUserMovieList = async (
     userId: string,
     listType: TListType,
     fullList: boolean = false
@@ -113,11 +113,11 @@ export function MovieProvider({ children }: MovieProviderProps) {
     actualList: TListType
   ) => {
     await deleteDoc(doc(db, "tracker", movieId));
-    getMovieList(userId, actualList);
+    getUserMovieList(userId, actualList);
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const getTracker = async (movieId: string, userId: string) => {
+  const getUserMovieTracker = async (movieId: string, userId: string) => {
     const q = query(
       collection(db, "tracker"),
       where("userId", "==", userId),
@@ -143,8 +143,8 @@ export function MovieProvider({ children }: MovieProviderProps) {
     <MovieContext.Provider
       value={{
         addMovieToList,
-        getMovieList,
-        getTracker,
+        getUserMovieList,
+        getUserMovieTracker,
         deleteMovie,
         movieList,
         trackerList,

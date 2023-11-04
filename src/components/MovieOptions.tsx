@@ -5,6 +5,7 @@ import { useMovie } from "../context/MovieContext";
 import {
   IAddMovieToList,
   IMovieDetails,
+  ITvDetails,
   TListType,
 } from "../abstract/interfaces";
 import { useEffect } from "react";
@@ -14,7 +15,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails }) => {
 
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList, trackerList, getTracker } = useMovie();
+  const { addMovieToList, trackerList, getUserMovieTracker } = useMovie();
 
   const handleAdd = (listType: TListType, savedStatus: boolean = false) => {
     const listType_ = {
@@ -35,7 +36,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails }) => {
         };
         addMovieToList(content);
 
-        getTracker(movie.id + "", user.uid);
+        getUserMovieTracker(movie.id + "", user.uid);
       } else {
         //TODO: movie id not found
       }
@@ -47,7 +48,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails }) => {
   useEffect(() => {
     (async () => {
       if (user && movie.id) {
-        getTracker(movie.id + "", user.uid);
+        getUserMovieTracker(movie.id + "", user.uid);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

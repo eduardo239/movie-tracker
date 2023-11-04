@@ -101,6 +101,7 @@ label {
 }
 p {
   line-height: 1.5;
+  font-size: 0.9rem;
 }
 a {
   font-weight: 500;
@@ -164,6 +165,20 @@ hr {
   border-top: 1px solid var(--color-border-gray);
 }
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - -  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - -  */
+.bg-1 {
+  background-color: #535bf2;
+}
+
+.bg-2 {
+  background-color: #abc;
+}
+
+.bg-3 {
+  background-color: #2d2d2e;
+}
+/* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 .font-mn {
   font-family: var(--font-family-mn);
@@ -346,4 +361,7 @@ td {
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
+.search-container {
+  padding: 0.5rem 1.25rem;
+}
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */

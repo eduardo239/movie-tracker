@@ -7,7 +7,7 @@ import { TListType } from "../abstract/interfaces";
 
 const ListPage = () => {
   const navigate = useNavigate();
-  const { movieList: movies, getMovieList, deleteMovie } = useMovie();
+  const { movieList: movies, getUserMovieList, deleteMovie } = useMovie();
   const { user } = useAuth();
 
   const [listType, setListType] = useState<TListType>("all");
@@ -15,9 +15,9 @@ const ListPage = () => {
   useEffect(() => {
     if (user) {
       if (listType === "all") {
-        getMovieList(user.uid, listType, true);
+        getUserMovieList(user.uid, listType, true);
       } else {
-        getMovieList(user.uid, listType, false);
+        getUserMovieList(user.uid, listType, false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
