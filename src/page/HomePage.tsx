@@ -1,7 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useEffect, useState } from "react";
-import { IMovieDetails } from "../abstract/interfaces";
+import { IMovieDetails, IMovieResults } from "../abstract/interfaces";
+import { fetchDataPopular } from "../fetch/tmdb";
+import useFetch from "../hooks/useFetch";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -18,7 +20,12 @@ const HomePage = () => {
     query ? parseInt(query ? query : "1") : 1
   );
   const [search, setSearch] = useState("");
-  const [mediaType, setMediaType] = useState<"movie" | "tv">("tv");
+  const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
+
+  const { data, loading, error } = useFetch<IMovieResults | null>(
+    `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`
+  );
+  console.log(data, loading, error);
 
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,21 +45,39 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=${page}`;
+    if (error) {
+      console.error("Error:", error);
+    }
+  }, [error]);
 
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => setMovies(data.results))
-      .catch((error) => console.error(error));
+  useEffect(() => {
+    // (async () => {
+    //   const data = await fetchDataPopular(mediaType, page);
+    //   if (data) setMovies(data);
+    // })();
+
+    // const apiUrl = `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`;
+
+    // fetch(apiUrl)
+    //   .then((response) => response.json())
+    //   .then((data) => setMovies(data.results))
+    //   .catch((error) => console.error(error));
 
     navigate(`/all?p=${page}`);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiKey, page, query]);
+  }, [apiKey, page, query, mediaType]);
+
+  if (loading)
+    return (
+      <section className="p-md">
+        <div className="loading-spinner "></div>
+      </section>
+    );
 
   return (
     <div>
       <section className="search-container">
+        <h3>{mediaType}</h3>
         <form onSubmit={(e) => onSearchSubmit(e)}>
           <input
             className="search"
@@ -62,15 +87,20 @@ const HomePage = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </form>
+
+        <div className="flex flex-center gap">
+          <button onClick={() => setMediaType("tv")}>TV</button>
+          <button onClick={() => setMediaType("movie")}>MOVIE</button>
+        </div>
       </section>
 
       <section className="flex flex-center">
-        {movies &&
-          movies.map((movie) => (
-            <Link key={movie.id} to={`/${mediaType}?id=${movie.id}`}>
+        {data?.results &&
+          data.results.map((item) => (
+            <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
               <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
+                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                alt={item.title}
                 className="poster-md"
               />
             </Link>

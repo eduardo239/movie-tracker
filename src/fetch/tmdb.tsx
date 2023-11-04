@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 export async function fetchData(
@@ -41,3 +42,29 @@ export async function fetchCast(
   );
   return response;
 }
+
+export const fetchDataPopular = async (
+  mediaType: "tv" | "movie" = "movie",
+  page: number
+) => {
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: "Bearer " + apiToken,
+    },
+  };
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/${mediaType}/popular?language=pt-BR&page=${page}`,
+      options
+    );
+    const json = await response.json();
+    return json.results;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+};

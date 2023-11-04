@@ -43,8 +43,8 @@ const TvPage = () => {
       {/* center */}
       <div className="movie-details-trailer">
         <MovieTrailer trailerKey={trailers?.results[0]?.key} />
-        <MovieTrailer trailerKey={trailers?.results[1]?.key} />
-        <MovieTrailer trailerKey={trailers?.results[3]?.key} />
+        {/* <MovieTrailer trailerKey={trailers?.results[1]?.key} />
+        <MovieTrailer trailerKey={trailers?.results[3]?.key} /> */}
 
         <div className="p-md">
           {/* {id.get("id") && <MovieOptions data={tvDetails} />} */}

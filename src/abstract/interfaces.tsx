@@ -12,6 +12,13 @@ export interface IMovieDetails {
   release_date: string;
 }
 
+export interface IMovieResults {
+  page: number;
+  results: IMovieDetails[];
+  total_pages: number;
+  total_results: number;
+}
+
 export interface IGenre {
   id: number;
   name: string;
