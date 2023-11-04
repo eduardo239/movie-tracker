@@ -43,10 +43,13 @@ export async function fetchCast(
   return response;
 }
 
-export const fetchDataPopular = async (
+export const getSearch = async (
   mediaType: "tv" | "movie" = "movie",
+  search: string,
   page: number
 ) => {
+  const apiUrl = `${tmdbBaseUrl}/search/${mediaType}?query=${search}&api_key=${apiKey}&include_adult=false&language=en-US&page=1`;
+
   const options = {
     method: "GET",
     headers: {
@@ -57,10 +60,11 @@ export const fetchDataPopular = async (
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/${mediaType}/popular?language=pt-BR&page=${page}`,
+      `${tmdbBaseUrl}/search/${mediaType}?query=${search}&include_adult=false?language=en-US&page=${page}`,
       options
     );
     const json = await response.json();
+
     return json.results;
   } catch (error) {
     if (error instanceof Error) {

@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import { IMovieDetails, IMovieResults } from "../abstract/interfaces";
-import { fetchDataPopular } from "../fetch/tmdb";
+import { getSearch } from "../fetch/tmdb";
 import useFetch from "../hooks/useFetch";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -13,35 +13,53 @@ const HomePage = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // Get the 'page' query parameter
-  const query = queryParams.get("p");
+  const pageQuery = queryParams.get("page");
+  const pageMediaType = queryParams.get("media");
+  console.log(pageMediaType);
+  console.log(pageQuery);
 
-  const [movies, setMovies] = useState<IMovieDetails[] | null>(null);
-  const [page, setPage] = useState<number>(
-    query ? parseInt(query ? query : "1") : 1
+  const [searchResults, setSearchResults] = useState<IMovieDetails[] | null>(
+    null
   );
+  const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
     `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`
   );
-  console.log(data, loading, error);
 
-  const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSearchSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!search) {
+      setSearchResults(null);
+      navigate(`/all?media=${mediaType}&page=${page}`);
       return;
     }
 
-    const apiUrl = `https://api.themoviedb.org/3/search/${mediaType}?query=${search}&api_key=${apiKey}&include_adult=false&language=en-US&page=1`;
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => setMovies(data.results))
-      .catch((error) => console.error(error));
-
+    const data = await getSearch(mediaType, search, page);
+    setSearchResults(data);
     setPage(1);
-    navigate(`/search?p=${page}`);
+    navigate(`/search?page=${page}`);
+  };
+
+  const onPageChange = async (_page: number) => {
+    if (searchResults) {
+      setPage(_page);
+      navigate(`/search?page=${_page}`);
+
+      const data = await getSearch(mediaType, search, page);
+      setSearchResults(data);
+    } else {
+      setPage(_page);
+      navigate(`/all?media=${mediaType}&page=${_page}`);
+    }
+  };
+
+  const onMediaChange = (_media: "movie" | "tv") => {
+    setMediaType(_media);
+    navigate(`/all?media=${mediaType}&page=${page}`);
   };
 
   useEffect(() => {
@@ -51,26 +69,20 @@ const HomePage = () => {
   }, [error]);
 
   useEffect(() => {
-    // (async () => {
-    //   const data = await fetchDataPopular(mediaType, page);
-    //   if (data) setMovies(data);
-    // })();
-
-    // const apiUrl = `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`;
-
-    // fetch(apiUrl)
-    //   .then((response) => response.json())
-    //   .then((data) => setMovies(data.results))
-    //   .catch((error) => console.error(error));
-
-    navigate(`/all?p=${page}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiKey, page, query, mediaType]);
+    // on home click, fetch default
+  }, []);
 
   if (loading)
     return (
       <section className="p-md">
         <div className="loading-spinner "></div>
+      </section>
+    );
+
+  if (error)
+    return (
+      <section className="p-md">
+        <div className="error-container">{error.message}</div>
       </section>
     );
 
@@ -89,29 +101,77 @@ const HomePage = () => {
         </form>
 
         <div className="flex flex-center gap">
-          <button onClick={() => setMediaType("tv")}>TV</button>
-          <button onClick={() => setMediaType("movie")}>MOVIE</button>
+          <button
+            className="btn btn-primary"
+            onClick={() => onMediaChange("tv")}
+          >
+            TV
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => onMediaChange("movie")}
+          >
+            MOVIE
+          </button>
         </div>
       </section>
 
-      <section className="flex flex-center">
-        {data?.results &&
-          data.results.map((item) => (
-            <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="poster-md"
-              />
-            </Link>
-          ))}
-      </section>
-
       <section className="flex gap flex-center">
-        <button className="btn btn-secondary" onClick={() => setPage(page - 1)}>
+        <button
+          className="btn btn-secondary"
+          disabled={page === 1}
+          onClick={() => onPageChange(page - 1)}
+        >
           Anterior
         </button>
-        <button className="btn btn-secondary" onClick={() => setPage(page + 1)}>
+        <button
+          className="btn btn-secondary"
+          onClick={() => onPageChange(page + 1)}
+        >
+          Próxima
+        </button>
+      </section>
+
+      {searchResults ? (
+        <section className="flex flex-center">
+          {searchResults &&
+            searchResults.map((item) => (
+              <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="poster-md"
+                />
+              </Link>
+            ))}
+        </section>
+      ) : (
+        <section className="flex flex-center">
+          {data?.results &&
+            data.results.map((item) => (
+              <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="poster-md"
+                />
+              </Link>
+            ))}
+        </section>
+      )}
+
+      <section className="flex gap flex-center">
+        <button
+          className="btn btn-secondary"
+          disabled={page === 1}
+          onClick={() => onPageChange(page - 1)}
+        >
+          Anterior
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => onPageChange(page + 1)}
+        >
           Próxima
         </button>
       </section>

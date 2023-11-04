@@ -6,7 +6,7 @@ const Navigation = () => {
 
   return (
     <nav className="navigation-container">
-      <Link to="/">Home</Link>
+      <Link to="/all">Home</Link>
 
       <Link to="/list">List</Link>
 
