@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { IMovieTrailers, ITvDetails } from "../abstract/interfaces";
-import { fetchData, fetchTrailers } from "../fetch/tmdb";
+import {
+  IMovieTrailers,
+  ITrackerEpisodes,
+  ITvDetails,
+} from "../abstract/interfaces";
+import { fetchTrailers } from "../fetch/tmdb";
 import TvCast from "../components/TvCast";
 import TvRating from "../components/TvRating";
-import MovieOptions from "../components/MovieOptions";
 import MovieTrailer from "../components/MovieTrailer";
 import TvPoster from "../components/TvPoster";
 import useFetch from "../hooks/useFetch";
+import TvDetails from "../components/TvDetails";
+import TvEpisodes from "../components/TvEpisodes";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
@@ -16,7 +21,7 @@ const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 const TvPage = () => {
   const [id, _] = useSearchParams();
   const [trailers, setTrailers] = useState<IMovieTrailers | null>(null);
-  const [tvDetails, setTvDetails] = useState<ITvDetails | null>(null);
+  const [episodes, setEpisodes] = useState<ITrackerEpisodes | null>(null);
 
   //https://api.themoviedb.org/3/tv/872585?api_key=3f795a6880aa28de37fe82409587654f
 
@@ -31,35 +36,29 @@ const TvPage = () => {
     })();
   }, [id]);
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-  console.log(data);
+  if (loading)
+    return (
+      <section className="p-md">
+        <div className="loading-spinner "></div>
+      </section>
+    );
+
+  if (error)
+    return (
+      <section className="p-md">
+        <div className="error-container">{error.message}</div>
+      </section>
+    );
+
   if (data)
     return (
-      <section className="movie-details-container">
-        <div className="movie-details-poster">
-          <TvPoster data={data} />
-
-          <TvCast data={data} />
-
-          <TvRating data={data} />
-        </div>
-        {/* center */}
-        <div className="movie-details-trailer">
-          <MovieTrailer trailerKey={trailers?.results[0]?.key} />
-          {/* <MovieTrailer trailerKey={trailers?.results[1]?.key} />
-        <MovieTrailer trailerKey={trailers?.results[3]?.key} /> */}
-
-          <div className="p-md">
-            {/* {id.get("id") && <MovieOptions data={tvDetails} />} */}
-
-            <h3>
-              {data.original_name} ({data.first_air_date.split("-")[0]}){" "}
-            </h3>
-            <p>{data.overview}</p>
-          </div>
-        </div>
+      <section className="center p-md">
+        <MovieTrailer hidden={false} trailerKey={trailers?.results[0]?.key} />
+        <TvPoster data={data} />
+        <TvDetails data={data} />
+        <TvCast data={data} />
+        <TvRating data={data} />
+        <TvEpisodes data={data} />
       </section>
     );
   else return null;

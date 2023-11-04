@@ -56,48 +56,50 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, movie]);
 
-  return (
-    <div className="flex gap">
-      {isAuthenticated ? (
-        <>
+  if (movie)
+    return (
+      <div className="flex flex-center gap bg-3">
+        {isAuthenticated ? (
+          <>
+            <button
+              className={`btn  ${
+                trackerList?.listType?.see ? "btn-primary" : "btn-secondary"
+              }`}
+              onClick={() => handleAdd("see", trackerList?.listType?.see)}
+            >
+              <FiClock /> {trackerList?.listType?.see ? "Remove" : "I Will See"}
+            </button>
+            <button
+              className={`btn  ${
+                trackerList?.listType?.saw ? "btn-primary" : "btn-secondary"
+              }`}
+              onClick={() => handleAdd("saw", trackerList?.listType?.saw)}
+            >
+              <FiCheckCircle />{" "}
+              {trackerList?.listType?.saw ? "Remove" : "I've seen"}
+            </button>
+            <button
+              className={`btn  ${
+                trackerList?.listType?.block ? "btn-primary" : "btn-secondary"
+              }`}
+              onClick={() => handleAdd("block", trackerList?.listType?.block)}
+            >
+              <FiSlash />
+              {trackerList?.listType?.block ? "Remove" : "I don't want to see"}
+            </button>
+          </>
+        ) : (
           <button
-            className={`btn  ${
-              trackerList?.listType?.see ? "btn-primary" : "btn-secondary"
-            }`}
-            onClick={() => handleAdd("see", trackerList?.listType?.see)}
+            className="btn btn-primary"
+            onClick={() => navigate("/sign-in")}
           >
-            <FiClock /> {trackerList?.listType?.see ? "Remove" : "I Will See"}
+            <FiLogIn />
+            Sign In
           </button>
-          <button
-            className={`btn  ${
-              trackerList?.listType?.saw ? "btn-primary" : "btn-secondary"
-            }`}
-            onClick={() => handleAdd("saw", trackerList?.listType?.saw)}
-          >
-            <FiCheckCircle />{" "}
-            {trackerList?.listType?.saw ? "Remove" : "I've seen"}
-          </button>
-          <button
-            className={`btn  ${
-              trackerList?.listType?.block ? "btn-primary" : "btn-secondary"
-            }`}
-            onClick={() => handleAdd("block", trackerList?.listType?.block)}
-          >
-            <FiSlash />
-            {trackerList?.listType?.block ? "Remove" : "I don't want to see"}
-          </button>
-        </>
-      ) : (
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate("/sign-in")}
-        >
-          <FiLogIn />
-          Sign In
-        </button>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  else return null;
 };
 
 export default MovieOptions;

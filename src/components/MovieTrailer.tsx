@@ -1,7 +1,17 @@
 import Trailer from "./Trailer";
 
-const MovieTrailer = ({ trailerKey }: { trailerKey?: string }) => {
-  return <div>{trailerKey && <Trailer trailerKey={trailerKey} />}</div>;
+const MovieTrailer = ({
+  trailerKey,
+  hidden,
+}: {
+  trailerKey?: string;
+  hidden: boolean;
+}) => {
+  return (
+    <div className={`${hidden ? "hidden" : ""}`}>
+      {trailerKey && <Trailer trailerKey={trailerKey} />}
+    </div>
+  );
 };
 
 export default MovieTrailer;

@@ -153,3 +153,26 @@ export interface ICredits {
   crew: [];
   id: number;
 }
+
+export interface ITrackerEpisodes {
+  episode_number: number;
+  watched: boolean;
+}
+
+export interface ITrackerSeasons {
+  episodes: ITrackerEpisodes[];
+  season_number: number;
+}
+
+export interface ITrackerTv {
+  data: ITrackerSeasons[];
+}
+
+export interface IAddTvToList {
+  mediaType: "movie" | "tv";
+  listType: IListType;
+  movieId: string;
+  userId: string;
+  poster: string;
+  title: string;
+}

@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { IMovieDetails, IMovieResults } from "../abstract/interfaces";
 import { getSearch } from "../fetch/tmdb";
 import useFetch from "../hooks/useFetch";
+import { useMovie } from "../context/MovieContext";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
 const HomePage = () => {
+  const { mediaType, setMediaType } = useMovie();
+
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -21,7 +24,6 @@ const HomePage = () => {
   );
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
-  const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
     `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`

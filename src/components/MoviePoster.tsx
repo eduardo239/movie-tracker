@@ -5,7 +5,7 @@ const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 const MoviePoster = ({ data }: { data: IMovieDetails | null }) => {
   if (data)
     return (
-      <div className="flex flex-end">
+      <div className="flex flex-center">
         <img
           src={`${apiPosterUrl}${data.poster_path}`}
           alt={data.title}

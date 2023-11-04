@@ -9,6 +9,7 @@ import MovieCast from "../components/MovieCast";
 import MovieRating from "../components/MovieRating";
 import MovieTrailer from "../components/MovieTrailer";
 import useFetch from "../hooks/useFetch";
+import MovieDetails from "../components/MovieDetails";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
@@ -49,29 +50,13 @@ const MoviePage = () => {
 
   if (data)
     return (
-      <section className="movie-details-container">
-        <div className="movie-details-poster">
-          <MoviePoster data={data} />
-
-          <MovieCast data={data} />
-
-          <MovieRating data={data} />
-        </div>
-        {/* center */}
-        <div className="movie-details-trailer">
-          <MovieTrailer trailerKey={trailers?.results[0]?.key} />
-          {/* <MovieTrailer trailerKey={trailers?.results[1]?.key} />
-        <MovieTrailer trailerKey={trailers?.results[3]?.key} /> */}
-
-          <div className="p-md">
-            {id.get("id") && <MovieOptions movie={data} />}
-
-            <h3>
-              {data.title} ({data.release_date.split("-")[0]}){" "}
-            </h3>
-            <p>{data.overview}</p>
-          </div>
-        </div>
+      <section className="center p-md">
+        <MovieTrailer hidden={false} trailerKey={trailers?.results[0]?.key} />
+        <MoviePoster data={data} />
+        <MovieDetails movie={data} />
+        <MovieOptions movie={data} />
+        <MovieCast data={data} />
+        <MovieRating data={data} />
       </section>
     );
   else return null;

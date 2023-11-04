@@ -14,14 +14,19 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --color-link-active: #646cff;
-  --color-link-hover: #535bf2;
+  --color-primary: #d64933;
+  --color-secondary: #463939;
+  --color-tertiary: #8b88f2;
 
   --color-light: #fefefe;
+  --color-dark: #2b303a;
 
-  --color-border-light: rgba(255, 255, 255, 0.2);
-  --color-border-gray: #2d2d2e;
-  --color-border-active: #f277de;
+  --color-border-light: rgba(128, 126, 126, 0.5);
+  --color-border-gray: #2b303a;
+
+  --color-border-green: #a8f277;
+  --color-border-yellow: #f2f077;
+  --color-border-red: #f27777;
 
   --color-disabled: #def;
   --color-bg-disabled: #abc;
@@ -35,11 +40,7 @@
   --font-family-mn: "DM Mono", "Courier New", Courier, monospace;
   --font-family-ss: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   /* 
-  #F277DE
-  #9177F2
-  #8B88F2
-  #BDCAF2
-  #77A0F2
+
   */
 }
 
@@ -52,6 +53,7 @@
 html {
   height: 100vh;
 }
+
 body {
   height: 100%;
   width: 100%;
@@ -108,12 +110,12 @@ p {
 }
 a {
   font-weight: 500;
-  color: var(--color-link-active);
+  color: var(--color-primary);
   text-decoration: inherit;
   display: flex;
 }
 a:hover {
-  color: var(--color-link-hover);
+  filter: brightness(110%);
 }
 button {
   outline: none;
@@ -121,7 +123,6 @@ button {
   height: 34px;
   min-width: 34px;
   vertical-align: middle;
-  border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -160,7 +161,7 @@ textarea {
 }
 input:active,
 input:focus {
-  border: 2px solid var(--color-link-active);
+  border: 2px solid var(--color-primary);
 }
 
 hr {
@@ -171,15 +172,15 @@ hr {
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 .bg-1 {
-  background-color: #535bf2;
+  background-color: var(--color-primary);
 }
 
 .bg-2 {
-  background-color: #abc;
+  background-color: var(--color-bg-disabled);
 }
 
 .bg-3 {
-  background-color: #2d2d2e;
+  background-color: var(--color-border-gray);
 }
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
@@ -187,17 +188,28 @@ hr {
   font-family: var(--font-family-mn);
 }
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
+.btn-sm {
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
 .btn {
   gap: 0.25rem;
-  padding: 1.5rem;
+  padding: 1rem;
+  border-radius: 4px;
+}
+.btn-lg {
+  gap: 0.5rem;
+  padding: 1.75rem;
+  border-radius: 4px;
 }
 
 .btn-primary {
-  background-color: var(--color-border-gray);
+  background-color: var(--color-primary);
   color: var(--color-light);
 }
 .btn-secondary {
-  background-color: var(--color-link-active);
+  background-color: var(--color-secondary);
   color: var(--color-light);
 }
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
@@ -207,7 +219,7 @@ hr {
 }
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 .poster-sm {
-  height: 34px;
+  height: 120px;
 }
 .poster-md {
   height: 300px;
@@ -254,6 +266,11 @@ hr {
 .p-md {
   padding: var(--font-size-md);
 }
+
+.hidden {
+  display: none;
+  visibility: hidden;
+}
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 .grid-auto-1fr {
   display: grid;
@@ -293,6 +310,17 @@ hr {
   align-items: center;
 }
 
+.rounded-element__green {
+  border: 2px solid var(--color-border-green);
+}
+
+.rounded-element__yellow {
+  border: 2px solid var(--color-border-yellow);
+}
+
+.rounded-element__red {
+  border: 2px solid var(--color-border-red);
+}
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 .form-field {
   display: grid;
@@ -317,7 +345,7 @@ hr {
 .message-container {
   padding: 0.5rem 1rem;
 
-  background: var(--color-link-active);
+  background: var(--color-primary);
   font-size: var(--font-size-sm);
   color: var(--color-light);
   border: 1px solid var(--color-border-gray);
@@ -359,8 +387,8 @@ td {
   background-color: var(--color-light);
   color: var(--color-border-gray);
   font-size: var(--font-size-sm);
-  border-top: 1px solid #abc;
-  border-bottom: 1px solid #abc;
+  border-top: 1px solid var(--color-bg-disabled);
+  border-bottom: 1px solid var(--color-bg-disabled);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
@@ -370,7 +398,7 @@ td {
 /* - - - - - - - - - - - - - - - - - - - - - - - - -  */
 .loading-spinner {
   border: 2px solid rgba(255, 255, 255, 0.1);
-  border-top: 2px solid var(--color-link-active);
+  border-top: 2px solid var(--color-primary);
   border-radius: 50%;
   width: 40px;
   height: 40px;

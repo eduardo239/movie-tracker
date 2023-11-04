@@ -80,7 +80,7 @@ const ListPage = () => {
                 <td>
                   <button
                     className="btn btn-primary"
-                    onClick={() => navigate(`/movies?id=${movie.movieId}`)}
+                    onClick={() => navigate(`/movie?id=${movie.movieId}`)}
                   >
                     <FiEye />
                   </button>

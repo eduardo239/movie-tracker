@@ -17,12 +17,19 @@ import {
   useEffect,
 } from "react";
 import { db } from "../config/firebase";
-import { IAddMovieToList, IListType, TListType } from "../abstract/interfaces";
+import {
+  IAddMovieToList,
+  IAddTvToList,
+  TListType,
+} from "../abstract/interfaces";
 
 interface MovieContextType {
+  mediaType: "movie" | "tv";
+  setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv">>;
   movieList: DocumentData[];
   trackerList: DocumentData | null;
   addMovieToList: (content: IAddMovieToList) => void;
+  addTvToList: (content: IAddTvToList) => void;
   getUserMovieList: (
     userId: string,
     listType: TListType,
@@ -41,7 +48,14 @@ interface MovieProviderProps {
 export function MovieProvider({ children }: MovieProviderProps) {
   const [movieList, setMovieList] = useState<DocumentData[]>([]);
   const [trackerList, setTrackerList] = useState<DocumentData | null>(null);
+  const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
 
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  const addTvToList = async (content: IAddTvToList) => {
+    // check if already exists
+    // save if not exists
+    // update if exists
+  };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addMovieToList = async (content: IAddMovieToList) => {
     // check if exists
@@ -142,7 +156,10 @@ export function MovieProvider({ children }: MovieProviderProps) {
   return (
     <MovieContext.Provider
       value={{
+        mediaType,
+        setMediaType,
         addMovieToList,
+        addTvToList,
         getUserMovieList,
         getUserMovieTracker,
         deleteMovie,
