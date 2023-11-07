@@ -5,6 +5,7 @@ import { IMovieDetails, IMovieResults } from "../abstract/interfaces";
 import { getSearch } from "../fetch/tmdb";
 import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
+import { Dimmer, Loader, Message, Segment } from "semantic-ui-react";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -75,25 +76,29 @@ const HomePage = () => {
 
   if (loading)
     return (
-      <section className="p-md">
-        <div className="loading-spinner "></div>
-      </section>
+      <Segment>
+        <Dimmer active>
+          <Loader />
+        </Dimmer>
+      </Segment>
     );
 
   if (error)
     return (
-      <section className="p-md">
-        <div className="error-container">{error.message}</div>
-      </section>
+      <Segment>
+        <Message negative>
+          <Message.Header>Error</Message.Header>
+          <p>{error.message}</p>
+        </Message>
+      </Segment>
     );
 
   return (
     <div>
-      <section className="search-container">
+      <Segment>
         <h3>{mediaType}</h3>
         <form onSubmit={(e) => onSearchSubmit(e)}>
           <input
-            className="search"
             type="text"
             placeholder="Search... (Press enter to search)"
             value={search}
@@ -101,80 +106,50 @@ const HomePage = () => {
           />
         </form>
 
-        <div className="flex flex-center gap">
-          <button
-            className="btn btn-primary"
-            onClick={() => onMediaChange("tv")}
-          >
-            TV
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => onMediaChange("movie")}
-          >
-            MOVIE
-          </button>
+        <div>
+          <button onClick={() => onMediaChange("tv")}>TV</button>
+          <button onClick={() => onMediaChange("movie")}>MOVIE</button>
         </div>
-      </section>
+      </Segment>
 
-      <section className="flex gap flex-center">
-        <button
-          className="btn btn-secondary"
-          disabled={page === 1}
-          onClick={() => onPageChange(page - 1)}
-        >
+      <section>
+        <button disabled={page === 1} onClick={() => onPageChange(page - 1)}>
           Anterior
         </button>
-        <button
-          className="btn btn-secondary"
-          onClick={() => onPageChange(page + 1)}
-        >
-          Próxima
-        </button>
+        <button onClick={() => onPageChange(page + 1)}>Próxima</button>
       </section>
 
       {searchResults ? (
-        <section className="flex flex-center">
+        <section>
           {searchResults &&
             searchResults.map((item) => (
               <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                   alt={item.title}
-                  className="poster-md"
                 />
               </Link>
             ))}
         </section>
       ) : (
-        <section className="flex flex-center">
+        <section>
           {data?.results &&
             data.results.map((item) => (
               <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                   alt={item.title}
-                  className="poster-md"
                 />
               </Link>
             ))}
         </section>
       )}
 
-      <section className="flex gap flex-center">
-        <button
-          className="btn btn-secondary"
-          disabled={page === 1}
-          onClick={() => onPageChange(page - 1)}
-        >
+      <section>
+        <button disabled={page === 1} onClick={() => onPageChange(page - 1)}>
           Anterior
         </button>
-        <button
-          className="btn btn-secondary"
-          onClick={() => onPageChange(page + 1)}
-        >
-          Próxima
-        </button>
+        <button onClick={() => onPageChange(page + 1)}>Próxima</button>
       </section>
     </div>
   );

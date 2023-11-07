@@ -36,21 +36,21 @@ const MoviePage = () => {
 
   if (loading)
     return (
-      <section className="p-md">
-        <div className="loading-spinner "></div>
+      <section>
+        <div></div>
       </section>
     );
 
   if (error)
     return (
-      <section className="p-md">
-        <div className="error-container">{error.message}</div>
+      <section>
+        <div>{error.message}</div>
       </section>
     );
 
   if (data)
     return (
-      <section className="center p-md">
+      <section>
         <MovieTrailer hidden={false} trailerKey={trailers?.results[0]?.key} />
         <MoviePoster data={data} />
         <MovieDetails movie={data} />

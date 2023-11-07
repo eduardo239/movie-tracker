@@ -1,74 +1,56 @@
 import { useState } from "react";
-import {
-  IAddTvToList,
-  ITrackerEpisodes,
-  ITrackerSeasons,
-  ITrackerTv,
-  ITvDetails,
-} from "../abstract/interfaces";
+import { ITrackerTv, ITvDetails } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
 
 const TvEpisodes = ({ data }: { data: ITvDetails }) => {
   const { user } = useAuth();
 
-  const [tvTracker, setTvTracker] = useState<ITrackerTv | []>([]);
-  const [episodes, setEpisodes] = useState<ITrackerEpisodes[]>([]);
-  const [seasons, setSeasons] = useState([]);
+  const [tvTracker, setTvTracker] = useState<[]>([]);
 
-  console.log(episodes);
-  console.log(tvTracker);
+  function addItemToArrayIfNotExists(season: number, episode: number) {
+    console.log(season, episode);
 
-  const handleSave = (ep: {
-    season: number;
-    number: number;
-    watched: boolean;
-  }) => {
-    const _ep = { episode_number: ep.number, watched: ep.watched };
-    const _ep2 = { episode_number: ep.number + 1, watched: false };
-    const _se = [_ep, _ep2];
-    const _tr = { data: [{ episodes: _se, season_number: 1 }] };
+    const t = {
+      data: {
+        seasons: [
+          {
+            season: season,
+            episodes: [episode],
+          },
+        ],
+      },
+    };
 
-    setTvTracker(_tr);
+    // const a = seasons.filter((e) => e.episode_number !== episode);
+    return true;
+  }
 
-    if (user) {
-      if (tvTracker) {
-        //const content: IAddTvToList = {};
-        // addTvToList(content);
-        // getUserMovieTracker(movie.id + "", user.uid);
-      } else {
-        //TODO: movie id not found
-      }
-    } else {
-      //TODO: user not found
-    }
-  };
+  // const _ep = { episode_number: ep.episode_number, watched: ep.watched };
+  // const _se = [_ep];
+  // const _tr = { data: [{ episodes: _se, season_number: 1 }] };
+
   return (
-    <div>
+    <section>
       {data.seasons.map((season, indexSeason) => (
         <div key={indexSeason}>
-          <h5 className="bg-1">Season {indexSeason + 1}</h5>
-          <div className="flex gap">
+          <h5>Season {indexSeason + 1}</h5>
+          <div>
             {[...Array(season.episode_count).keys()].map((ep, indexEpisode) => (
               <button
-                className="btn-sm"
                 key={indexEpisode}
                 onClick={() =>
-                  handleSave({
-                    season: indexSeason + 1,
-                    number: ep + 1,
-                    watched: true,
-                  })
+                  addItemToArrayIfNotExists(indexSeason + 1, indexEpisode + 1)
                 }
               >
                 EP {ep + 1}
               </button>
             ))}
-            <button className="btn-sm">All Episodes</button>
+            <button>All Episodes</button>
           </div>
           <br />
         </div>
       ))}
-    </div>
+    </section>
   );
 };
 

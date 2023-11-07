@@ -25,22 +25,11 @@ const ListPage = () => {
 
   return (
     <section>
-      <div className="flex">
-        <button className="btn btn-primary" onClick={() => setListType("all")}>
-          All
-        </button>
-        <button className="btn btn-primary" onClick={() => setListType("see")}>
-          See
-        </button>
-        <button className="btn btn-primary" onClick={() => setListType("saw")}>
-          Saw
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => setListType("block")}
-        >
-          Block
-        </button>
+      <div>
+        <button onClick={() => setListType("all")}>All</button>
+        <button onClick={() => setListType("see")}>See</button>
+        <button onClick={() => setListType("saw")}>Saw</button>
+        <button onClick={() => setListType("block")}>Block</button>
       </div>
 
       <table>
@@ -69,7 +58,6 @@ const ListPage = () => {
                 <td>{movie.typeType}</td>
                 <td>
                   <button
-                    className="btn btn-primary"
                     onClick={() =>
                       deleteMovie(movie.id, movie.userId, listType)
                     }
@@ -79,7 +67,6 @@ const ListPage = () => {
                 </td>
                 <td>
                   <button
-                    className="btn btn-primary"
                     onClick={() => navigate(`/movie?id=${movie.movieId}`)}
                   >
                     <FiEye />

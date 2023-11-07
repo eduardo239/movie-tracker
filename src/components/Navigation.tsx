@@ -5,7 +5,7 @@ const Navigation = () => {
   const { logout } = useAuth();
 
   return (
-    <nav className="navigation-container">
+    <nav>
       <Link to={`/all?media=movie&page=1`}>Home</Link>
 
       <Link to="/list">List</Link>

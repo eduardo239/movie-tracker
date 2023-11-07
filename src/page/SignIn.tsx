@@ -16,37 +16,33 @@ const SignIn = () => {
 
   return (
     <section>
-      <div className="flex flex-center">
-        <div className="form-container">
-          <form className="form" onSubmit={handleSubmit}>
-            <h3>Sign In</h3>
+      <div>
+        <form onSubmit={handleSubmit}>
+          <h3>Sign In</h3>
 
-            <FormField
-              type="email"
-              label="Email"
-              value={email}
-              setState={setEmail}
-              id="sign-in-email"
-            />
+          <FormField
+            type="email"
+            label="Email"
+            value={email}
+            setState={setEmail}
+            id="sign-in-email"
+          />
 
-            <FormField
-              type="password"
-              label="Password"
-              value={password}
-              setState={setPassword}
-              id="sign-in-password"
-            />
+          <FormField
+            type="password"
+            label="Password"
+            value={password}
+            setState={setPassword}
+            id="sign-in-password"
+          />
 
-            <button className="btn btn-primary" type="submit">
-              Sign In
-            </button>
+          <button type="submit">Sign In</button>
 
-            <Link to="">Forgot Password?</Link>
-          </form>
+          <Link to="">Forgot Password?</Link>
+        </form>
 
-          <div>
-            <Link to="/sign-up">Your first time? Create an account</Link>
-          </div>
+        <div>
+          <Link to="/sign-up">Your first time? Create an account</Link>
         </div>
       </div>
     </section>

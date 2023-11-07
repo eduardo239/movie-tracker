@@ -1,5 +1,5 @@
 const Message = ({ authMessage }: { authMessage: string }) => {
-  return <div className="message-container">{authMessage}</div>;
+  return <div>{authMessage}</div>;
 };
 
 export default Message;

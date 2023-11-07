@@ -18,8 +18,8 @@ const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
 
   if (data)
     return (
-      <div className="p-md">
-        <div className="bg-3">
+      <div>
+        <div>
           <p>Release Date: {data.release_date}</p>
           <p>Status: {data.status}</p>
         </div>

@@ -9,7 +9,6 @@ const Trailer = ({
         title="movie-trailer"
         src={`https://www.youtube.com/embed/${trailerKey}`}
         allowFullScreen
-        className="trailer"
       />
     );
   else return null;

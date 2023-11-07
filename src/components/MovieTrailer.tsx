@@ -7,11 +7,7 @@ const MovieTrailer = ({
   trailerKey?: string;
   hidden: boolean;
 }) => {
-  return (
-    <div className={`${hidden ? "hidden" : ""}`}>
-      {trailerKey && <Trailer trailerKey={trailerKey} />}
-    </div>
-  );
+  return <div>{trailerKey && <Trailer trailerKey={trailerKey} />}</div>;
 };
 
 export default MovieTrailer;

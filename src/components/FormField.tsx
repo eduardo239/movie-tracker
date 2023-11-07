@@ -9,7 +9,7 @@ const FormField = ({
   ...args
 }: React.ComponentProps<"input"> & IUserAuthForm) => {
   return (
-    <div className="form-field">
+    <div>
       <label htmlFor={id}>{label}</label>
       <input
         name={id}

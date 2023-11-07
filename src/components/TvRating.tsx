@@ -3,7 +3,7 @@ import RoundedStatus from "./RoundedStatus";
 
 const MovieRating = ({ data }: { data: ITvDetails }) => {
   return (
-    <section className="flex flex-center gap bg-3">
+    <section>
       <RoundedStatus label="Seasons" value={data.number_of_seasons} />
       <RoundedStatus label="Episodes" value={data.number_of_episodes} />
       <RoundedStatus label="Rating" value={+data.vote_average.toFixed(2)} />

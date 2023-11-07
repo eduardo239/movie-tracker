@@ -58,30 +58,21 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
 
   if (movie)
     return (
-      <div className="flex flex-center gap bg-3">
+      <div>
         {isAuthenticated ? (
           <>
             <button
-              className={`btn  ${
-                trackerList?.listType?.see ? "btn-primary" : "btn-secondary"
-              }`}
               onClick={() => handleAdd("see", trackerList?.listType?.see)}
             >
               <FiClock /> {trackerList?.listType?.see ? "Remove" : "I Will See"}
             </button>
             <button
-              className={`btn  ${
-                trackerList?.listType?.saw ? "btn-primary" : "btn-secondary"
-              }`}
               onClick={() => handleAdd("saw", trackerList?.listType?.saw)}
             >
               <FiCheckCircle />{" "}
               {trackerList?.listType?.saw ? "Remove" : "I've seen"}
             </button>
             <button
-              className={`btn  ${
-                trackerList?.listType?.block ? "btn-primary" : "btn-secondary"
-              }`}
               onClick={() => handleAdd("block", trackerList?.listType?.block)}
             >
               <FiSlash />
@@ -89,10 +80,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             </button>
           </>
         ) : (
-          <button
-            className="btn btn-primary"
-            onClick={() => navigate("/sign-in")}
-          >
+          <button onClick={() => navigate("/sign-in")}>
             <FiLogIn />
             Sign In
           </button>

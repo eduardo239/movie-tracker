@@ -13,11 +13,11 @@ function App() {
   const { authMessage } = useAuth();
 
   return (
-    <div className="relative">
+    <div>
       {authMessage && <Message authMessage={authMessage} />}
       <Navigation />
 
-      <div className="container">
+      <div>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/all" element={<HomePage />} />

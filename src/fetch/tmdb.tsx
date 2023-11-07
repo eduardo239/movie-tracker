@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
@@ -59,13 +59,13 @@ export const getSearch = async (
   };
 
   try {
-    const response = await fetch(
+    const response = await axios.get(
       `${tmdbBaseUrl}/search/${mediaType}?query=${search}&include_adult=false?language=en-US&page=${page}`,
       options
     );
-    const json = await response.json();
+    const data = await response.data;
 
-    return json.results;
+    return data.results;
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);

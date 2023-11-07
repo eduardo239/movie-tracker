@@ -15,8 +15,8 @@ const MovieCast = ({ data }: { data: ITvDetails }) => {
   }, [data]);
 
   return (
-    <div className="p-md">
-      <div className="bg-3">
+    <div>
+      <div>
         <p>Release Date: {data.first_air_date}</p>
         <p>Status: {data.status}</p>
       </div>
