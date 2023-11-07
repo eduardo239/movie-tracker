@@ -8,8 +8,8 @@ import {
   ITvDetails,
   TListType,
 } from "../abstract/interfaces";
-import { useEffect } from "react";
-import { Button, Icon } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import { Button, Icon, Segment } from "semantic-ui-react";
 
 const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -17,6 +17,10 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const { addMovieToList, trackerList, getUserMovieTracker } = useMovie();
+
+  const [see, setSee] = useState(false);
+  const [saw, setSaw] = useState(false);
+  const [block, setBlock] = useState(false);
 
   const handleAdd = (listType: TListType, savedStatus: boolean = false) => {
     const listType_ = {
@@ -47,6 +51,14 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   };
 
   useEffect(() => {
+    if (trackerList) {
+      setSee(trackerList?.listType?.see);
+      setSaw(trackerList?.listType?.saw);
+      setBlock(trackerList?.listType?.block);
+    }
+  }, [trackerList]);
+
+  useEffect(() => {
     (async () => {
       if (movie) {
         if (user && movie.id) {
@@ -59,29 +71,32 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
 
   if (movie)
     return (
-      <div>
+      <Segment basic>
         {isAuthenticated ? (
           <Button.Group basic>
             <Button
               icon
-              onClick={() => handleAdd("see", trackerList?.listType?.see)}
+              color={`${see ? "orange" : "instagram"}`}
+              basic
+              onClick={() => handleAdd("see", see)}
             >
-              <Icon name="add" />{" "}
-              {trackerList?.listType?.see ? "Remove" : "I Will See"}
+              <Icon name="add" /> {see ? "Remove" : "I Will See"}
             </Button>
             <Button
               icon
-              onClick={() => handleAdd("saw", trackerList?.listType?.saw)}
+              color={`${saw ? "orange" : "instagram"}`}
+              basic
+              onClick={() => handleAdd("saw", saw)}
             >
-              <Icon name="check" />{" "}
-              {trackerList?.listType?.saw ? "Remove" : "I've seen"}
+              <Icon name="check" /> {saw ? "Remove" : "I've seen"}
             </Button>
             <Button
               icon
-              onClick={() => handleAdd("block", trackerList?.listType?.block)}
+              color={`${block ? "orange" : "instagram"}`}
+              basic
+              onClick={() => handleAdd("block", block)}
             >
-              <Icon name="delete" />{" "}
-              {trackerList?.listType?.block ? "Remove" : "I don't want to see"}
+              <Icon name="delete" /> {block ? "Remove" : "I don't want to see"}
             </Button>
           </Button.Group>
         ) : (
@@ -89,7 +104,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             <Icon name="sign in" /> Sign In
           </Button>
         )}
-      </div>
+      </Segment>
     );
   else return null;
 };

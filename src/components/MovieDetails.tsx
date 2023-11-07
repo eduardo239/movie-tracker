@@ -1,15 +1,16 @@
-import { Segment } from "semantic-ui-react";
+import { Header, Label, Segment } from "semantic-ui-react";
 import { IMovieDetails } from "../abstract/interfaces";
 
 const MovieDetails = ({ movie }: { movie: IMovieDetails | null }) => {
+  console.log(movie);
   if (movie)
     return (
-      <div>
-        <h1>
+      <Segment basic>
+        <Header as="h1">
           {movie.title} ({movie.release_date.split("-")[0]}){" "}
-        </h1>
+        </Header>
         <p>{movie.overview}</p>
-      </div>
+      </Segment>
     );
   else return null;
 };

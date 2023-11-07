@@ -1,11 +1,12 @@
-import { Segment, Statistic } from "semantic-ui-react";
+import { Header, Segment, Statistic } from "semantic-ui-react";
 import { IMovieDetails } from "../abstract/interfaces";
 import RoundedStatus from "./RoundedStatus";
 
 const MovieRating = ({ data }: { data: IMovieDetails | null }) => {
   if (data)
     return (
-      <>
+      <Segment basic>
+        <Header as="h2">Rating</Header>
         {/* <RoundedStatus label="Runtime" value={data.runtime} />
         <RoundedStatus label="Rating" value={+data.vote_average.toFixed(2)} /> */}
         <Statistic horizontal>
@@ -20,7 +21,7 @@ const MovieRating = ({ data }: { data: IMovieDetails | null }) => {
             </Statistic>
           </Statistic.Group>
         </Statistic>
-      </>
+      </Segment>
     );
 };
 

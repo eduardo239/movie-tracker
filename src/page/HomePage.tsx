@@ -92,7 +92,7 @@ const HomePage = () => {
     // on home click, fetch default
     if (pageQuery) setPage(parseInt(pageQuery));
   }, [pageQuery]);
-  console.log(data);
+
   if (loading) return <LoadingInfo />;
 
   if (error) return <MessageInfo message={error.message} />;

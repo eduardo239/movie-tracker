@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ICredits, IMovieDetails } from "../abstract/interfaces";
 import { fetchCast } from "../fetch/tmdb";
+import { Header, Segment } from "semantic-ui-react";
 
 const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
   // https://api.themoviedb.org/3/movie/565770?language=en-US
@@ -18,11 +19,12 @@ const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
 
   if (data)
     return (
-      <>
+      <Segment basic>
+        <Header as="h2">Info</Header>
         <p>Release Date: {data.release_date}</p>
         <p>Status: {data.status}</p>
 
-        <h2>Cast</h2>
+        <Header as="h2">Cast</Header>
         {credits && (
           <>
             <p>{credits.cast.length > 0 && credits.cast[0].name}</p>
@@ -31,7 +33,7 @@ const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
             <p>{credits.cast.length > 3 && credits.cast[3].name}</p>
           </>
         )}
-      </>
+      </Segment>
     );
 };
 

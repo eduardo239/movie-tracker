@@ -9,7 +9,6 @@ const MoviePoster = ({ data }: { data: IMovieDetails | null }) => {
       <Image
         src={`${apiPosterUrl}${data.poster_path}`}
         verticalAlign="middle"
-        size="small"
       />
     );
 };
