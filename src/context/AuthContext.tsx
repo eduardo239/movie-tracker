@@ -59,6 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .catch((error) => {
         handleMessage(error.message);
         setLocal("");
+        setUser(null);
         setIsAuthenticated(false);
       });
   };
@@ -76,6 +77,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // const errorCode = error.code;
         handleMessage(error.message);
         setLocal("");
+        setUser(null);
         setIsAuthenticated(false);
       });
   };
@@ -86,11 +88,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .then(() => {
         handleMessage("Sign-out successful");
         setIsAuthenticated(false);
+        setUser(null);
         setLocal("");
       })
       .catch((error) => {
         handleMessage(error.message);
         setLocal("");
+        setUser(null);
         setIsAuthenticated(false);
       });
   };

@@ -15,7 +15,6 @@ function App() {
 
   return (
     <>
-      {authMessage && <Message message={authMessage} />}
       <Navigation />
 
       <Container>
@@ -30,6 +29,7 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </Container>
+      {authMessage && <Message message={authMessage} />}
     </>
   );
 }
