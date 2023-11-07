@@ -9,6 +9,7 @@ import {
   TListType,
 } from "../abstract/interfaces";
 import { useEffect } from "react";
+import { Button, Icon } from "semantic-ui-react";
 
 const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -60,30 +61,33 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     return (
       <div>
         {isAuthenticated ? (
-          <>
-            <button
+          <Button.Group basic>
+            <Button
+              icon
               onClick={() => handleAdd("see", trackerList?.listType?.see)}
             >
-              <FiClock /> {trackerList?.listType?.see ? "Remove" : "I Will See"}
-            </button>
-            <button
+              <Icon name="add" />{" "}
+              {trackerList?.listType?.see ? "Remove" : "I Will See"}
+            </Button>
+            <Button
+              icon
               onClick={() => handleAdd("saw", trackerList?.listType?.saw)}
             >
-              <FiCheckCircle />{" "}
+              <Icon name="check" />{" "}
               {trackerList?.listType?.saw ? "Remove" : "I've seen"}
-            </button>
-            <button
+            </Button>
+            <Button
+              icon
               onClick={() => handleAdd("block", trackerList?.listType?.block)}
             >
-              <FiSlash />
+              <Icon name="delete" />{" "}
               {trackerList?.listType?.block ? "Remove" : "I don't want to see"}
-            </button>
-          </>
+            </Button>
+          </Button.Group>
         ) : (
-          <button onClick={() => navigate("/sign-in")}>
-            <FiLogIn />
-            Sign In
-          </button>
+          <Button icon color="orange" onClick={() => navigate("/sign-in")}>
+            <Icon name="sign in" /> Sign In
+          </Button>
         )}
       </div>
     );

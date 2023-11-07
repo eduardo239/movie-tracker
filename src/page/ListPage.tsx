@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import { FiEye, FiTrash, FiClock, FiCheck, FiMinus } from "react-icons/fi";
+import { FiEye, FiTrash, FiCheck, FiMinus } from "react-icons/fi";
 import { TListType } from "../abstract/interfaces";
+import { Button, Icon, Table } from "semantic-ui-react";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -24,59 +25,80 @@ const ListPage = () => {
   }, [user, listType]);
 
   return (
-    <section>
-      <div>
-        <button onClick={() => setListType("all")}>All</button>
-        <button onClick={() => setListType("see")}>See</button>
-        <button onClick={() => setListType("saw")}>Saw</button>
-        <button onClick={() => setListType("block")}>Block</button>
-      </div>
+    <>
+      <Button.Group>
+        <Button color="orange" onClick={() => setListType("all")}>
+          All
+        </Button>
+        <Button color="orange" onClick={() => setListType("see")}>
+          See
+        </Button>
+        <Button color="orange" onClick={() => setListType("saw")}>
+          Saw
+        </Button>
+        <Button color="orange" onClick={() => setListType("block")}>
+          Block
+        </Button>
+      </Button.Group>
 
-      <table>
-        <thead>
-          <tr>
-            <td>ID</td>
-            <td>Title</td>
-            <td>See</td>
-            <td>Saw</td>
-            <td>Block</td>
-            <td>Media</td>
-            <td colSpan={2}>Options</td>
-          </tr>
-        </thead>
-        {movies &&
-          movies.map((movie) => (
-            <tbody key={movie.id}>
-              <tr>
-                <td>{movie.movieId}</td>
-                <td>
-                  <Link to={`/movies?id=${movie.movieId}`}>{movie.title}</Link>
-                </td>
-                <td>{movie.listType.see ? <FiCheck /> : <FiMinus />}</td>
-                <td>{movie.listType.saw ? <FiCheck /> : <FiMinus />}</td>
-                <td>{movie.listType.block ? <FiCheck /> : <FiMinus />}</td>
-                <td>{movie.typeType}</td>
-                <td>
-                  <button
+      <Table celled compact>
+        <Table.Header>
+          <Table.Row textAlign="center">
+            <Table.HeaderCell>ID</Table.HeaderCell>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>See</Table.HeaderCell>
+            <Table.HeaderCell>Saw</Table.HeaderCell>
+            <Table.HeaderCell>Block</Table.HeaderCell>
+            <Table.HeaderCell>Delete</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          {movies &&
+            movies.map((movie) => (
+              <Table.Row key={movie.id}>
+                <Table.Cell>{movie.movieId}</Table.Cell>
+                <Table.Cell>
+                  <Link to={`/movie?id=${movie.movieId}`}>{movie.title}</Link>
+                </Table.Cell>
+                <Table.Cell
+                  textAlign="center"
+                  negative={!movie.listType.see}
+                  positive={movie.listType.see}
+                >
+                  <Icon name="checkmark" />
+                </Table.Cell>
+                <Table.Cell
+                  textAlign="center"
+                  negative={!movie.listType.saw}
+                  positive={movie.listType.saw}
+                >
+                  <Icon name="checkmark" />
+                </Table.Cell>
+                <Table.Cell
+                  textAlign="center"
+                  negative={!movie.listType.block}
+                  positive={movie.listType.block}
+                >
+                  <Icon name="checkmark" />
+                </Table.Cell>
+                <Table.Cell collapsing>
+                  <Button
+                    size="small"
+                    color="red"
                     onClick={() =>
                       deleteMovie(movie.id, movie.userId, listType)
                     }
                   >
-                    <FiTrash />
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => navigate(`/movie?id=${movie.movieId}`)}
-                  >
-                    <FiEye />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          ))}
-      </table>
-    </section>
+                    <Icon name="delete" />
+                    Delete
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+        </Table.Body>
+      </Table>
+    </>
   );
 };
 

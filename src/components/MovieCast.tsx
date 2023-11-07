@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ICast, ICredits, IMovieDetails } from "../abstract/interfaces";
+import { ICredits, IMovieDetails } from "../abstract/interfaces";
 import { fetchCast } from "../fetch/tmdb";
 
 const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
@@ -18,13 +18,11 @@ const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
 
   if (data)
     return (
-      <div>
-        <div>
-          <p>Release Date: {data.release_date}</p>
-          <p>Status: {data.status}</p>
-        </div>
+      <>
+        <p>Release Date: {data.release_date}</p>
+        <p>Status: {data.status}</p>
 
-        <h4>Cast</h4>
+        <h2>Cast</h2>
         {credits && (
           <>
             <p>{credits.cast.length > 0 && credits.cast[0].name}</p>
@@ -33,7 +31,7 @@ const MovieCast = ({ data }: { data: IMovieDetails | null }) => {
             <p>{credits.cast.length > 3 && credits.cast[3].name}</p>
           </>
         )}
-      </div>
+      </>
     );
 };
 

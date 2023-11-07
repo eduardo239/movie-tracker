@@ -78,6 +78,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
       // save if not exists
 
       const docRef = await addDoc(collection(db, "tracker"), content);
+      getUserMovieTracker(content.movieId, content.userId);
     } else {
       if (docId) {
         const docRef = doc(db, "tracker", docId);

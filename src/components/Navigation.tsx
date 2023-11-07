@@ -1,23 +1,70 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Menu } from "semantic-ui-react";
+import { useState } from "react";
 
 const Navigation = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const [activeItem, setActiveItem] = useState("");
+
+  const handleItemClick = (path: string) => navigate(`${path}`);
 
   return (
-    <nav>
-      <Link to={`/all?media=movie&page=1`}>Home</Link>
+    <>
+      <Menu>
+        <Menu.Item
+          name="movie"
+          active={activeItem === "movie"}
+          value="movie"
+          onClick={(e) => handleItemClick("/all?media=movie&page=1")}
+        >
+          Movies
+        </Menu.Item>
 
-      <Link to="/list">List</Link>
+        <Menu.Item
+          name="tv"
+          active={activeItem === "tv"}
+          value="tv"
+          onClick={(e) => handleItemClick("/all?media=tv&page=1")}
+        >
+          TV
+        </Menu.Item>
 
-      <Link to="/sign-in">Sign In</Link>
+        <Menu.Item
+          name="lists"
+          active={activeItem === "lists"}
+          onClick={(e) => handleItemClick("/list")}
+        >
+          Lists
+        </Menu.Item>
 
-      <Link to="/sign-up">Sign Up</Link>
+        <Menu.Item
+          name="sing-in"
+          active={activeItem === "sing-in"}
+          onClick={(e) => handleItemClick("/sign-in")}
+        >
+          Sing In
+        </Menu.Item>
 
-      <Link to="/" onClick={logout}>
-        Sign Out
-      </Link>
-    </nav>
+        <Menu.Item
+          name="sign-up"
+          active={activeItem === "sign-up"}
+          onClick={(e) => handleItemClick("/sign-up")}
+        >
+          Sing Up
+        </Menu.Item>
+
+        <Menu.Item
+          name="logout"
+          active={activeItem === "logout"}
+          onClick={logout}
+        >
+          Logout
+        </Menu.Item>
+      </Menu>
+    </>
   );
 };
 

@@ -8,16 +8,17 @@ import { useAuth } from "./context/AuthContext";
 import Message from "./components/Message";
 import TvPage from "./page/TvPage";
 import ListPage from "./page/ListPage";
+import { Container } from "semantic-ui-react";
 
 function App() {
   const { authMessage } = useAuth();
 
   return (
-    <div>
-      {authMessage && <Message authMessage={authMessage} />}
+    <>
+      {authMessage && <Message message={authMessage} />}
       <Navigation />
 
-      <div>
+      <Container>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/all" element={<HomePage />} />
@@ -28,8 +29,8 @@ function App() {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>
-      </div>
-    </div>
+      </Container>
+    </>
   );
 }
 

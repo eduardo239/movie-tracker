@@ -10,6 +10,9 @@ import MovieRating from "../components/MovieRating";
 import MovieTrailer from "../components/MovieTrailer";
 import useFetch from "../hooks/useFetch";
 import MovieDetails from "../components/MovieDetails";
+import LoadingInfo from "../components/LoadingInfo";
+import MessageInfo from "../components/Message";
+import { Segment } from "semantic-ui-react";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
@@ -34,30 +37,23 @@ const MoviePage = () => {
     })();
   }, [id]);
 
-  if (loading)
-    return (
-      <section>
-        <div></div>
-      </section>
-    );
+  if (loading) return <LoadingInfo />;
 
-  if (error)
-    return (
-      <section>
-        <div>{error.message}</div>
-      </section>
-    );
+  if (error) return <MessageInfo message={error.message} />;
 
   if (data)
     return (
-      <section>
-        <MovieTrailer hidden={false} trailerKey={trailers?.results[0]?.key} />
+      <Segment textAlign="center">
+        <MovieTrailer
+          hidden={false}
+          trailerKey={trailers?.results[trailers?.results.length - 1]?.key}
+        />
         <MoviePoster data={data} />
         <MovieDetails movie={data} />
         <MovieOptions movie={data} />
-        <MovieCast data={data} />
         <MovieRating data={data} />
-      </section>
+        <MovieCast data={data} />
+      </Segment>
     );
   else return null;
 };

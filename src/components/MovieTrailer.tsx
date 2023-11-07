@@ -1,13 +1,18 @@
-import Trailer from "./Trailer";
-
 const MovieTrailer = ({
   trailerKey,
-  hidden,
 }: {
   trailerKey?: string;
   hidden: boolean;
 }) => {
-  return <div>{trailerKey && <Trailer trailerKey={trailerKey} />}</div>;
+  return (
+    <div className="trailer">
+      <iframe
+        title="movie-trailer"
+        src={`https://www.youtube.com/embed/${trailerKey}`}
+        allowFullScreen
+      />
+    </div>
+  );
 };
 
 export default MovieTrailer;

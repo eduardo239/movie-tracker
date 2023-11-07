@@ -1,13 +1,16 @@
-import { IMovieDetails, ITvDetails } from "../abstract/interfaces";
+import { Image } from "semantic-ui-react";
+import { IMovieDetails } from "../abstract/interfaces";
 
 const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
 const MoviePoster = ({ data }: { data: IMovieDetails | null }) => {
   if (data)
     return (
-      <div>
-        <img src={`${apiPosterUrl}${data.poster_path}`} alt={data.title} />
-      </div>
+      <Image
+        src={`${apiPosterUrl}${data.poster_path}`}
+        verticalAlign="middle"
+        size="small"
+      />
     );
 };
 

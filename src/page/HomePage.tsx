@@ -5,7 +5,21 @@ import { IMovieDetails, IMovieResults } from "../abstract/interfaces";
 import { getSearch } from "../fetch/tmdb";
 import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
-import { Dimmer, Loader, Message, Segment } from "semantic-ui-react";
+import {
+  Button,
+  Dimmer,
+  Form,
+  Grid,
+  Icon,
+  Image,
+  Input,
+  Loader,
+  Message,
+  Segment,
+  Select,
+} from "semantic-ui-react";
+import MessageInfo from "../components/Message";
+import LoadingInfo from "../components/LoadingInfo";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -29,6 +43,11 @@ const HomePage = () => {
   const { data, loading, error } = useFetch<IMovieResults | null>(
     `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`
   );
+
+  const options = [
+    { key: "movie", text: "Movie", value: "movie" },
+    { key: "tv", text: "TV", value: "tv" },
+  ];
 
   const onSearchSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,86 +92,137 @@ const HomePage = () => {
     // on home click, fetch default
     if (pageQuery) setPage(parseInt(pageQuery));
   }, [pageQuery]);
+  console.log(data);
+  if (loading) return <LoadingInfo />;
 
-  if (loading)
+  if (error) return <MessageInfo message={error.message} />;
+
+  if (data)
     return (
-      <Segment>
-        <Dimmer active>
-          <Loader />
-        </Dimmer>
-      </Segment>
+      <>
+        <>
+          <Form onSubmit={(e) => onSearchSubmit(e)}>
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              fluid
+              type="text"
+              placeholder="Search..."
+              action
+            >
+              <input />
+              <Select
+                onChange={() => setMediaType("tv")}
+                compact
+                options={options}
+                defaultValue="movie"
+              />
+              <Button type="submit">Search</Button>
+            </Input>
+          </Form>
+        </>
+
+        <Segment>
+          <Button
+            icon
+            labelPosition="left"
+            onClick={() => onMediaChange("movie")}
+          >
+            <Icon name="film" />
+            Movie
+          </Button>
+          <Button icon labelPosition="left" onClick={() => onMediaChange("tv")}>
+            <Icon name="television" />
+            TV
+          </Button>
+        </Segment>
+
+        <Segment>
+          <Button
+            icon
+            labelPosition="left"
+            disabled={page === 1}
+            onClick={() => onPageChange(page - 1)}
+          >
+            <Icon name="arrow left" />
+            Previous
+          </Button>
+          <Button
+            icon
+            labelPosition="left"
+            onClick={() => onPageChange(page + 1)}
+          >
+            <Icon name="arrow right" />
+            Next
+          </Button>
+        </Segment>
+
+        {searchResults ? (
+          <Segment>
+            <Grid columns={5}>
+              {searchResults &&
+                searchResults.map((item) => (
+                  <Grid.Column
+                    mobile={16}
+                    tablet={8}
+                    computer={4}
+                    key={item.id}
+                  >
+                    <Link to={`/${mediaType}?id=${item.id}`}>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                        size="medium"
+                      />
+                    </Link>
+                  </Grid.Column>
+                ))}
+            </Grid>
+          </Segment>
+        ) : (
+          <Segment>
+            <Grid columns={5}>
+              {data?.results &&
+                data.results.map((item) => (
+                  <Grid.Column
+                    mobile={16}
+                    tablet={8}
+                    computer={4}
+                    key={item.id}
+                  >
+                    <Link to={`/${mediaType}?id=${item.id}`}>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                        size="medium"
+                      />
+                    </Link>
+                  </Grid.Column>
+                ))}
+            </Grid>
+          </Segment>
+        )}
+
+        <>
+          <Button
+            icon
+            labelPosition="left"
+            disabled={page === 1}
+            onClick={() => onPageChange(page - 1)}
+          >
+            <Icon name="arrow left" />
+            Previous
+          </Button>
+          <Button
+            icon
+            labelPosition="left"
+            onClick={() => onPageChange(page + 1)}
+          >
+            <Icon name="arrow right" />
+            Next
+          </Button>
+        </>
+      </>
     );
-
-  if (error)
-    return (
-      <Segment>
-        <Message negative>
-          <Message.Header>Error</Message.Header>
-          <p>{error.message}</p>
-        </Message>
-      </Segment>
-    );
-
-  return (
-    <div>
-      <Segment>
-        <h3>{mediaType}</h3>
-        <form onSubmit={(e) => onSearchSubmit(e)}>
-          <input
-            type="text"
-            placeholder="Search... (Press enter to search)"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </form>
-
-        <div>
-          <button onClick={() => onMediaChange("tv")}>TV</button>
-          <button onClick={() => onMediaChange("movie")}>MOVIE</button>
-        </div>
-      </Segment>
-
-      <section>
-        <button disabled={page === 1} onClick={() => onPageChange(page - 1)}>
-          Anterior
-        </button>
-        <button onClick={() => onPageChange(page + 1)}>Próxima</button>
-      </section>
-
-      {searchResults ? (
-        <section>
-          {searchResults &&
-            searchResults.map((item) => (
-              <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                />
-              </Link>
-            ))}
-        </section>
-      ) : (
-        <section>
-          {data?.results &&
-            data.results.map((item) => (
-              <Link key={item.id} to={`/${mediaType}?id=${item.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                />
-              </Link>
-            ))}
-        </section>
-      )}
-
-      <section>
-        <button disabled={page === 1} onClick={() => onPageChange(page - 1)}>
-          Anterior
-        </button>
-        <button onClick={() => onPageChange(page + 1)}>Próxima</button>
-      </section>
-    </div>
-  );
+  else return null;
 };
 
 export default HomePage;
