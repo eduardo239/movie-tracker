@@ -13,6 +13,7 @@ import TvPoster from "../components/TvPoster";
 import useFetch from "../hooks/useFetch";
 import TvDetails from "../components/TvDetails";
 import TvEpisodes from "../components/TvEpisodes";
+import { Segment } from "semantic-ui-react";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
@@ -49,14 +50,17 @@ const TvPage = () => {
 
   if (data)
     return (
-      <section>
-        <MovieTrailer hidden={false} trailerKey={trailers?.results[0]?.key} />
+      <Segment textAlign="center">
+        <MovieTrailer
+          hidden={false}
+          trailerKey={trailers?.results[trailers?.results.length - 1]?.key}
+        />
         <TvPoster data={data} />
         <TvDetails data={data} />
         <TvCast data={data} />
         <TvRating data={data} />
         <TvEpisodes data={data} />
-      </section>
+      </Segment>
     );
   else return null;
 };

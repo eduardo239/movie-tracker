@@ -1,3 +1,4 @@
+import { Form } from "semantic-ui-react";
 import { IUserAuthForm } from "../abstract/interfaces";
 
 const FormField = ({
@@ -9,9 +10,10 @@ const FormField = ({
   ...args
 }: React.ComponentProps<"input"> & IUserAuthForm) => {
   return (
-    <div>
-      <label htmlFor={id}>{label}</label>
+    <Form.Field>
+      <label htmlFor={id}>First Name</label>
       <input
+        placeholder="..."
         name={id}
         id={id}
         type={type}
@@ -19,7 +21,7 @@ const FormField = ({
         onChange={({ currentTarget }) => setState(currentTarget.value)}
         {...args}
       />
-    </div>
+    </Form.Field>
   );
 };
 

@@ -8,7 +8,7 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   const [activeItem, setActiveItem] = useState("");
-  console.log(user);
+
   const handleItemClick = (path: string) => navigate(`${path}`);
 
   return (
@@ -61,6 +61,7 @@ const Navigation = () => {
         name="logout"
         active={activeItem === "logout"}
         onClick={logout}
+        disabled={!user}
       >
         Logout
       </Menu.Item>

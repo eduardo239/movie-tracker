@@ -16,6 +16,7 @@ import React, {
 import { IUserAuth } from "../abstract/interfaces";
 import { app } from "../config/firebase";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -35,6 +36,8 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const navigate = useNavigate();
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<null | User>(null);
   const [authMessage, setAuthMessage] = useState("");
@@ -55,12 +58,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(user);
         setLocal(JSON.stringify(user));
         setIsAuthenticated(true);
+        navigate("/");
       })
       .catch((error) => {
         handleMessage(error.message);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
+        navigate("/");
       });
   };
 
@@ -72,6 +77,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(user);
         setLocal(JSON.stringify(user));
         setIsAuthenticated(true);
+        navigate("/");
       })
       .catch((error) => {
         // const errorCode = error.code;
@@ -79,6 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
+        navigate("/");
       });
   };
 
@@ -90,12 +97,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(false);
         setUser(null);
         setLocal("");
+        navigate("/");
       })
       .catch((error) => {
         handleMessage(error.message);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
+        navigate("/");
       });
   };
 

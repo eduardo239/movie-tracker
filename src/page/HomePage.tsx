@@ -100,29 +100,27 @@ const HomePage = () => {
   if (data)
     return (
       <>
-        <>
-          <Form onSubmit={(e) => onSearchSubmit(e)}>
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              fluid
-              type="text"
-              placeholder="Search..."
-              action
-            >
-              <input />
-              <Select
-                onChange={() => setMediaType("tv")}
-                compact
-                options={options}
-                defaultValue="movie"
-              />
-              <Button type="submit">Search</Button>
-            </Input>
-          </Form>
-        </>
+        <Form onSubmit={(e) => onSearchSubmit(e)}>
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            fluid
+            type="text"
+            placeholder="Search..."
+            action
+          >
+            <input />
+            <Select
+              onChange={() => setMediaType("tv")}
+              compact
+              options={options}
+              defaultValue="movie"
+            />
+            <Button type="submit">Search</Button>
+          </Input>
+        </Form>
 
-        <Segment>
+        <Segment basic textAlign="center">
           <Button
             icon
             labelPosition="left"
@@ -137,7 +135,7 @@ const HomePage = () => {
           </Button>
         </Segment>
 
-        <Segment>
+        <Segment basic textAlign="center">
           <Button
             icon
             labelPosition="left"
@@ -158,7 +156,7 @@ const HomePage = () => {
         </Segment>
 
         {searchResults ? (
-          <Segment>
+          <Segment textAlign="center">
             <Grid columns={5}>
               {searchResults &&
                 searchResults.map((item) => (
@@ -179,7 +177,7 @@ const HomePage = () => {
             </Grid>
           </Segment>
         ) : (
-          <Segment>
+          <Segment textAlign="center">
             <Grid columns={5}>
               {data?.results &&
                 data.results.map((item) => (
@@ -201,7 +199,7 @@ const HomePage = () => {
           </Segment>
         )}
 
-        <>
+        <Segment textAlign="center">
           <Button
             icon
             labelPosition="left"
@@ -219,7 +217,7 @@ const HomePage = () => {
             <Icon name="arrow right" />
             Next
           </Button>
-        </>
+        </Segment>
       </>
     );
   else return null;

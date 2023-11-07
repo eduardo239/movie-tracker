@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ITrackerTv, ITvDetails } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
+import { Button, Grid } from "semantic-ui-react";
 
 const TvEpisodes = ({ data }: { data: ITvDetails }) => {
   const { user } = useAuth();
@@ -34,20 +35,28 @@ const TvEpisodes = ({ data }: { data: ITvDetails }) => {
       {data.seasons.map((season, indexSeason) => (
         <div key={indexSeason}>
           <h5>Season {indexSeason + 1}</h5>
-          <div>
+          <Grid>
             {[...Array(season.episode_count).keys()].map((ep, indexEpisode) => (
-              <button
+              <Grid.Column
                 key={indexEpisode}
-                onClick={() =>
-                  addItemToArrayIfNotExists(indexSeason + 1, indexEpisode + 1)
-                }
+                mobile={4}
+                tablet={3}
+                largeScreen={2}
+                computer={1}
+                widescreen={3}
               >
-                EP {ep + 1}
-              </button>
+                <Button
+                  onClick={() =>
+                    addItemToArrayIfNotExists(indexSeason + 1, indexEpisode + 1)
+                  }
+                >
+                  EP {ep + 1}
+                </Button>
+              </Grid.Column>
             ))}
-            <button>All Episodes</button>
-          </div>
+          </Grid>
           <br />
+          <Button>All Episodes</Button>
         </div>
       ))}
     </section>
