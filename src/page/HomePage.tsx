@@ -20,6 +20,7 @@ import {
 } from "semantic-ui-react";
 import MessageInfo from "../components/Message";
 import LoadingInfo from "../components/LoadingInfo";
+import { NextPrevButtons } from "../components/NextPrevButtons";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -77,10 +78,10 @@ const HomePage = () => {
     }
   };
 
-  const onMediaChange = (_media: "movie" | "tv") => {
-    setMediaType(_media);
-    navigate(`/all?media=${mediaType}&page=${page}`);
-  };
+  // const onMediaChange = (_media: "movie" | "tv") => {
+  //   setMediaType(_media);
+  //   navigate(`/all?media=${mediaType}&page=${page}`);
+  // };
 
   useEffect(() => {
     if (error) {
@@ -90,8 +91,16 @@ const HomePage = () => {
 
   useEffect(() => {
     // on home click, fetch default
+
     if (pageQuery) setPage(parseInt(pageQuery));
-  }, [pageQuery]);
+
+    if (pageMediaType) {
+      if (pageMediaType === "movie" || pageMediaType === "tv") {
+        setMediaType(pageMediaType);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageQuery, pageMediaType]);
 
   if (loading) return <LoadingInfo />;
 
@@ -124,36 +133,27 @@ const HomePage = () => {
           <Button
             icon
             labelPosition="left"
-            onClick={() => onMediaChange("movie")}
+            onClick={() => navigate(`/all?media=movie&page=${page}`)}
           >
             <Icon name="film" />
             Movie
           </Button>
-          <Button icon labelPosition="left" onClick={() => onMediaChange("tv")}>
+          <Button
+            icon
+            labelPosition="left"
+            onClick={() => navigate(`/all?media=tv&page=${page}`)}
+          >
             <Icon name="television" />
             TV
           </Button>
         </Segment>
 
-        <Segment basic textAlign="center">
-          <Button
-            icon
-            labelPosition="left"
-            disabled={page === 1}
-            onClick={() => onPageChange(page - 1)}
-          >
-            <Icon name="arrow left" />
-            Previous
-          </Button>
-          <Button
-            icon
-            labelPosition="left"
-            onClick={() => onPageChange(page + 1)}
-          >
-            <Icon name="arrow right" />
-            Next
-          </Button>
-        </Segment>
+        <NextPrevButtons
+          onPageChange={onPageChange}
+          page={page}
+          next={page + 1}
+          prev={page - 1}
+        />
 
         {searchResults ? (
           <Segment textAlign="center">
@@ -199,25 +199,12 @@ const HomePage = () => {
           </Segment>
         )}
 
-        <Segment textAlign="center">
-          <Button
-            icon
-            labelPosition="left"
-            disabled={page === 1}
-            onClick={() => onPageChange(page - 1)}
-          >
-            <Icon name="arrow left" />
-            Previous
-          </Button>
-          <Button
-            icon
-            labelPosition="left"
-            onClick={() => onPageChange(page + 1)}
-          >
-            <Icon name="arrow right" />
-            Next
-          </Button>
-        </Segment>
+        <NextPrevButtons
+          onPageChange={onPageChange}
+          page={page}
+          next={page + 1}
+          prev={page - 1}
+        />
       </>
     );
   else return null;

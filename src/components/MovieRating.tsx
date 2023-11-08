@@ -13,7 +13,7 @@ const MovieRating = ({ data }: { data: IMovieDetails | null }) => {
           <Statistic.Group size="tiny">
             <Statistic>
               <Statistic.Value>{data.runtime}</Statistic.Value>
-              <Statistic.Label>Runtime</Statistic.Label>
+              <Statistic.Label>Runtime Min.</Statistic.Label>
             </Statistic>
             <Statistic>
               <Statistic.Value>{+data.vote_average.toFixed(2)}</Statistic.Value>

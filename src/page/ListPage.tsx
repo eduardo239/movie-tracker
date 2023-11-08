@@ -27,16 +27,28 @@ const ListPage = () => {
   return (
     <>
       <Button.Group>
-        <Button color="orange" onClick={() => setListType("all")}>
+        <Button
+          color={`${listType === "all" ? "orange" : "black"}`}
+          onClick={() => setListType("all")}
+        >
           All
         </Button>
-        <Button color="orange" onClick={() => setListType("see")}>
+        <Button
+          color={`${listType === "see" ? "orange" : "black"}`}
+          onClick={() => setListType("see")}
+        >
           See
         </Button>
-        <Button color="orange" onClick={() => setListType("saw")}>
+        <Button
+          color={`${listType === "saw" ? "orange" : "black"}`}
+          onClick={() => setListType("saw")}
+        >
           Saw
         </Button>
-        <Button color="orange" onClick={() => setListType("block")}>
+        <Button
+          color={`${listType === "block" ? "orange" : "black"}`}
+          onClick={() => setListType("block")}
+        >
           Block
         </Button>
       </Button.Group>

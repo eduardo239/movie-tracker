@@ -128,7 +128,12 @@ export function MovieProvider({ children }: MovieProviderProps) {
     actualList: TListType
   ) => {
     await deleteDoc(doc(db, "tracker", movieId));
-    getUserMovieList(userId, actualList);
+
+    if (actualList === "all") {
+      getUserMovieList(userId, actualList, true);
+    } else {
+      getUserMovieList(userId, actualList, false);
+    }
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
