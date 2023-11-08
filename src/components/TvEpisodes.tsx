@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ITrackerTv, ITvDetails } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
-import { Button, Grid } from "semantic-ui-react";
+import { Button, Grid, Header, Segment } from "semantic-ui-react";
 
 const TvEpisodes = ({ data }: { data: ITvDetails }) => {
   const { user } = useAuth();
@@ -10,6 +10,12 @@ const TvEpisodes = ({ data }: { data: ITvDetails }) => {
 
   function addItemToArrayIfNotExists(season: number, episode: number) {
     console.log(season, episode);
+
+    // check if season exists
+
+    // // if not exists add new season and ep
+
+    // // if exists update ep
 
     const t = {
       data: {
@@ -22,6 +28,8 @@ const TvEpisodes = ({ data }: { data: ITvDetails }) => {
       },
     };
 
+    console.log(t);
+
     // const a = seasons.filter((e) => e.episode_number !== episode);
     return true;
   }
@@ -31,35 +39,28 @@ const TvEpisodes = ({ data }: { data: ITvDetails }) => {
   // const _tr = { data: [{ episodes: _se, season_number: 1 }] };
 
   return (
-    <section>
+    <Segment basic>
       {data.seasons.map((season, indexSeason) => (
-        <div key={indexSeason}>
-          <h5>Season {indexSeason + 1}</h5>
-          <Grid>
+        <Segment key={indexSeason}>
+          <Header as="h3">Season {indexSeason + 1}</Header>
+          <div className="flex">
             {[...Array(season.episode_count).keys()].map((ep, indexEpisode) => (
-              <Grid.Column
+              <Button
                 key={indexEpisode}
-                mobile={4}
-                tablet={3}
-                largeScreen={2}
-                computer={1}
-                widescreen={3}
+                style={{ margin: 0 }}
+                onClick={() =>
+                  addItemToArrayIfNotExists(indexSeason + 1, indexEpisode + 1)
+                }
               >
-                <Button
-                  onClick={() =>
-                    addItemToArrayIfNotExists(indexSeason + 1, indexEpisode + 1)
-                  }
-                >
-                  EP {ep + 1}
-                </Button>
-              </Grid.Column>
+                EP {ep + 1}
+              </Button>
             ))}
-          </Grid>
+          </div>
           <br />
-          <Button>All Episodes</Button>
-        </div>
+          <Button fluid>Complete All Episodes</Button>
+        </Segment>
       ))}
-    </section>
+    </Segment>
   );
 };
 

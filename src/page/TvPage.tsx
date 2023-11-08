@@ -13,7 +13,7 @@ import TvPoster from "../components/TvPoster";
 import useFetch from "../hooks/useFetch";
 import TvDetails from "../components/TvDetails";
 import TvEpisodes from "../components/TvEpisodes";
-import { Segment } from "semantic-ui-react";
+import { Divider, Grid, Segment } from "semantic-ui-react";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
@@ -51,14 +51,43 @@ const TvPage = () => {
   if (data)
     return (
       <Segment textAlign="center">
-        <MovieTrailer
-          hidden={false}
-          trailerKey={trailers?.results[trailers?.results.length - 1]?.key}
-        />
-        <TvPoster data={data} />
-        <TvDetails data={data} />
+        <Grid>
+          <Grid.Row>
+            {/*  */}
+            <Grid.Column width={16}>
+              <MovieTrailer
+                hidden={false}
+                trailerKey={
+                  trailers?.results[trailers?.results.length - 1]?.key
+                }
+              />
+            </Grid.Column>
+            {/*  */}
+            <Grid.Column width={4} textAlign="left">
+              <TvPoster data={data} />
+            </Grid.Column>
+            {/*  */}
+            <Grid.Column width={12} textAlign="left">
+              <TvDetails data={data} />
+            </Grid.Column>
+            {/*  */}
+            <Grid.Column width={16} textAlign="center">
+              <Divider />
+              Options
+              <Divider />
+            </Grid.Column>
+            <Grid.Column width={16} textAlign="center">
+              <TvRating data={data} />
+            </Grid.Column>
+            <Grid.Column width={16} textAlign="center">
+              <Divider />
+              {/* <MovieCast data={data} /> */}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+
         <TvCast data={data} />
-        <TvRating data={data} />
+
         <TvEpisodes data={data} />
       </Segment>
     );

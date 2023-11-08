@@ -7,8 +7,7 @@ const MovieRating = ({ data }: { data: IMovieDetails | null }) => {
     return (
       <Segment basic>
         <Header as="h2">Rating</Header>
-        {/* <RoundedStatus label="Runtime" value={data.runtime} />
-        <RoundedStatus label="Rating" value={+data.vote_average.toFixed(2)} /> */}
+
         <Statistic horizontal>
           <Statistic.Group size="tiny">
             <Statistic>

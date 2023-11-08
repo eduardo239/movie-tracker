@@ -1,13 +1,14 @@
+import { Header, Segment } from "semantic-ui-react";
 import { ITvDetails } from "../abstract/interfaces";
 
 const TvDetails = ({ data }: { data: ITvDetails }) => {
   return (
-    <div>
-      <h3>
+    <Segment basic>
+      <Header as="h1">
         {data.original_name} ({data.first_air_date.split("-")[0]}){" "}
-      </h3>
+      </Header>
       <p>{data.overview}</p>
-    </div>
+    </Segment>
   );
 };
 
