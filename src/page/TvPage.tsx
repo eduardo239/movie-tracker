@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-  IMovieTrailers,
-  ITrackerEpisodes,
-  ITvDetails,
-} from "../abstract/interfaces";
+import { IMovieTrailers, ITvDetails } from "../abstract/interfaces";
 import { fetchTrailers } from "../fetch/tmdb";
-import TvCast from "../components/TvCast";
-import TvRating from "../components/TvRating";
-import MovieTrailer from "../components/MovieTrailer";
-import TvPoster from "../components/TvPoster";
+
+import DataTrailer from "../components/DataTrailer";
 import useFetch from "../hooks/useFetch";
-import TvDetails from "../components/TvDetails";
 import TvEpisodes from "../components/TvEpisodes";
 import { Divider, Grid, Segment } from "semantic-ui-react";
+import DataDetails from "../components/DataDetails";
+import DataRating from "../components/DataRating";
+import DataInfo from "../components/DataInfo";
+import DataCast from "../components/DataCast";
+import LoadingInfo from "../components/LoadingInfo";
+import MessageInfo from "../components/Message";
+import DataPoster from "../components/DataPoster";
+import DataGenre from "../components/DataGenre";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const TvPage = () => {
@@ -24,7 +24,9 @@ const TvPage = () => {
   const [trailers, setTrailers] = useState<IMovieTrailers | null>(null);
 
   const { data, loading, error } = useFetch<ITvDetails | null>(
-    `${tmdbBaseUrl}/tv/${id.get("id")}?api_key=${apiKey}&language=pt-BR`
+    `${tmdbBaseUrl}/tv/${id.get(
+      "id"
+    )}?api_key=${apiKey}&language=pt-BR&append_to_response=credits`
   );
 
   useEffect(() => {
@@ -34,19 +36,9 @@ const TvPage = () => {
     })();
   }, [id]);
 
-  if (loading)
-    return (
-      <section>
-        <div></div>
-      </section>
-    );
+  if (loading) return <LoadingInfo />;
 
-  if (error)
-    return (
-      <section>
-        <div>{error.message}</div>
-      </section>
-    );
+  if (error) return <MessageInfo message={error.message} />;
 
   if (data)
     return (
@@ -55,7 +47,7 @@ const TvPage = () => {
           <Grid.Row>
             {/*  */}
             <Grid.Column width={16}>
-              <MovieTrailer
+              <DataTrailer
                 hidden={false}
                 trailerKey={
                   trailers?.results[trailers?.results.length - 1]?.key
@@ -64,29 +56,49 @@ const TvPage = () => {
             </Grid.Column>
             {/*  */}
             <Grid.Column width={4} textAlign="left">
-              <TvPoster data={data} />
+              <DataPoster data={data} />
             </Grid.Column>
             {/*  */}
             <Grid.Column width={12} textAlign="left">
-              <TvDetails data={data} />
+              <DataDetails
+                data={{
+                  title: data.name,
+                  original_title: data.original_name,
+                  overview: data.overview,
+                  release_date: data.first_air_date,
+                }}
+              />
+              <DataRating
+                data={{
+                  seasons: data.number_of_seasons,
+                  episodes: data.number_of_episodes,
+                  vote_average: data.vote_average,
+                }}
+              />
+
+              <DataGenre genres={data.genres} />
             </Grid.Column>
             {/*  */}
             <Grid.Column width={16} textAlign="center">
               <Divider />
               Options
-              <Divider />
             </Grid.Column>
-            <Grid.Column width={16} textAlign="center">
-              <TvRating data={data} />
-            </Grid.Column>
+            {/*  */}
             <Grid.Column width={16} textAlign="center">
               <Divider />
-              {/* <MovieCast data={data} /> */}
+
+              <DataInfo
+                data={{
+                  release_date: data.first_air_date,
+
+                  status: data.status,
+                  original_language: data.original_language,
+                }}
+              />
+              <DataCast data={{ credits: data.credits }} />
             </Grid.Column>
           </Grid.Row>
         </Grid>
-
-        <TvCast data={data} />
 
         <TvEpisodes data={data} />
       </Segment>

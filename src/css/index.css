@@ -21,3 +21,16 @@ iframe {
   flex-wrap: wrap;
   gap: 0.2rem;
 }
+
+.green {
+  color: #133513;
+  background-color: #66b16a;
+}
+.yellow {
+  color: #31310f;
+  background-color: #fafa96;
+}
+.orange {
+  color: #4b3b1e;
+  background-color: #ecbe67;
+}

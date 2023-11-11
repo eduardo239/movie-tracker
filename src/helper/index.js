@@ -7,3 +7,9 @@ export function isEmptyObject(obj) {
   }
   return true;
 }
+
+export function formatDate(inputDate) {
+  const parts = inputDate.split("-");
+  const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return formattedDate;
+}

@@ -9,7 +9,7 @@ import {
   TListType,
 } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import { Button, Icon, Segment } from "semantic-ui-react";
+import { Button, Divider, Icon, Segment } from "semantic-ui-react";
 
 const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -72,6 +72,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   if (movie)
     return (
       <Segment basic>
+        <Divider />
         {isAuthenticated ? (
           <Button.Group basic>
             <Button
@@ -104,6 +105,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             <Icon name="sign in" /> Sign In
           </Button>
         )}
+        <Divider />
       </Segment>
     );
   else return null;

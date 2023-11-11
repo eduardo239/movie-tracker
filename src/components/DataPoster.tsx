@@ -1,9 +1,8 @@
 import { Image } from "semantic-ui-react";
-import { IMovieDetails } from "../abstract/interfaces";
 
 const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
-const MoviePoster = ({ data }: { data: IMovieDetails | null }) => {
+const DataPoster = ({ data }: { data: { poster_path: string } }) => {
   if (data)
     return (
       <Image
@@ -13,4 +12,4 @@ const MoviePoster = ({ data }: { data: IMovieDetails | null }) => {
     );
 };
 
-export default MoviePoster;
+export default DataPoster;

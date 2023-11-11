@@ -1,4 +1,4 @@
-const MovieTrailer = ({
+const DataTrailer = ({
   trailerKey,
 }: {
   trailerKey?: string;
@@ -15,4 +15,4 @@ const MovieTrailer = ({
   );
 };
 
-export default MovieTrailer;
+export default DataTrailer;

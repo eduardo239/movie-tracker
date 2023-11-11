@@ -59,7 +59,7 @@ const TvEpisodes = ({ data }: { data: ITvDetails }) => {
       }
     }
   }
-  console.log(tvTracker);
+
   return (
     <Segment basic>
       {data.seasons.map((season, indexSeason) => (

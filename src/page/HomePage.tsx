@@ -7,20 +7,18 @@ import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
 import {
   Button,
-  Dimmer,
   Form,
   Grid,
   Icon,
   Image,
   Input,
-  Loader,
-  Message,
+  Pagination,
   Segment,
   Select,
 } from "semantic-ui-react";
 import MessageInfo from "../components/Message";
 import LoadingInfo from "../components/LoadingInfo";
-import { NextPrevButtons } from "../components/NextPrevButtons";
+import PaginationC from "../components/PaginationC";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -32,8 +30,8 @@ const HomePage = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // Get the 'page' query parameter
-  const pageQuery = queryParams.get("page");
-  const pageMediaType = queryParams.get("media");
+  const queryPage = queryParams.get("page");
+  const queryMedia = queryParams.get("media");
 
   const [searchResults, setSearchResults] = useState<IMovieDetails[] | null>(
     null
@@ -42,7 +40,7 @@ const HomePage = () => {
   const [search, setSearch] = useState("");
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
-    `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${apiKey}&language=en-US&page=${page}`
+    `https://api.themoviedb.org/3/trending/${mediaType}/day?api_key=${apiKey}&language=pt-BR&page=${page}`
   );
 
   const options = [
@@ -65,23 +63,20 @@ const HomePage = () => {
     navigate(`/search?page=${page}`);
   };
 
-  const onPageChange = async (_page: number) => {
-    if (searchResults) {
-      setPage(_page);
-      navigate(`/search?page=${_page}`);
+  const onPageChange = async (_page: string | number | undefined) => {
+    if (_page) {
+      if (searchResults) {
+        setPage(+_page);
+        navigate(`/search?page=${_page}`);
 
-      const data = await getSearch(mediaType, search, page);
-      setSearchResults(data);
-    } else {
-      setPage(_page);
-      navigate(`/all?media=${mediaType}&page=${_page}`);
+        const data = await getSearch(mediaType, search, page);
+        setSearchResults(data);
+      } else {
+        setPage(+_page);
+        navigate(`/all?media=${mediaType}&page=${_page}`);
+      }
     }
   };
-
-  // const onMediaChange = (_media: "movie" | "tv") => {
-  //   setMediaType(_media);
-  //   navigate(`/all?media=${mediaType}&page=${page}`);
-  // };
 
   useEffect(() => {
     if (error) {
@@ -90,17 +85,18 @@ const HomePage = () => {
   }, [error]);
 
   useEffect(() => {
-    // on home click, fetch default
+    if (queryPage) setPage(parseInt(queryPage));
 
-    if (pageQuery) setPage(parseInt(pageQuery));
-
-    if (pageMediaType) {
-      if (pageMediaType === "movie" || pageMediaType === "tv") {
-        setMediaType(pageMediaType);
+    if (queryMedia) {
+      if (queryMedia === "movie" || queryMedia === "tv") {
+        setMediaType(queryMedia);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageQuery, pageMediaType]);
+
+    return () => {
+      // setSearchResults([]);
+    };
+  }, [queryPage, queryMedia, setMediaType]);
 
   if (loading) return <LoadingInfo />;
 
@@ -123,7 +119,7 @@ const HomePage = () => {
               onChange={() => setMediaType("tv")}
               compact
               options={options}
-              defaultValue="movie"
+              defaultValue={mediaType}
             />
             <Button type="submit">Search</Button>
           </Input>
@@ -148,12 +144,7 @@ const HomePage = () => {
           </Button>
         </Segment>
 
-        <NextPrevButtons
-          onPageChange={onPageChange}
-          page={page}
-          next={page + 1}
-          prev={page - 1}
-        />
+        <PaginationC onPageChange={onPageChange} />
 
         {searchResults ? (
           <Segment textAlign="center">
@@ -166,7 +157,9 @@ const HomePage = () => {
                     computer={4}
                     key={item.id}
                   >
-                    <Link to={`/${mediaType}?id=${item.id}`}>
+                    <Link
+                      to={`/${mediaType}?id=${item.id}&name=${item.original_title}`}
+                    >
                       <Image
                         src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                         size="medium"
@@ -181,13 +174,10 @@ const HomePage = () => {
             <Grid columns={5}>
               {data?.results &&
                 data.results.map((item) => (
-                  <Grid.Column
-                    mobile={16}
-                    tablet={8}
-                    computer={4}
-                    key={item.id}
-                  >
-                    <Link to={`/${mediaType}?id=${item.id}`}>
+                  <Grid.Column mobile={8} tablet={8} computer={4} key={item.id}>
+                    <Link
+                      to={`/${mediaType}?id=${item.id}&name=${item.original_title}`}
+                    >
                       <Image
                         src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                         size="medium"
@@ -198,13 +188,7 @@ const HomePage = () => {
             </Grid>
           </Segment>
         )}
-
-        <NextPrevButtons
-          onPageChange={onPageChange}
-          page={page}
-          next={page + 1}
-          prev={page - 1}
-        />
+        <PaginationC onPageChange={onPageChange} />
       </>
     );
   else return null;

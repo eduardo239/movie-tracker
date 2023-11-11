@@ -1,13 +1,19 @@
 export interface IMovieDetails {
+  adult: boolean;
   id: number;
   title: string;
   overview: string;
+  credits: {
+    cast: ICast[];
+    crew: [];
+  };
+  original_title: string;
+  genres: IGenre[];
   poster_path: string;
   vote_average: number;
   vote_count: number;
   runtime: number;
   status: string;
-  adult: boolean;
   original_language: string;
   release_date: string;
 }
@@ -54,6 +60,10 @@ export interface ITvDetails {
   adult: boolean;
   backdrop_path: string;
   created_by: ICreatedBy[];
+  credits: {
+    cast: ICast[];
+    crew: [];
+  };
   episode_run_time: [];
   first_air_date: string;
   genres: IGenre[];
@@ -135,17 +145,17 @@ export type TListType = "all" | "see" | "saw" | "block";
 
 export interface ICast {
   adult: boolean;
+  cast_id?: number;
+  character: string;
+  credit_id: string;
   gender: number;
   id: number;
   known_for_department: string;
   name: string;
+  order: number;
   original_name: string;
   popularity: number;
   profile_path: string;
-  cast_id: number;
-  character: string;
-  credit_id: string;
-  order: number;
 }
 
 export interface ICredits {

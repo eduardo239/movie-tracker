@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { IMovieDetails, IMovieTrailers } from "../abstract/interfaces";
-import { fetchData, fetchTrailers } from "../fetch/tmdb";
+import { fetchTrailers } from "../fetch/tmdb";
 import MovieOptions from "../components/MovieOptions";
-
-import MoviePoster from "../components/MoviePoster";
-import MovieCast from "../components/MovieCast";
-import MovieRating from "../components/MovieRating";
-import MovieTrailer from "../components/MovieTrailer";
+import DataPoster from "../components/DataPoster";
+import DataTrailer from "../components/DataTrailer";
 import useFetch from "../hooks/useFetch";
-import MovieDetails from "../components/MovieDetails";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
-import { Divider, Grid, Header, Segment } from "semantic-ui-react";
+import { Divider, Grid, Segment } from "semantic-ui-react";
+import DataDetails from "../components/DataDetails";
+import DataRating from "../components/DataRating";
+import DataCast from "../components/DataCast";
+import DataInfo from "../components/DataInfo";
+import DataGenre from "../components/DataGenre";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const MoviePage = () => {
@@ -23,9 +23,10 @@ const MoviePage = () => {
   const [trailers, setTrailers] = useState<IMovieTrailers | null>(null);
 
   const { data, loading, error } = useFetch<IMovieDetails | null>(
-    `${tmdbBaseUrl}/movie/${id.get("id")}?api_key=${apiKey}&language=pt-BR`
+    `${tmdbBaseUrl}/movie/${id.get(
+      "id"
+    )}?api_key=${apiKey}&language=pt-BR&append_to_response=credits`
   );
-  console.log(loading, error);
 
   useEffect(() => {
     (async () => {
@@ -33,6 +34,7 @@ const MoviePage = () => {
       setTrailers(f.data);
     })();
   }, [id]);
+  console.log(data);
 
   if (loading) return <LoadingInfo />;
 
@@ -45,7 +47,7 @@ const MoviePage = () => {
           <Grid.Row>
             {/*  */}
             <Grid.Column width={16}>
-              <MovieTrailer
+              <DataTrailer
                 hidden={false}
                 trailerKey={
                   trailers?.results[trailers?.results.length - 1]?.key
@@ -54,24 +56,41 @@ const MoviePage = () => {
             </Grid.Column>
             {/*  */}
             <Grid.Column width={4} textAlign="left">
-              <MoviePoster data={data} />
+              <DataPoster data={data} />
             </Grid.Column>
             {/*  */}
             <Grid.Column width={12} textAlign="left">
-              <MovieDetails movie={data} />
+              <DataDetails
+                data={{
+                  title: data.title,
+                  original_title: data.original_title,
+                  overview: data.overview,
+                  release_date: data.release_date,
+                }}
+              />
+              <DataRating
+                data={{
+                  runtime: data.runtime,
+                  vote_average: data.vote_average,
+                }}
+              />
+
+              <DataGenre genres={data.genres} />
             </Grid.Column>
             {/*  */}
             <Grid.Column width={16} textAlign="center">
-              <Divider />
               <MovieOptions movie={data} />
-              <Divider />
             </Grid.Column>
+
             <Grid.Column width={16} textAlign="center">
-              <MovieRating data={data} />
-            </Grid.Column>
-            <Grid.Column width={16} textAlign="center">
-              <Divider />
-              <MovieCast data={data} />
+              <DataInfo
+                data={{
+                  release_date: data.release_date,
+                  status: data.status,
+                  original_language: data.original_language,
+                }}
+              />
+              <DataCast data={{ credits: data.credits }} />
             </Grid.Column>
           </Grid.Row>
         </Grid>
