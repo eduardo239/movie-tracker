@@ -13,3 +13,11 @@ export function formatDate(inputDate) {
   const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
   return formattedDate;
 }
+
+export function createArrayOfArrays(n) {
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    result.push([]);
+  }
+  return result;
+}

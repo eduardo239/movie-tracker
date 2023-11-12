@@ -31,25 +31,25 @@ const ListPage = () => {
           color={`${listType === "all" ? "orange" : "black"}`}
           onClick={() => setListType("all")}
         >
-          All
+          Todos
         </Button>
         <Button
           color={`${listType === "see" ? "orange" : "black"}`}
           onClick={() => setListType("see")}
         >
-          See
+          Para Ver
         </Button>
         <Button
           color={`${listType === "saw" ? "orange" : "black"}`}
           onClick={() => setListType("saw")}
         >
-          Saw
+          Já Vi
         </Button>
         <Button
           color={`${listType === "block" ? "orange" : "black"}`}
           onClick={() => setListType("block")}
         >
-          Block
+          Bloquear
         </Button>
       </Button.Group>
 
@@ -57,11 +57,11 @@ const ListPage = () => {
         <Table.Header>
           <Table.Row textAlign="center">
             <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>See</Table.HeaderCell>
-            <Table.HeaderCell>Saw</Table.HeaderCell>
-            <Table.HeaderCell>Block</Table.HeaderCell>
-            <Table.HeaderCell>Delete</Table.HeaderCell>
+            <Table.HeaderCell>Nome</Table.HeaderCell>
+            <Table.HeaderCell>Para Ver</Table.HeaderCell>
+            <Table.HeaderCell>Já Vi</Table.HeaderCell>
+            <Table.HeaderCell>Bloquear</Table.HeaderCell>
+            <Table.HeaderCell>Remover</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -78,21 +78,27 @@ const ListPage = () => {
                   negative={!movie.listType.see}
                   positive={movie.listType.see}
                 >
-                  <Icon name="checkmark" />
+                  <Icon
+                    name={`${movie.listType.see ? "checkmark" : "minus"}`}
+                  />
                 </Table.Cell>
                 <Table.Cell
                   textAlign="center"
                   negative={!movie.listType.saw}
                   positive={movie.listType.saw}
                 >
-                  <Icon name="checkmark" />
+                  <Icon
+                    name={`${movie.listType.saw ? "checkmark" : "minus"}`}
+                  />
                 </Table.Cell>
                 <Table.Cell
                   textAlign="center"
                   negative={!movie.listType.block}
                   positive={movie.listType.block}
                 >
-                  <Icon name="checkmark" />
+                  <Icon
+                    name={`${movie.listType.block ? "checkmark" : "minus"}`}
+                  />
                 </Table.Cell>
                 <Table.Cell collapsing>
                   <Button

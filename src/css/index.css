@@ -22,6 +22,10 @@ iframe {
   gap: 0.2rem;
 }
 
+.flex-center {
+  justify-content: center;
+}
+
 .green {
   color: #133513;
   background-color: #66b16a;
@@ -33,4 +37,9 @@ iframe {
 .orange {
   color: #4b3b1e;
   background-color: #ecbe67;
+}
+
+.active {
+  background-color: orange;
+  color: orange;
 }

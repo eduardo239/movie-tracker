@@ -34,7 +34,6 @@ const MoviePage = () => {
       setTrailers(f.data);
     })();
   }, [id]);
-  console.log(data);
 
   if (loading) return <LoadingInfo />;
 
@@ -53,6 +52,7 @@ const MoviePage = () => {
                   trailers?.results[trailers?.results.length - 1]?.key
                 }
               />
+              Total de trailers: {trailers?.results.length}
             </Grid.Column>
             {/*  */}
             <Grid.Column width={4} textAlign="left">

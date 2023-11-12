@@ -8,12 +8,12 @@ const DataInfo = ({
 }) => {
   return (
     <Segment basic>
-      <Header as="h2">Info</Header>
-      <p>Release Date: {formatDate(data.release_date)}</p>
+      <Header as="h2">Informações</Header>
+      <p>Data de Lançamento: {formatDate(data.release_date)}</p>
       <p>Status: {data.status}</p>
 
       {data.original_language && (
-        <p>Original Language: {data.original_language.toUpperCase()}</p>
+        <p>Lingua Original: {data.original_language.toUpperCase()}</p>
       )}
     </Segment>
   );

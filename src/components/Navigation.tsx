@@ -19,7 +19,7 @@ const Navigation = () => {
         value="movie"
         onClick={(e) => handleItemClick("/all?media=movie&page=1")}
       >
-        Movies
+        Filmes
       </Menu.Item>
 
       <Menu.Item
@@ -28,7 +28,7 @@ const Navigation = () => {
         value="tv"
         onClick={(e) => handleItemClick("/all?media=tv&page=1")}
       >
-        TV
+        Séries
       </Menu.Item>
 
       <Menu.Item
@@ -36,7 +36,7 @@ const Navigation = () => {
         active={activeItem === "lists"}
         onClick={(e) => handleItemClick("/list")}
       >
-        Lists
+        Listas
       </Menu.Item>
 
       <Menu.Item
@@ -45,7 +45,7 @@ const Navigation = () => {
         onClick={(e) => handleItemClick("/sign-in")}
         disabled={!!user}
       >
-        Sing In
+        Entrar
       </Menu.Item>
 
       <Menu.Item
@@ -54,7 +54,7 @@ const Navigation = () => {
         onClick={(e) => handleItemClick("/sign-up")}
         disabled={!!user}
       >
-        Sing Up
+        Registrar
       </Menu.Item>
 
       <Menu.Item
@@ -63,7 +63,7 @@ const Navigation = () => {
         onClick={logout}
         disabled={!user}
       >
-        Logout
+        Sair
       </Menu.Item>
     </Menu>
   );

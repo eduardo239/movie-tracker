@@ -53,6 +53,7 @@ const TvPage = () => {
                   trailers?.results[trailers?.results.length - 1]?.key
                 }
               />
+              Total de trailers: {trailers?.results.length}
             </Grid.Column>
             {/*  */}
             <Grid.Column width={4} textAlign="left">

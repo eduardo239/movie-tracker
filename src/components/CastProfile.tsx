@@ -10,7 +10,7 @@ const CastProfile = ({ cast }: { cast: ICast }) => {
       <Card.Content>
         <Card.Header>{cast.name}</Card.Header>
         <Card.Meta>
-          <span className="date">Character: {cast.character}</span>
+          <span className="date">Personagem: {cast.character}</span>
         </Card.Meta>
         <Card.Description></Card.Description>
       </Card.Content>
