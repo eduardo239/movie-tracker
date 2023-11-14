@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { IMovieTrailers, ITrailers, ITvDetails } from "../abstract/interfaces";
-import { fetchTrailers } from "../fetch/tmdb";
+import { ITvDetails } from "../abstract/interfaces";
 
 import DataTrailer from "../components/DataTrailer";
 import useFetch from "../hooks/useFetch";
@@ -15,20 +13,29 @@ import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import DataPoster from "../components/DataPoster";
 import DataGenre from "../components/DataGenre";
-import { useMovie } from "../context/MovieContext";
+import { useEffect } from "react";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const TvPage = () => {
   const [id, _] = useSearchParams();
-  const [trailers, setTrailers] = useState<ITrailers>();
 
   const { data, loading, error } = useFetch<ITvDetails | null>(
     `${tmdbBaseUrl}/tv/${id.get(
       "id"
     )}?api_key=${apiKey}&language=pt-BR&append_to_response=credits`
   );
+
+  useEffect(() => {
+    if (data) {
+      document.title = data.original_name;
+    }
+
+    return () => {
+      document.title = "Movie Tracker";
+    };
+  }, [data]);
 
   if (loading) return <LoadingInfo />;
 

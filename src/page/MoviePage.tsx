@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { IMovieDetails, IMovieTrailers } from "../abstract/interfaces";
-import { fetchTrailers } from "../fetch/tmdb";
+import { IMovieDetails } from "../abstract/interfaces";
 import MovieOptions from "../components/MovieOptions";
 import DataPoster from "../components/DataPoster";
 import DataTrailer from "../components/DataTrailer";
 import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
-import { Divider, Grid, Segment } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 import DataDetails from "../components/DataDetails";
 import DataRating from "../components/DataRating";
 import DataCast from "../components/DataCast";
@@ -20,7 +19,6 @@ const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const MoviePage = () => {
   const [id, _] = useSearchParams();
-  const [trailers, setTrailers] = useState<IMovieTrailers | null>(null);
 
   const { data, loading, error } = useFetch<IMovieDetails | null>(
     `${tmdbBaseUrl}/movie/${id.get(
@@ -29,11 +27,14 @@ const MoviePage = () => {
   );
 
   useEffect(() => {
-    (async () => {
-      const f = await fetchTrailers("movie", id.get("id"));
-      setTrailers(f.data);
-    })();
-  }, [id]);
+    if (data) {
+      document.title = data.original_title;
+    }
+
+    return () => {
+      document.title = "Movie Tracker";
+    };
+  }, [data]);
 
   if (loading) return <LoadingInfo />;
 
