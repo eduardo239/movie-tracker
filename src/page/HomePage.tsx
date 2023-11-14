@@ -21,25 +21,18 @@ import LoadingInfo from "../components/LoadingInfo";
 import PaginationC from "../components/PaginationC";
 import PosterHome from "../components/PosterHome";
 import HomeSearch from "../components/HomeSearch";
+import HomeMedia from "../components/HomeMedia";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const HomePage = () => {
-  const { mediaType, setMediaType, searchResults } = useMovie();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  // Get the 'page' query parameter
-  const queryPage = queryParams.get("page");
-  const queryMedia = queryParams.get("media");
-
-  const [page, setPage] = useState<number>(1);
-
+  const { page, mediaType, searchResults } = useMovie();
   const { data, loading, error } = useFetch<IMovieResults | null>(
-    `https://api.themoviedb.org/3/trending/${mediaType}/day?api_key=${apiKey}&language=pt-BR&page=${page}`
+    `${tmdbBaseUrl}/trending/${mediaType}/day?api_key=${apiKey}&language=pt-BR&page=${page}`
   );
+
+  console.log(mediaType);
 
   // const onPageChange = async (_page: string | number | undefined) => {
   //   if (_page) {
@@ -62,19 +55,19 @@ const HomePage = () => {
     }
   }, [error]);
 
-  useEffect(() => {
-    if (queryPage) setPage(parseInt(queryPage));
+  // useEffect(() => {
+  //   if (queryPage) setPage(parseInt(queryPage));
 
-    if (queryMedia) {
-      if (queryMedia === "movie" || queryMedia === "tv") {
-        setMediaType(queryMedia);
-      }
-    }
+  //   if (queryMedia) {
+  //     if (queryMedia === "movie" || queryMedia === "tv") {
+  //       setMediaType(queryMedia);
+  //     }
+  //   }
 
-    return () => {
-      // setSearchResults([]);
-    };
-  }, [queryPage, queryMedia, setMediaType]);
+  //   return () => {
+  //     // setSearchResults([]);
+  //   };
+  // }, [queryPage, queryMedia, setMediaType]);
 
   if (loading) return <LoadingInfo />;
 
@@ -84,25 +77,7 @@ const HomePage = () => {
     return (
       <>
         <HomeSearch />
-
-        <Segment basic textAlign="center">
-          <Button
-            icon
-            labelPosition="left"
-            onClick={() => navigate(`/all?media=movie&page=${page}`)}
-          >
-            <Icon name="film" />
-            Movie
-          </Button>
-          <Button
-            icon
-            labelPosition="left"
-            onClick={() => navigate(`/all?media=tv&page=${page}`)}
-          >
-            <Icon name="television" />
-            TV
-          </Button>
-        </Segment>
+        <HomeMedia />
 
         {/* <PaginationC onPageChange={onPageChange} /> */}
 

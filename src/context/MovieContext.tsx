@@ -22,8 +22,11 @@ import {
   IAddTvToList,
   TListType,
 } from "../abstract/interfaces";
+import { useQuery } from "../hooks/useQuery";
 
 interface MovieContextType {
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
   mediaType: "movie" | "tv";
   setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv">>;
   movieList: DocumentData[];
@@ -48,10 +51,27 @@ interface MovieProviderProps {
 }
 
 export function MovieProvider({ children }: MovieProviderProps) {
+  const [page, setPage] = useState(1);
   const [movieList, setMovieList] = useState<DocumentData[]>([]);
   const [searchResults, setSearchResults] = useState<DocumentData[]>([]);
   const [trackerList, setTrackerList] = useState<DocumentData | null>(null);
   const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
+
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  const query = useQuery();
+
+  useEffect(() => {
+    if (query.get("page")) setPage(parseInt(query.get("page") + ""));
+
+    if (query.get("media")) {
+      const _mediaType = query.get("media".toString());
+      if (_mediaType === "movie" || _mediaType === "tv") {
+        setMediaType(_mediaType);
+      }
+    }
+
+    return () => {};
+  }, [query]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addTvToList = async (content: IAddTvToList) => {
@@ -165,6 +185,8 @@ export function MovieProvider({ children }: MovieProviderProps) {
   return (
     <MovieContext.Provider
       value={{
+        page,
+        setPage,
         mediaType,
         setMediaType,
         addMovieToList,
