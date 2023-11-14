@@ -42,7 +42,6 @@ const TvPage = () => {
             {/*  */}
             <Grid.Column width={16}>
               <DataTrailer mediaType="tv" id={id.get("id") + ""} />
-              Total de trailers: {trailers?.results.length}
             </Grid.Column>
             {/*  */}
             <Grid.Column width={4} textAlign="left">

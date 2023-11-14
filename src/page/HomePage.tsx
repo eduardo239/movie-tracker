@@ -20,11 +20,12 @@ import MessageInfo from "../components/Message";
 import LoadingInfo from "../components/LoadingInfo";
 import PaginationC from "../components/PaginationC";
 import PosterHome from "../components/PosterHome";
+import HomeSearch from "../components/HomeSearch";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
 const HomePage = () => {
-  const { mediaType, setMediaType } = useMovie();
+  const { mediaType, setMediaType, searchResults } = useMovie();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,50 +35,26 @@ const HomePage = () => {
   const queryPage = queryParams.get("page");
   const queryMedia = queryParams.get("media");
 
-  const [searchResults, setSearchResults] = useState<IMovieDetails[] | null>(
-    null
-  );
   const [page, setPage] = useState<number>(1);
-  const [search, setSearch] = useState("");
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
     `https://api.themoviedb.org/3/trending/${mediaType}/day?api_key=${apiKey}&language=pt-BR&page=${page}`
   );
 
-  const options = [
-    { key: "movie", text: "Movie", value: "movie" },
-    { key: "tv", text: "TV", value: "tv" },
-  ];
+  // const onPageChange = async (_page: string | number | undefined) => {
+  //   if (_page) {
+  //     if (searchResults) {
+  //       setPage(+_page);
+  //       navigate(`/search?page=${_page}`);
 
-  const onSearchSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!search) {
-      setSearchResults(null);
-      navigate(`/all?media=${mediaType}&page=${page}`);
-      return;
-    }
-
-    const data = await getSearch(mediaType, search, page);
-    setSearchResults(data);
-    setPage(1);
-    navigate(`/search?page=${page}`);
-  };
-
-  const onPageChange = async (_page: string | number | undefined) => {
-    if (_page) {
-      if (searchResults) {
-        setPage(+_page);
-        navigate(`/search?page=${_page}`);
-
-        const data = await getSearch(mediaType, search, page);
-        setSearchResults(data);
-      } else {
-        setPage(+_page);
-        navigate(`/all?media=${mediaType}&page=${_page}`);
-      }
-    }
-  };
+  //       const data = await getSearch(mediaType, search, page);
+  //       setSearchResults(data);
+  //     } else {
+  //       setPage(+_page);
+  //       navigate(`/all?media=${mediaType}&page=${_page}`);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     if (error) {
@@ -106,25 +83,7 @@ const HomePage = () => {
   if (data)
     return (
       <>
-        <Form onSubmit={(e) => onSearchSubmit(e)}>
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            fluid
-            type="text"
-            placeholder="Search..."
-            action
-          >
-            <input />
-            <Select
-              onChange={() => setMediaType("tv")}
-              compact
-              options={options}
-              defaultValue={mediaType}
-            />
-            <Button type="submit">Search</Button>
-          </Input>
-        </Form>
+        <HomeSearch />
 
         <Segment basic textAlign="center">
           <Button
@@ -145,9 +104,9 @@ const HomePage = () => {
           </Button>
         </Segment>
 
-        <PaginationC onPageChange={onPageChange} />
+        {/* <PaginationC onPageChange={onPageChange} /> */}
 
-        {searchResults ? (
+        {searchResults && searchResults.length > 0 ? (
           <Segment textAlign="center">
             <Grid columns={5}>
               {searchResults &&
@@ -170,7 +129,7 @@ const HomePage = () => {
             </Grid>
           </Segment>
         )}
-        <PaginationC onPageChange={onPageChange} />
+        {/* <PaginationC onPageChange={onPageChange} /> */}
       </>
     );
   else return null;
