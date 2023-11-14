@@ -58,20 +58,20 @@ export function MovieProvider({ children }: MovieProviderProps) {
   const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const query = useQuery();
+  const _query = useQuery();
 
   useEffect(() => {
-    if (query.get("page")) setPage(parseInt(query.get("page") + ""));
+    if (_query.get("page")) setPage(parseInt(_query.get("page") + ""));
 
-    if (query.get("media")) {
-      const _mediaType = query.get("media".toString());
+    if (_query.get("media")) {
+      const _mediaType = _query.get("media".toString());
       if (_mediaType === "movie" || _mediaType === "tv") {
         setMediaType(_mediaType);
       }
     }
 
     return () => {};
-  }, [query]);
+  }, [_query]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addTvToList = async (content: IAddTvToList) => {
