@@ -22,6 +22,7 @@ import {
   IAddTvToList,
   TListType,
 } from "../abstract/interfaces";
+import { useSearchParams } from "react-router-dom";
 
 interface MovieContextType {
   mediaType: "movie" | "tv";
@@ -46,6 +47,14 @@ interface MovieProviderProps {
 }
 
 export function MovieProvider({ children }: MovieProviderProps) {
+  const queryParams = new URLSearchParams(location.search);
+
+  // Get the 'page' query parameter
+  const queryPage = queryParams.get("page");
+  const queryMedia = queryParams.get("media");
+  console.log(queryPage);
+  console.log(queryMedia);
+
   const [movieList, setMovieList] = useState<DocumentData[]>([]);
   const [trackerList, setTrackerList] = useState<DocumentData | null>(null);
   const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");

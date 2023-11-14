@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { IMovieTrailers, ITvDetails } from "../abstract/interfaces";
+import { IMovieTrailers, ITrailers, ITvDetails } from "../abstract/interfaces";
 import { fetchTrailers } from "../fetch/tmdb";
 
 import DataTrailer from "../components/DataTrailer";
@@ -15,26 +15,20 @@ import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import DataPoster from "../components/DataPoster";
 import DataGenre from "../components/DataGenre";
+import { useMovie } from "../context/MovieContext";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const TvPage = () => {
   const [id, _] = useSearchParams();
-  const [trailers, setTrailers] = useState<IMovieTrailers | null>(null);
+  const [trailers, setTrailers] = useState<ITrailers>();
 
   const { data, loading, error } = useFetch<ITvDetails | null>(
     `${tmdbBaseUrl}/tv/${id.get(
       "id"
     )}?api_key=${apiKey}&language=pt-BR&append_to_response=credits`
   );
-
-  useEffect(() => {
-    (async () => {
-      const f = await fetchTrailers("tv", id.get("id"));
-      setTrailers(f.data);
-    })();
-  }, [id]);
 
   if (loading) return <LoadingInfo />;
 
@@ -47,12 +41,7 @@ const TvPage = () => {
           <Grid.Row>
             {/*  */}
             <Grid.Column width={16}>
-              <DataTrailer
-                hidden={false}
-                trailerKey={
-                  trailers?.results[trailers?.results.length - 1]?.key
-                }
-              />
+              <DataTrailer mediaType="tv" id={id.get("id") + ""} />
               Total de trailers: {trailers?.results.length}
             </Grid.Column>
             {/*  */}
@@ -91,7 +80,6 @@ const TvPage = () => {
               <DataInfo
                 data={{
                   release_date: data.first_air_date,
-
                   status: data.status,
                   original_language: data.original_language,
                 }}

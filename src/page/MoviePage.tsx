@@ -46,12 +46,7 @@ const MoviePage = () => {
           <Grid.Row>
             {/*  */}
             <Grid.Column width={16}>
-              <DataTrailer
-                hidden={false}
-                trailerKey={
-                  trailers?.results[trailers?.results.length - 1]?.key
-                }
-              />
+              <DataTrailer mediaType="movie" id={id.get("id") + ""} />
               Total de trailers: {trailers?.results.length}
             </Grid.Column>
             {/*  */}

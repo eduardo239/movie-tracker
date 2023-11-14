@@ -19,6 +19,7 @@ import {
 import MessageInfo from "../components/Message";
 import LoadingInfo from "../components/LoadingInfo";
 import PaginationC from "../components/PaginationC";
+import PosterHome from "../components/PosterHome";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -150,21 +151,9 @@ const HomePage = () => {
           <Segment textAlign="center">
             <Grid columns={5}>
               {searchResults &&
-                searchResults.map((item) => (
-                  <Grid.Column
-                    mobile={16}
-                    tablet={8}
-                    computer={4}
-                    key={item.id}
-                  >
-                    <Link
-                      to={`/${mediaType}?id=${item.id}&name=${item.original_title}`}
-                    >
-                      <Image
-                        src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                        size="medium"
-                      />
-                    </Link>
+                searchResults.map((y) => (
+                  <Grid.Column mobile={8} tablet={5} computer={4} key={y.id}>
+                    <PosterHome id={y.id} poster={y.poster_path} />
                   </Grid.Column>
                 ))}
             </Grid>
@@ -173,16 +162,9 @@ const HomePage = () => {
           <Segment textAlign="center">
             <Grid columns={5}>
               {data?.results &&
-                data.results.map((item) => (
-                  <Grid.Column mobile={8} tablet={8} computer={4} key={item.id}>
-                    <Link
-                      to={`/${mediaType}?id=${item.id}&name=${item.original_title}`}
-                    >
-                      <Image
-                        src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                        size="medium"
-                      />
-                    </Link>
+                data.results.map((x) => (
+                  <Grid.Column mobile={8} tablet={5} computer={4} key={x.id}>
+                    <PosterHome id={x.id} poster={x.poster_path} />
                   </Grid.Column>
                 ))}
             </Grid>
