@@ -14,13 +14,13 @@ const MoviePage = () => {
   const { page, setMovieData, setMediaType } = useMovie();
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
-    `${tmdbBaseUrl}/trending/tv/day?api_key=${apiKey}&language=pt-BR&page=${
+    `${tmdbBaseUrl}/trending/movie/day?api_key=${apiKey}&language=pt-BR&page=${
       page ? page : 1
     }`
   );
 
   useEffect(() => {
-    setMediaType("tv");
+    setMediaType("movie");
     if (data) setMovieData(data);
 
     return () => {};

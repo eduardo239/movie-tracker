@@ -72,7 +72,6 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   if (movie)
     return (
       <Segment basic>
-        <Divider />
         {isAuthenticated ? (
           <Button.Group basic>
             <Button
@@ -105,7 +104,6 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             <Icon name="sign in" /> Sign In
           </Button>
         )}
-        <Divider />
       </Segment>
     );
   else return null;

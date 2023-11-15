@@ -20,16 +20,21 @@ import { db } from "../config/firebase";
 import {
   IAddMovieToList,
   IAddTvToList,
+  IMovieResults,
   TListType,
 } from "../abstract/interfaces";
-import { useQuery } from "../hooks/useQuery";
+import { useSearchParams } from "react-router-dom";
 
 interface MovieContextType {
-  page: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  mediaType: "movie" | "tv";
-  setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv">>;
+  page: string | null;
+  setPage: React.Dispatch<React.SetStateAction<string | null>>;
+  mediaType: "movie" | "tv" | null;
+  setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv" | null>>;
   movieList: DocumentData[];
+  movieData: IMovieResults | [];
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  setMovieData: React.Dispatch<React.SetStateAction<IMovieResults | []>>;
   searchResults: DocumentData[];
   setSearchResults: React.Dispatch<React.SetStateAction<DocumentData[]>>;
   trackerList: DocumentData | null;
@@ -51,27 +56,22 @@ interface MovieProviderProps {
 }
 
 export function MovieProvider({ children }: MovieProviderProps) {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<string | null>(null);
   const [movieList, setMovieList] = useState<DocumentData[]>([]);
   const [searchResults, setSearchResults] = useState<DocumentData[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const [movieData, setMovieData] = useState<IMovieResults | []>([]);
   const [trackerList, setTrackerList] = useState<DocumentData | null>(null);
-  const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
+  const [mediaType, setMediaType] = useState<"movie" | "tv" | null>("movie");
+
+  const [params, _] = useSearchParams();
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const _query = useQuery();
-
   useEffect(() => {
-    if (_query.get("page")) setPage(parseInt(_query.get("page") + ""));
-
-    if (_query.get("media")) {
-      const _mediaType = _query.get("media".toString());
-      if (_mediaType === "movie" || _mediaType === "tv") {
-        setMediaType(_mediaType);
-      }
-    }
-
+    const _page = params.get("page");
+    if (_page) setPage(_page);
     return () => {};
-  }, [_query]);
+  }, [params, setPage]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addTvToList = async (content: IAddTvToList) => {
@@ -185,6 +185,10 @@ export function MovieProvider({ children }: MovieProviderProps) {
   return (
     <MovieContext.Provider
       value={{
+        search,
+        setSearch,
+        movieData,
+        setMovieData,
         page,
         setPage,
         mediaType,

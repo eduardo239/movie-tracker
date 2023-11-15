@@ -20,10 +20,19 @@ const Navigation = () => {
   return (
     <Menu>
       <Menu.Item
+        name="home"
+        active={activeItem === "home"}
+        value="home"
+        onClick={() => handleItemClick("/")}
+      >
+        Home
+      </Menu.Item>
+
+      <Menu.Item
         name="movie"
         active={activeItem === "movie"}
         value="movie"
-        onClick={(e) => handleItemClick("/all?media=movie&page=1")}
+        onClick={() => handleItemClick("/movies?page=1")}
       >
         Filmes
       </Menu.Item>
@@ -32,7 +41,7 @@ const Navigation = () => {
         name="tv"
         active={activeItem === "tv"}
         value="tv"
-        onClick={(e) => handleItemClick("/all?media=tv&page=1")}
+        onClick={() => handleItemClick("/tvs?page=1")}
       >
         Séries
       </Menu.Item>
@@ -40,7 +49,7 @@ const Navigation = () => {
       <Menu.Item
         name="lists"
         active={activeItem === "lists"}
-        onClick={(e) => handleItemClick("/list")}
+        onClick={() => handleItemClick("/list")}
       >
         Listas
       </Menu.Item>
@@ -48,7 +57,7 @@ const Navigation = () => {
       <Menu.Item
         name="sing-in"
         active={activeItem === "sing-in"}
-        onClick={(e) => handleItemClick("/sign-in")}
+        onClick={() => handleItemClick("/sign-in")}
         disabled={!!user}
       >
         Entrar
@@ -57,7 +66,7 @@ const Navigation = () => {
       <Menu.Item
         name="sign-up"
         active={activeItem === "sign-up"}
-        onClick={(e) => handleItemClick("/sign-up")}
+        onClick={() => handleItemClick("/sign-up")}
         disabled={!!user}
       >
         Registrar

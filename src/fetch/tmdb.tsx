@@ -48,7 +48,7 @@ export const getSearch = async (
   search: string,
   page: number
 ) => {
-  const apiUrl = `${tmdbBaseUrl}/search/${mediaType}?query=${search}&api_key=${apiKey}&include_adult=false&language=en-US&page=1`;
+  const apiUrl = `${tmdbBaseUrl}/search/${mediaType}?query=${search}&include_adult=false?language=en-US&page=${page}`;
 
   const options = {
     method: "GET",
@@ -59,10 +59,7 @@ export const getSearch = async (
   };
 
   try {
-    const response = await axios.get(
-      `${tmdbBaseUrl}/search/${mediaType}?query=${search}&include_adult=false?language=en-US&page=${page}`,
-      options
-    );
+    const response = await axios.get(apiUrl, options);
     const data = await response.data;
 
     return data.results;

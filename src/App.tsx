@@ -1,14 +1,16 @@
 import { Route, Routes } from "react-router-dom";
+import { Container } from "semantic-ui-react";
+import { useAuth } from "./context/AuthContext";
 import HomePage from "./page/HomePage";
-import MoviePage from "./page/MoviePage";
-import Navigation from "./components/Navigation";
+import MoviesPage from "./page/MoviesPage";
 import SignIn from "./page/SignIn";
 import SignUp from "./page/SignUp";
-import { useAuth } from "./context/AuthContext";
 import Message from "./components/Message";
 import TvPage from "./page/TvPage";
 import ListPage from "./page/ListPage";
-import { Container } from "semantic-ui-react";
+import Navigation from "./components/Navigation";
+import MovieByIdPage from "./page/MovieByIdPage";
+import TvByIdPage from "./page/TvByIdPage";
 
 function App() {
   const { authMessage } = useAuth();
@@ -20,10 +22,11 @@ function App() {
       <Container>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/all" element={<HomePage />} />
           <Route path="/search" element={<HomePage />} />
-          <Route path="/movie" element={<MoviePage />} />
-          <Route path="/tv" element={<TvPage />} />
+          <Route path="/tvs" element={<TvPage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/tv" element={<TvByIdPage />} />
+          <Route path="/movie" element={<MovieByIdPage />} />
           <Route path="/list" element={<ListPage />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />

@@ -36,7 +36,7 @@ const DataTrailer = ({
 
   if (trailers)
     return (
-      <Segment basic style={{ padding: "0" }}>
+      <>
         <div className="trailer">
           <iframe
             title="movie-trailer"
@@ -44,7 +44,7 @@ const DataTrailer = ({
             allowFullScreen
           />
         </div>
-        <Segment>
+        <Segment basic>
           {trailers?.results
             .map((x) => (
               <Button
@@ -58,7 +58,7 @@ const DataTrailer = ({
             .splice(-5)
             .reverse()}
         </Segment>
-      </Segment>
+      </>
     );
 };
 
