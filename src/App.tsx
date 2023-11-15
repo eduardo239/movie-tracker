@@ -2,11 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import { useAuth } from "./context/AuthContext";
 import HomePage from "./page/HomePage";
-import MoviesPage from "./page/MoviesPage";
 import SignIn from "./page/SignIn";
 import SignUp from "./page/SignUp";
 import Message from "./components/Message";
-import TvPage from "./page/TvPage";
 import ListPage from "./page/ListPage";
 import Navigation from "./components/Navigation";
 import MovieByIdPage from "./page/MovieByIdPage";
@@ -23,11 +21,14 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<HomePage />} />
-          <Route path="/tvs" element={<TvPage />} />
-          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/tvs" element={<HomePage />} />
+          <Route path="/movies" element={<HomePage />} />
+          {/*  */}
           <Route path="/tv" element={<TvByIdPage />} />
           <Route path="/movie" element={<MovieByIdPage />} />
+          {/*  */}
           <Route path="/list" element={<ListPage />} />
+          {/*  */}
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>

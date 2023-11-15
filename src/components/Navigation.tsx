@@ -28,7 +28,7 @@ const Navigation = () => {
         Home
       </Menu.Item>
 
-      <Menu.Item
+      {/* <Menu.Item
         name="movie"
         active={activeItem === "movie"}
         value="movie"
@@ -44,7 +44,7 @@ const Navigation = () => {
         onClick={() => handleItemClick("/tvs?page=1")}
       >
         Séries
-      </Menu.Item>
+      </Menu.Item> */}
 
       <Menu.Item
         name="lists"

@@ -31,10 +31,7 @@ const HomeSearch = () => {
         placeholder="Search..."
         action
       >
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.currentTarget.value)}
-        />
+        <input />
         <Select
           onChange={handleMediaTypeChange}
           compact

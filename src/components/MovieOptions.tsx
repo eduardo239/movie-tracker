@@ -1,15 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FiCheckCircle, FiClock, FiLogIn, FiSlash } from "react-icons/fi";
 import { useMovie } from "../context/MovieContext";
 import {
   IAddMovieToList,
   IMovieDetails,
-  ITvDetails,
   TListType,
 } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import { Button, Divider, Icon, Segment } from "semantic-ui-react";
+import { Button, Icon, Segment } from "semantic-ui-react";
 
 const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;

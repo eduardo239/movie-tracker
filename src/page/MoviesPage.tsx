@@ -5,13 +5,14 @@ import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { Grid, Segment } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
-import PosterHome from "../components/PosterHome";
+import PosterLink from "../components/PosterLink";
+import PaginationComponent from "../components/PaginationComponent";
 
 const MoviePage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
-  const { page, setMovieData, setMediaType } = useMovie();
+  const { page, setMovieData, setMediaType, setPage } = useMovie();
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
     `${tmdbBaseUrl}/trending/movie/day?api_key=${apiKey}&language=pt-BR&page=${
@@ -22,6 +23,7 @@ const MoviePage = () => {
   useEffect(() => {
     setMediaType("movie");
     if (data) setMovieData(data);
+    if (page && page !== "1") setPage(page);
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -32,14 +34,20 @@ const MoviePage = () => {
 
   return (
     <Segment textAlign="center">
-      <Grid columns={5}>
-        {data?.results &&
-          data.results.map((x) => (
-            <Grid.Column mobile={8} tablet={5} computer={4} key={x.id}>
-              <PosterHome id={x.id} poster={x.poster_path} />
-            </Grid.Column>
-          ))}
-      </Grid>
+      <PaginationComponent />
+
+      <Segment basic style={{ margin: 0 }}>
+        <Grid columns={5}>
+          {data?.results &&
+            data.results.map((x) => (
+              <Grid.Column mobile={8} tablet={5} computer={4} key={x.id}>
+                <PosterLink id={x.id} poster={x.poster_path} />
+              </Grid.Column>
+            ))}
+        </Grid>
+      </Segment>
+
+      <PaginationComponent />
     </Segment>
   );
 };

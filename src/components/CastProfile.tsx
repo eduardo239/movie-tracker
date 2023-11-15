@@ -1,4 +1,4 @@
-import { Card, Icon, Image, Segment } from "semantic-ui-react";
+import { Card, Icon, Image } from "semantic-ui-react";
 import { ICast } from "../abstract/interfaces";
 
 const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;

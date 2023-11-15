@@ -2,35 +2,35 @@ import { Button, Icon, Segment } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 
 const MediaType = () => {
-  const { page, setMediaType } = useMovie();
+  const { setMediaType, setPage } = useMovie();
 
-  const handleChangePage = (_page: string, _mediaType: "movie" | "tv") => {
+  const handleChangePage = (_mediaType: "movie" | "tv") => {
+    setPage("1");
     setMediaType(_mediaType);
   };
 
-  if (page)
-    return (
-      <Segment basic textAlign="center">
-        <Button
-          icon
-          color="instagram"
-          labelPosition="left"
-          onClick={() => handleChangePage(page, "movie")}
-        >
-          <Icon name="film" />
-          Movie
-        </Button>
-        <Button
-          icon
-          color="instagram"
-          labelPosition="right"
-          onClick={() => handleChangePage(page, "tv")}
-        >
-          <Icon name="television" />
-          TV
-        </Button>
-      </Segment>
-    );
+  return (
+    <Segment basic textAlign="center">
+      <Button
+        icon
+        color="instagram"
+        labelPosition="left"
+        onClick={() => handleChangePage("movie")}
+      >
+        <Icon name="film" />
+        Movie
+      </Button>
+      <Button
+        icon
+        color="instagram"
+        labelPosition="right"
+        onClick={() => handleChangePage("tv")}
+      >
+        <Icon name="television" />
+        TV
+      </Button>
+    </Segment>
+  );
 };
 
 export default MediaType;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ITvDetails } from "../abstract/interfaces";
-import MovieOptions from "../components/MovieOptions";
 import DataPoster from "../components/DataPoster";
 import DataTrailer from "../components/DataTrailer";
 import useFetch from "../hooks/useFetch";
@@ -41,7 +40,7 @@ const TvByIdPage = () => {
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
-  console.log(data);
+
   if (data)
     return (
       <Segment textAlign="center">

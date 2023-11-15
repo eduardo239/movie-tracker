@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Icon, Segment } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";

@@ -2,7 +2,6 @@ import { Button, Segment } from "semantic-ui-react";
 import { ITrailers } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { fetchTrailers } from "../fetch/tmdb";
-import { useMovie } from "../context/MovieContext";
 
 const DataTrailer = ({
   id,

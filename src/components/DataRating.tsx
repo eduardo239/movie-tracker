@@ -1,4 +1,4 @@
-import { Header, Segment, Statistic } from "semantic-ui-react";
+import { Segment, Statistic } from "semantic-ui-react";
 
 const DataRating = ({
   data,
