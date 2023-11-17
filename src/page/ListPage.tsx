@@ -8,7 +8,9 @@ import { Button, Icon, Table } from "semantic-ui-react";
 
 const ListPage = () => {
   const navigate = useNavigate();
+
   const { movieList: movies, getUserMovieList, deleteMovie } = useMovie();
+
   const { user } = useAuth();
 
   const [listType, setListType] = useState<TListType>("all");
@@ -16,9 +18,9 @@ const ListPage = () => {
   useEffect(() => {
     if (user) {
       if (listType === "all") {
-        getUserMovieList(user.uid, listType, true);
+        // getUserMovieList(user.uid, listType, true);
       } else {
-        getUserMovieList(user.uid, listType, false);
+        // getUserMovieList(user.uid, listType, false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

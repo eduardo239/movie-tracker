@@ -14,10 +14,10 @@ const PaginationComponent = () => {
       totalPages={100}
       onPageChange={(e, x) => {
         if (x.activePage) {
-          setPage(x.activePage.toString());
+          setPage(x.activePage ? +x.activePage : 1);
           navigate(`/movies?page=${x.activePage}`);
         } else {
-          setPage("1");
+          setPage(1);
         }
       }}
     />

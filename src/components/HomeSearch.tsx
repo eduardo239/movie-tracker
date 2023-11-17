@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Select } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
+import { useNavigate } from "react-router-dom";
 
 const HomeSearch = () => {
-  const { setMediaType, mediaType, search, setSearch } = useMovie();
+  const { setMediaType, term, setTerm, mediaType, setIsSearching } = useMovie();
+
+  const [query, setQuery] = useState("");
 
   const _options = [
     { key: "movie", text: "Movie", value: "movie" },
@@ -13,7 +16,20 @@ const HomeSearch = () => {
 
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(search);
+
+    if (query === "") {
+      setIsSearching(false);
+      return;
+    } else {
+      setTerm(query);
+      setIsSearching(true);
+    }
+  };
+
+  const resetSearch = () => {
+    setIsSearching(false);
+    setTerm("");
+    setQuery("");
   };
 
   const handleMediaTypeChange = () => {
@@ -22,88 +38,26 @@ const HomeSearch = () => {
   };
 
   return (
-    <Form onSubmit={(e) => onSearchSubmit(e)}>
+    <Form onSubmit={onSearchSubmit}>
       <Input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         fluid
         type="text"
         placeholder="Search..."
         action
       >
-        <input />
+        <input value={query} />
         <Select
           onChange={handleMediaTypeChange}
-          compact
-          options={options}
-          defaultValue="movie"
-        />
-        <Button type="submit">Search</Button>
-      </Input>
-    </Form>
-  );
-};
-
-export default HomeSearch;
-/*
-
-import { Button, Form, Input, Select } from "semantic-ui-react";
-import { useMovie } from "../context/MovieContext";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getSearch } from "../fetch/tmdb";
-
-const options = [
-  { key: "movie", text: "Movie", value: "movie" },
-  { key: "tv", text: "TV", value: "tv" },
-];
-
-const HomeSearch = () => {
-  const { mediaType, setMediaType, setSearchResults } = useMovie();
-  const navigate = useNavigate();
-
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState<number>(1);
-
-  const onSearchSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!search) {
-      setSearchResults([]);
-      navigate(`/all?media=${mediaType}&page=${page}`);
-      return;
-    }
-
-    if (mediaType) {
-      const data = await getSearch(mediaType, search, page);
-      setSearchResults(data);
-      setPage(1);
-      navigate(`/search?page=${page}`);
-    }
-  };
-
-  return (
-    <Form onSubmit={(e) => onSearchSubmit(e)}>
-      <Input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        fluid
-        type="text"
-        placeholder="Search..."
-        action
-      >
-        <input />
-        <Select
-          onChange={() => setMediaType("tv")}
           compact
           options={options}
           defaultValue={mediaType ? mediaType : "movie"}
         />
         <Button type="submit">Search</Button>
+        <Button onClick={resetSearch}>Reset</Button>
       </Input>
     </Form>
   );
 };
 
 export default HomeSearch;
-*/

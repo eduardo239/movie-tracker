@@ -2,18 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Menu } from "semantic-ui-react";
 import { useState } from "react";
-import { useMovie } from "../context/MovieContext";
 
 const Navigation = () => {
-  const { setSearchResults } = useMovie();
   const { logout, user } = useAuth();
 
   const navigate = useNavigate();
 
-  const [activeItem, setActiveItem] = useState("");
+  const [activeItem, _] = useState("");
 
   const handleItemClick = (path: string) => {
-    setSearchResults([]);
     navigate(`${path}`);
   };
 
@@ -27,24 +24,6 @@ const Navigation = () => {
       >
         Home
       </Menu.Item>
-
-      {/* <Menu.Item
-        name="movie"
-        active={activeItem === "movie"}
-        value="movie"
-        onClick={() => handleItemClick("/movies?page=1")}
-      >
-        Filmes
-      </Menu.Item>
-
-      <Menu.Item
-        name="tv"
-        active={activeItem === "tv"}
-        value="tv"
-        onClick={() => handleItemClick("/tvs?page=1")}
-      >
-        Séries
-      </Menu.Item> */}
 
       <Menu.Item
         name="lists"

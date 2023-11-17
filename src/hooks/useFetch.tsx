@@ -7,7 +7,7 @@ type FetchState<T> = {
   error: AxiosError | null;
 };
 
-function useFetch<T>(url: string): FetchState<T> {
+function useFetch<T>(url: string, options?: unknown): FetchState<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AxiosError | null>(null);

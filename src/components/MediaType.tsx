@@ -2,10 +2,10 @@ import { Button, Icon, Segment } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 
 const MediaType = () => {
-  const { setMediaType, setPage } = useMovie();
+  const { setMediaType, setPage, page } = useMovie();
 
   const handleChangePage = (_mediaType: "movie" | "tv") => {
-    setPage("1");
+    setPage(page);
     setMediaType(_mediaType);
   };
 

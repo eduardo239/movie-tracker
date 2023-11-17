@@ -48,7 +48,7 @@ export const getSearch = async (
   search: string,
   page: number
 ) => {
-  const apiUrl = `${tmdbBaseUrl}/search/${mediaType}?query=${search}&include_adult=false?language=en-US&page=${page}`;
+  const apiUrl = `${tmdbBaseUrl}/search/${mediaType}?query=${search}&include_adult=false?language=pt-BR&page=${page}`;
 
   const options = {
     method: "GET",

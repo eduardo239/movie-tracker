@@ -8,12 +8,12 @@ const HomePage = () => {
   const { mediaType } = useMovie();
 
   return (
-    <div>
+    <>
       <HomeSearch />
       <MediaType />
       {mediaType === "movie" && <MoviePage />}
       {mediaType === "tv" && <TvPage />}
-    </div>
+    </>
   );
 };
 

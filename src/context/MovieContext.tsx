@@ -24,20 +24,27 @@ import {
   TListType,
 } from "../abstract/interfaces";
 import { useSearchParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import { AxiosError } from "axios";
 
 interface MovieContextType {
-  page: string | null;
-  setPage: React.Dispatch<React.SetStateAction<string | null>>;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+
   mediaType: "movie" | "tv" | null;
   setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv" | null>>;
+
   movieList: DocumentData[];
-  movieData: IMovieResults | [];
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
-  setMovieData: React.Dispatch<React.SetStateAction<IMovieResults | []>>;
-  searchResults: DocumentData[];
-  setSearchResults: React.Dispatch<React.SetStateAction<DocumentData[]>>;
-  trackerList: DocumentData | null;
+  setMovieList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
+
+  data: IMovieResults | null;
+  loading: boolean;
+  error: AxiosError | null;
+
+  term: string;
+  setTerm: React.Dispatch<React.SetStateAction<string>>;
+  setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
+
   addMovieToList: (content: IAddMovieToList) => void;
   addTvToList: (content: IAddTvToList) => void;
   getUserMovieList: (
@@ -55,21 +62,41 @@ interface MovieProviderProps {
   children: ReactNode;
 }
 
+const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
+
 export function MovieProvider({ children }: MovieProviderProps) {
-  const [page, setPage] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
   const [movieList, setMovieList] = useState<DocumentData[]>([]);
-  const [searchResults, setSearchResults] = useState<DocumentData[]>([]);
-  const [search, setSearch] = useState<string>("");
-  const [movieData, setMovieData] = useState<IMovieResults | []>([]);
-  const [trackerList, setTrackerList] = useState<DocumentData | null>(null);
   const [mediaType, setMediaType] = useState<"movie" | "tv" | null>("movie");
 
   const [params, _] = useSearchParams();
+  const [adult, setAdult] = useState(false);
+  const [term, setTerm] = useState("lost");
+  const [lang, setLang] = useState("pt-BR");
+  const [isSearching, setIsSearching] = useState(false);
+
+  const [url, setUrl] = useState<string | null>(null);
+
+  const searchUrl = `${tmdbBaseUrl}/search/${mediaType}?api_key=${apiKey}&language=${lang}&query=${term}&include_adult=${adult}&page=${page}`;
+  const baseUrl = `${tmdbBaseUrl}/trending/${mediaType}/day?api_key=${apiKey}&language=${lang}&include_adult=${adult}&page=${page}`;
+
+  const { data, loading, error } = useFetch<IMovieResults | null>(
+    url ? url : baseUrl
+  );
+
+  useEffect(() => {
+    if (isSearching) setUrl(searchUrl);
+    else setUrl(baseUrl);
+
+    return () => {};
+  }, [baseUrl, searchUrl, isSearching, term]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   useEffect(() => {
-    const _page = params.get("page");
-    if (_page) setPage(_page);
+    const _p = params.get("page");
+    if (_p) setPage(+_p);
+
     return () => {};
   }, [params, setPage]);
 
@@ -141,7 +168,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
     querySnapshot.forEach((doc) => {
       list.push({ id: doc.id, ...doc.data() });
     });
-    setMovieList(list);
+    // setMovieList(list);
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
@@ -173,7 +200,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
       doc_ = { id: doc.id, ...doc.data() };
     });
 
-    setTrackerList(doc_);
+    // setTrackerList(doc_);
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
@@ -185,12 +212,14 @@ export function MovieProvider({ children }: MovieProviderProps) {
   return (
     <MovieContext.Provider
       value={{
-        search,
-        setSearch,
-        movieData,
-        setMovieData,
+        data,
+        loading,
+        error,
         page,
         setPage,
+        term,
+        setTerm,
+        setIsSearching,
         mediaType,
         setMediaType,
         addMovieToList,
@@ -199,9 +228,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
         getUserMovieTracker,
         deleteMovie,
         movieList,
-        trackerList,
-        searchResults,
-        setSearchResults,
+        setMovieList,
       }}
     >
       {children}

@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import { IMovieResults } from "../abstract/interfaces";
-import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { Grid, Segment } from "semantic-ui-react";
@@ -9,21 +7,11 @@ import PosterLink from "../components/PosterLink";
 import PaginationComponent from "../components/PaginationComponent";
 
 const MoviePage = () => {
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-  const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
-
-  const { page, setPage, setMovieData, setMediaType } = useMovie();
-
-  const { data, loading, error } = useFetch<IMovieResults | null>(
-    `${tmdbBaseUrl}/trending/tv/day?api_key=${apiKey}&language=pt-BR&page=${
-      page ? page : 1
-    }`
-  );
+  const { data, loading, error, page, setMediaType, setPage } = useMovie();
 
   useEffect(() => {
     setMediaType("tv");
-    if (data) setMovieData(data);
-    if (page && page !== "1") setPage(page);
+    if (page && page !== 1) setPage(page);
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
