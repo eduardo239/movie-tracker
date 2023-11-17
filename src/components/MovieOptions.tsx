@@ -14,7 +14,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
 
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList, trackerList, getUserMovieTracker } = useMovie();
+  const { addMovieToList, getUserMovieTracker } = useMovie();
 
   const [see, setSee] = useState(false);
   const [saw, setSaw] = useState(false);
@@ -48,13 +48,13 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     }
   };
 
-  useEffect(() => {
-    if (trackerList) {
-      setSee(trackerList?.listType?.see);
-      setSaw(trackerList?.listType?.saw);
-      setBlock(trackerList?.listType?.block);
-    }
-  }, [trackerList]);
+  // useEffect(() => {
+  //   if (trackerList) {
+  //     setSee(trackerList?.listType?.see);
+  //     setSaw(trackerList?.listType?.saw);
+  //     setBlock(trackerList?.listType?.block);
+  //   }
+  // }, [trackerList]);
 
   useEffect(() => {
     (async () => {
