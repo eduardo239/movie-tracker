@@ -9,7 +9,7 @@ import { Button, Icon, Table } from "semantic-ui-react";
 const ListPage = () => {
   const navigate = useNavigate();
 
-  const { movieList: movies, getUserMovieList } = useMovie();
+  const { getUserMovieList } = useMovie();
 
   const { user } = useAuth();
 
@@ -68,7 +68,7 @@ const ListPage = () => {
         </Table.Header>
 
         <Table.Body>
-          {movies &&
+          {/* {movies &&
             movies.map((movie) => (
               <Table.Row key={movie.id}>
                 <Table.Cell>{movie.movieId}</Table.Cell>
@@ -109,7 +109,7 @@ const ListPage = () => {
                   </Button>
                 </Table.Cell>
               </Table.Row>
-            ))}
+            ))} */}
         </Table.Body>
       </Table>
     </>

@@ -2,6 +2,7 @@ import { Button, Segment } from "semantic-ui-react";
 import { ITrailers } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { fetchTrailers } from "../fetch/tmdb";
+import LoadingInfo from "./LoadingInfo";
 
 const DataTrailer = ({
   id,
@@ -59,6 +60,7 @@ const DataTrailer = ({
         </Segment>
       </>
     );
+  else return null;
 };
 
 export default DataTrailer;

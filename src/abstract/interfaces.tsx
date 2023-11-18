@@ -18,6 +18,27 @@ export interface IMovieDetails {
   release_date: string;
 }
 
+export interface IMovieDetailsSimple {
+  adult: false;
+  backdrop_path: string;
+  genre_ids: [];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  video: false;
+  vote_average: number;
+  vote_count: number;
+
+  media_type: "movie" | "tv";
+  name: string;
+  first_air_date: string;
+}
+
 export interface IMovieResults {
   page: number;
   results: IMovieDetails[];
@@ -86,6 +107,21 @@ export interface ITvDetails {
   status: string;
   tagline: string;
   type: string;
+  vote_average: number;
+  vote_count: number;
+}
+export interface ITvDetailsSimple {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: [];
+  id: number;
+  name: string;
+  origin_country: [];
+  original_language: string;
+  original_name: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
   vote_average: number;
   vote_count: number;
 }
@@ -206,4 +242,38 @@ type TTrailer = {
 export interface ITrailers {
   id: string;
   results: TTrailer[];
+}
+
+export interface IPerson {
+  adult: boolean;
+  also_known_as: [];
+  biography: string;
+  birthday: string;
+  deathday: null;
+  combined_credits: {
+    cast: [];
+    crew: [];
+  };
+  gender: number;
+  homepage: null;
+  id: number;
+  imdb_id: null;
+  known_for_department: string;
+  name: string;
+  place_of_birth: string;
+  popularity: number;
+  profile_path: string;
+}
+
+export interface IPersonMovies {
+  page: number;
+  results: IMovieDetailsSimple[];
+  total_pages: number;
+  total_results: number;
+}
+export interface IPersonTvs {
+  page: number;
+  results: ITvDetailsSimple[];
+  total_pages: number;
+  total_results: number;
 }
