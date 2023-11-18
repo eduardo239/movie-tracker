@@ -2,7 +2,6 @@ import {
   DocumentData,
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   query,
@@ -20,8 +19,8 @@ import { db } from "../config/firebase";
 import {
   IAddMovieToList,
   IAddTvToList,
+  IGetUserMovieList,
   IMovieResults,
-  TListType,
 } from "../abstract/interfaces";
 import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
@@ -30,30 +29,21 @@ import { AxiosError } from "axios";
 interface MovieContextType {
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-
+  //
   mediaType: "movie" | "tv" | null;
   setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv" | null>>;
-
-  movieList: DocumentData[];
-  setMovieList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
-
+  //
   data: IMovieResults | null;
   loading: boolean;
   error: AxiosError | null;
-
+  //
   term: string;
   setTerm: React.Dispatch<React.SetStateAction<string>>;
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
-
-  addMovieToList: (content: IAddMovieToList) => void;
+  //
   addTvToList: (content: IAddTvToList) => void;
-  getUserMovieList: (
-    userId: string,
-    listType: TListType,
-    fullList: boolean
-  ) => void;
-  getUserMovieTracker: (movieId: string, userId: string) => void;
-  deleteMovie: (movieId: string, userId: string, actualList: TListType) => void;
+  addMovieToList: (content: IAddMovieToList) => void;
+  getUserMovieList: (content: IGetUserMovieList) => Promise<DocumentData[]>;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -67,14 +57,13 @@ const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 export function MovieProvider({ children }: MovieProviderProps) {
   const [page, setPage] = useState<number>(1);
-  const [movieList, setMovieList] = useState<DocumentData[]>([]);
-  const [mediaType, setMediaType] = useState<"movie" | "tv" | null>("movie");
-
   const [params, _] = useSearchParams();
   const [adult, setAdult] = useState(false);
   const [term, setTerm] = useState("lost");
   const [lang, setLang] = useState("pt-BR");
   const [isSearching, setIsSearching] = useState(false);
+
+  const [mediaType, setMediaType] = useState<"movie" | "tv" | null>("movie");
 
   const [url, setUrl] = useState<string | null>(null);
 
@@ -108,10 +97,8 @@ export function MovieProvider({ children }: MovieProviderProps) {
   };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addMovieToList = async (content: IAddMovieToList) => {
-    // check if exists
-    let alreadyExists = false;
-    let docId = null;
-
+    let exists_ = false;
+    let docId_ = null;
     const q = query(
       collection(db, "tracker"),
       where("userId", "==", content.userId),
@@ -120,45 +107,39 @@ export function MovieProvider({ children }: MovieProviderProps) {
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
-      alreadyExists = doc.exists();
-      docId = doc.id;
+      exists_ = doc.exists();
+      docId_ = doc.id;
     });
 
-    if (!alreadyExists) {
-      // save if not exists
-
+    if (!exists_) {
       const docRef = await addDoc(collection(db, "tracker"), content);
-      getUserMovieTracker(content.movieId, content.userId);
+      // update list
+    } else if (exists_ && docId_) {
+      // update list
+      const docRef = doc(db, "tracker", docId_);
+      await updateDoc(docRef, {
+        listType: content.listType,
+      });
     } else {
-      if (docId) {
-        const docRef = doc(db, "tracker", docId);
-        // se estiver true, e clicar no mesmo, mudar para falso
-        // se estiver true, e clicar em outro, manter o true
-        // se estiver em false, clicar nele, mudar para true
-
-        await updateDoc(docRef, {
-          listType: content.listType,
-        });
-
-        getUserMovieTracker(content.movieId, content.userId);
-      }
+      alert("error - addMovieToList");
     }
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const getUserMovieList = async (
-    userId: string,
-    listType: TListType,
-    fullList: boolean = false
-  ) => {
+    content: IGetUserMovieList
+  ): Promise<DocumentData[]> => {
     let q;
-    if (fullList) {
-      q = query(collection(db, "tracker"), where("userId", "==", userId));
+    if (content.fullList) {
+      q = query(
+        collection(db, "tracker"),
+        where("userId", "==", content.userId)
+      );
     } else {
       q = query(
         collection(db, "tracker"),
-        where("userId", "==", userId),
-        where(`listType.${listType}`, "==", true)
+        where("userId", "==", content.userId),
+        where("movieId", "==", content.movieId)
       );
     }
 
@@ -168,45 +149,9 @@ export function MovieProvider({ children }: MovieProviderProps) {
     querySnapshot.forEach((doc) => {
       list.push({ id: doc.id, ...doc.data() });
     });
-    // setMovieList(list);
+
+    return list;
   };
-
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const deleteMovie = async (
-    movieId: string,
-    userId: string,
-    actualList: TListType
-  ) => {
-    await deleteDoc(doc(db, "tracker", movieId));
-
-    if (actualList === "all") {
-      getUserMovieList(userId, actualList, true);
-    } else {
-      getUserMovieList(userId, actualList, false);
-    }
-  };
-
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const getUserMovieTracker = async (movieId: string, userId: string) => {
-    const q = query(
-      collection(db, "tracker"),
-      where("userId", "==", userId),
-      where("movieId", "==", movieId)
-    );
-    let doc_: DocumentData = {};
-    const querySnapshot = await getDocs(q);
-
-    querySnapshot.forEach((doc) => {
-      doc_ = { id: doc.id, ...doc.data() };
-    });
-
-    // setTrackerList(doc_);
-  };
-
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  useEffect(() => {
-    return () => {};
-  }, []);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   return (
@@ -225,10 +170,6 @@ export function MovieProvider({ children }: MovieProviderProps) {
         addMovieToList,
         addTvToList,
         getUserMovieList,
-        getUserMovieTracker,
-        deleteMovie,
-        movieList,
-        setMovieList,
       }}
     >
       {children}

@@ -127,22 +127,24 @@ export interface IUserAuthForm {
   setState: React.Dispatch<React.SetStateAction<string>>;
 }
 
+type TMediaType = "movie" | "tv";
+
+export type TListType = "all" | "see" | "saw" | "block";
+
 export interface IAddMovieToList {
-  mediaType: "movie" | "tv";
-  listType: IListType;
-  movieId: string;
+  mediaType: TMediaType;
+  listType: TListType;
+  movieId: number;
   userId: string;
   poster: string;
   title: string;
 }
 
-export interface IListType {
-  see: boolean;
-  saw: boolean;
-  block: boolean;
+export interface IGetUserMovieList {
+  userId: string;
+  movieId: number;
+  fullList: boolean;
 }
-
-export type TListType = "all" | "see" | "saw" | "block";
 
 export interface ICast {
   adult: boolean;
@@ -181,7 +183,7 @@ export interface ITrackerTv {
 
 export interface IAddTvToList {
   mediaType: "movie" | "tv";
-  listType: IListType;
+  listType: TListType;
   movieId: string;
   userId: string;
   poster: string;

@@ -9,10 +9,10 @@ const DataCast = ({ data }: { data: { credits: { cast: ICast[] } } }) => {
         <Divider />
         <Header as="h2">Elenco</Header>
         {data.credits && (
-          <Card.Group doubling itemsPerRow={7} centered>
+          <Card.Group doubling itemsPerRow={6} centered>
             {data.credits.cast
               .map((a) => <CastProfile key={a.id} cast={a} />)
-              .slice(0, 7)}
+              .slice(0, 6)}
           </Card.Group>
         )}
       </Segment>

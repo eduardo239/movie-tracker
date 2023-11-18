@@ -23,8 +23,6 @@ const TvEpisodes = ({ data }: { data: ITvDetails }) => {
   const [tvTracker, setTvTracker] = useState<ITracker>(_trackerDefault);
 
   function addItemToArrayIfNotExists(season: number, episode: number) {
-    console.log(season, episode, tvTracker);
-
     const exists = tvTracker.data[season].some((x) => x === episode);
 
     if (!exists) {

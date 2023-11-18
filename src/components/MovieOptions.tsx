@@ -8,62 +8,56 @@ import {
 } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { Button, Icon, Segment } from "semantic-ui-react";
+import { DocumentData } from "firebase/firestore";
 
 const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
-  const apiPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
-
   const navigate = useNavigate();
+
+  const { addMovieToList, getUserMovieList } = useMovie();
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList, getUserMovieTracker } = useMovie();
 
-  const [see, setSee] = useState(false);
-  const [saw, setSaw] = useState(false);
-  const [block, setBlock] = useState(false);
+  const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  const handleAdd = (listType: TListType, savedStatus: boolean = false) => {
-    const listType_ = {
-      see: listType === "see",
-      saw: listType === "saw",
-      block: listType === "block",
-    };
-
+  const handleClick = async (listType: TListType) => {
     if (user) {
+      //
       if (movie) {
+        //
         const content: IAddMovieToList = {
           mediaType: "movie",
-          listType: listType_,
-          movieId: movie.id + "",
+          listType: listType,
+          movieId: movie.id,
           userId: user.uid,
-          poster: `${apiPosterUrl}${movie.poster_path}`,
+          poster: movie.poster_path,
           title: movie.title,
         };
-        addMovieToList(content);
 
-        getUserMovieTracker(movie.id + "", user.uid);
+        await addMovieToList(content);
+        await getMovieList();
       } else {
-        //TODO: movie id not found
+        alert("movie required");
       }
     } else {
-      //TODO: user not found
+      alert("login required");
     }
   };
 
-  // useEffect(() => {
-  //   if (trackerList) {
-  //     setSee(trackerList?.listType?.see);
-  //     setSaw(trackerList?.listType?.saw);
-  //     setBlock(trackerList?.listType?.block);
-  //   }
-  // }, [trackerList]);
+  const getMovieList = async () => {
+    if (user && movie) {
+      const r = await getUserMovieList({
+        userId: user.uid,
+        movieId: movie.id,
+        fullList: false,
+      });
+
+      if (Array.isArray(r) && r.length > 0) {
+        setTracker(r[0]);
+      }
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      if (movie) {
-        if (user && movie.id) {
-          getUserMovieTracker(movie.id + "", user.uid);
-        }
-      }
-    })();
+    getMovieList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, movie]);
 
@@ -71,30 +65,30 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     return (
       <Segment basic>
         {isAuthenticated ? (
-          <Button.Group basic>
+          <Button.Group fluid size="medium">
             <Button
               icon
-              color={`${see ? "orange" : "instagram"}`}
-              basic
-              onClick={() => handleAdd("see", see)}
+              basic={tracker?.listType === "see" ? false : true}
+              onClick={() => handleClick("see")}
+              color={tracker?.listType === "see" ? "orange" : "black"}
             >
-              <Icon name="add" /> {see ? "Remove" : "I Will See"}
+              <Icon name="add" /> Add to List
             </Button>
             <Button
               icon
-              color={`${saw ? "orange" : "instagram"}`}
-              basic
-              onClick={() => handleAdd("saw", saw)}
+              basic={tracker?.listType === "saw" ? false : true}
+              onClick={() => handleClick("saw")}
+              color={tracker?.listType === "saw" ? "orange" : "black"}
             >
-              <Icon name="check" /> {saw ? "Remove" : "I've seen"}
+              <Icon name="check" /> "I Already Saw
             </Button>
             <Button
               icon
-              color={`${block ? "orange" : "instagram"}`}
-              basic
-              onClick={() => handleAdd("block", block)}
+              basic={tracker?.listType === "block" ? false : true}
+              onClick={() => handleClick("block")}
+              color={tracker?.listType === "block" ? "orange" : "black"}
             >
-              <Icon name="delete" /> {block ? "Remove" : "I don't want to see"}
+              <Icon name="delete" /> Block
             </Button>
           </Button.Group>
         ) : (

@@ -9,7 +9,7 @@ import { Button, Icon, Table } from "semantic-ui-react";
 const ListPage = () => {
   const navigate = useNavigate();
 
-  const { movieList: movies, getUserMovieList, deleteMovie } = useMovie();
+  const { movieList: movies, getUserMovieList } = useMovie();
 
   const { user } = useAuth();
 
@@ -103,13 +103,7 @@ const ListPage = () => {
                   />
                 </Table.Cell>
                 <Table.Cell collapsing>
-                  <Button
-                    size="small"
-                    color="red"
-                    onClick={() =>
-                      deleteMovie(movie.id, movie.userId, listType)
-                    }
-                  >
+                  <Button size="small" color="red">
                     <Icon name="delete" />
                     Delete
                   </Button>
