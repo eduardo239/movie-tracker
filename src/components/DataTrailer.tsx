@@ -33,30 +33,35 @@ const DataTrailer = ({
 
     return () => {};
   }, [trailers]);
-
+  console.log(trailers);
   if (trailers)
     return (
       <>
-        <div className="trailer">
-          <iframe
-            title="movie-trailer"
-            src={`https://www.youtube.com/embed/${keyTrailer}`}
-            allowFullScreen
-          />
-        </div>
+        {trailers?.results.length > 0 ? (
+          <div className="trailer">
+            <iframe
+              title="movie-trailer"
+              src={`https://www.youtube.com/embed/${keyTrailer}`}
+              allowFullScreen
+            />
+          </div>
+        ) : (
+          <Segment basic>Trailer não encontrado</Segment>
+        )}
         <Segment basic>
-          {trailers?.results
-            .map((x) => (
-              <Button
-                style={{ marginBottom: ".25rem" }}
-                onClick={() => handleTrailerChange(x.key)}
-                key={x.key}
-              >
-                {x.name}
-              </Button>
-            ))
-            .splice(-5)
-            .reverse()}
+          {trailers?.results.length > 0 &&
+            trailers?.results
+              .map((x) => (
+                <Button
+                  style={{ marginBottom: ".25rem" }}
+                  onClick={() => handleTrailerChange(x.key)}
+                  key={x.key}
+                >
+                  {x.name}
+                </Button>
+              ))
+              .splice(-5)
+              .reverse()}
         </Segment>
       </>
     );

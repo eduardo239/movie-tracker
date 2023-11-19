@@ -38,7 +38,11 @@ const PersonPage = () => {
                   computer={4}
                   key={Math.random()}
                 >
-                  <PosterLink id={x.id} poster={x.poster_path} />
+                  <PosterLink
+                    id={x.id}
+                    poster={x.poster_path}
+                    mediaType={x.media_type}
+                  />
                 </Grid.Column>
               ))}
             </Grid>
@@ -59,7 +63,11 @@ const PersonPage = () => {
                   computer={4}
                   key={Math.random()}
                 >
-                  <PosterLink id={x.id} poster={x.poster_path} />
+                  <PosterLink
+                    id={x.id}
+                    poster={x.poster_path}
+                    mediaType={x.media_type}
+                  />
                 </Grid.Column>
               ))}
             </Grid>
@@ -88,9 +96,6 @@ const PersonPage = () => {
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
 
-  console.log(movies);
-  console.log(tvs);
-
   if (data)
     return (
       <div>
@@ -100,17 +105,23 @@ const PersonPage = () => {
               <Image
                 size="medium"
                 src={`${posterDefault}${data.profile_path}`}
-                alt=""
+                alt={data.name}
               />
             </Grid.Column>
             <Grid.Column mobile={16} tablet={12} computer={12}>
-              <p>
-                <small># {data.id}</small>
-              </p>
               <h2>{data.name}</h2>
               <p>Data de nascimento: {data.birthday}</p>
               <p>Local de nascimento: {data.place_of_birth}</p>
               <p>Popularidade: {data.popularity}</p>
+              <Divider />
+              {data.biography && (
+                <div>
+                  <h4>Biografia</h4>
+                  <p style={{ fontSize: "1.15rem" }}>{data.biography}</p>
+                  <Divider />
+                </div>
+              )}
+              <small>ID # {data.id}</small>
             </Grid.Column>
           </Grid>
 

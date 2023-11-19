@@ -65,12 +65,11 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     return (
       <Segment basic>
         {isAuthenticated ? (
-          <Button.Group fluid size="medium">
+          <Button.Group fluid size="big" color="black">
             <Button
               icon
               basic={tracker?.listType === "see" ? false : true}
               onClick={() => handleClick("see")}
-              color={tracker?.listType === "see" ? "orange" : "black"}
             >
               <Icon name="add" /> Add to List
             </Button>
@@ -78,7 +77,6 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
               icon
               basic={tracker?.listType === "saw" ? false : true}
               onClick={() => handleClick("saw")}
-              color={tracker?.listType === "saw" ? "orange" : "black"}
             >
               <Icon name="check" /> "I Already Saw
             </Button>
@@ -86,7 +84,6 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
               icon
               basic={tracker?.listType === "block" ? false : true}
               onClick={() => handleClick("block")}
-              color={tracker?.listType === "block" ? "orange" : "black"}
             >
               <Icon name="delete" /> Block
             </Button>

@@ -30,8 +30,8 @@ interface MovieContextType {
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   //
-  mediaType: "movie" | "tv" | null;
-  setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv" | null>>;
+  mediaType: "movie" | "tv";
+  setMediaType: React.Dispatch<React.SetStateAction<"movie" | "tv">>;
   //
   data: IMovieResults | null;
   loading: boolean;
@@ -63,7 +63,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
   const [lang, setLang] = useState("pt-BR");
   const [isSearching, setIsSearching] = useState(false);
 
-  const [mediaType, setMediaType] = useState<"movie" | "tv" | null>("movie");
+  const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
 
   const [url, setUrl] = useState<string | null>(null);
 

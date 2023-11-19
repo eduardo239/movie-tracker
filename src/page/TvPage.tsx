@@ -7,7 +7,8 @@ import PosterLink from "../components/PosterLink";
 import PaginationComponent from "../components/PaginationComponent";
 
 const MoviePage = () => {
-  const { data, loading, error, page, setMediaType, setPage } = useMovie();
+  const { data, loading, error, page, mediaType, setMediaType, setPage } =
+    useMovie();
 
   useEffect(() => {
     setMediaType("tv");
@@ -29,7 +30,11 @@ const MoviePage = () => {
           {data?.results &&
             data.results.map((x) => (
               <Grid.Column mobile={8} tablet={5} computer={4} key={x.id}>
-                <PosterLink id={x.id} poster={x.poster_path} />
+                <PosterLink
+                  id={x.id}
+                  poster={x.poster_path}
+                  mediaType={mediaType}
+                />
               </Grid.Column>
             ))}
         </Grid>
