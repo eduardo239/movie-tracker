@@ -12,6 +12,7 @@ import DataRating from "../components/DataRating";
 import DataCast from "../components/DataCast";
 import DataInfo from "../components/DataInfo";
 import DataGenre from "../components/DataGenre";
+import TvOptions from "../components/TvOptions";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
@@ -79,10 +80,10 @@ const TvByIdPage = () => {
               <DataGenre genres={data.genres} />
             </Grid.Column>
 
+            {/* -------------- options --------------   */}
             <Grid.Column width={16} textAlign="center">
-              {/* -------------- options --------------   */}
               <Divider />
-              options
+              <TvOptions tv={data} />
               <Divider />
             </Grid.Column>
 

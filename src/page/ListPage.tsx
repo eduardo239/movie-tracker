@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
-import { FiEye, FiTrash, FiCheck, FiMinus } from "react-icons/fi";
-import { TListType } from "../abstract/interfaces";
-import { Button, Icon, Table } from "semantic-ui-react";
+import { useNavigate } from "react-router-dom";
+import { IGetUserMovieList, TListType } from "../abstract/interfaces";
+import { Button, Divider, Tab, Table } from "semantic-ui-react";
+import { DocumentData } from "firebase/firestore";
+import ListItemType from "../components/ListItemType";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -14,8 +15,122 @@ const ListPage = () => {
   const { user } = useAuth();
 
   const [listType, setListType] = useState<TListType>("all");
+  const [userMovieList, setUserMovieList] = useState<DocumentData[]>([]);
+  const [userTvList, setUserTvList] = useState<DocumentData[]>([]);
+
+  const panes = [
+    {
+      menuItem: "Movies",
+      render: () => (
+        <Tab.Pane attached={false}>
+          <Table celled compact selectable size="small">
+            <Table.Header>
+              <Table.Row textAlign="center">
+                <Table.HeaderCell>ID</Table.HeaderCell>
+                <Table.HeaderCell>Nome</Table.HeaderCell>
+                <Table.HeaderCell>Vou Ver</Table.HeaderCell>
+                <Table.HeaderCell>Já Vi</Table.HeaderCell>
+                <Table.HeaderCell>Bloqueado</Table.HeaderCell>
+                <Table.HeaderCell>Tipo</Table.HeaderCell>
+                <Table.HeaderCell>Opções</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              {userMovieList.map((item) => (
+                <Table.Row key={item.id}>
+                  <Table.Cell
+                    onClick={() => navigate(`/movie?id=${item.movieId}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {item.movieId}
+                  </Table.Cell>
+                  <Table.Cell
+                    onClick={() => navigate(`/movie?id=${item.movieId}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {item.title}
+                  </Table.Cell>
+
+                  <ListItemType listType={item.listType} />
+                  <Table.Cell>{item.mediaType}</Table.Cell>
+                  <Table.Cell textAlign="center" style={{ padding: "2px" }}>
+                    <Button.Group compact>
+                      <Button>remove</Button>
+                      <Button>remove</Button>
+                    </Button.Group>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </Tab.Pane>
+      ),
+    },
+    {
+      menuItem: "TV",
+      render: () => (
+        <Tab.Pane attached={false}>
+          <Table celled compact selectable size="small">
+            <Table.Header>
+              <Table.Row textAlign="center">
+                <Table.HeaderCell>ID</Table.HeaderCell>
+                <Table.HeaderCell>Nome</Table.HeaderCell>
+                <Table.HeaderCell>Vou Ver</Table.HeaderCell>
+                <Table.HeaderCell>Já Vi</Table.HeaderCell>
+                <Table.HeaderCell>Bloqueado</Table.HeaderCell>
+                <Table.HeaderCell>Tipo</Table.HeaderCell>
+                <Table.HeaderCell>Opções</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              {userTvList.map((item) => (
+                <Table.Row key={item.id}>
+                  <Table.Cell
+                    onClick={() => navigate(`/tv?id=${item.movieId}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {item.movieId}
+                  </Table.Cell>
+                  <Table.Cell
+                    onClick={() => navigate(`/tv?id=${item.movieId}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {item.title}
+                  </Table.Cell>
+
+                  <ListItemType listType={item.listType} />
+                  <Table.Cell>{item.mediaType}</Table.Cell>
+                  <Table.Cell textAlign="center" style={{ padding: "2px" }}>
+                    <Button.Group compact>
+                      <Button>remove</Button>
+                      <Button>remove</Button>
+                    </Button.Group>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </Tab.Pane>
+      ),
+    },
+  ];
 
   useEffect(() => {
+    if (user) {
+      const payload: IGetUserMovieList = {
+        userId: user.uid,
+        movieId: 1,
+        fullList: true,
+      };
+
+      (async () => {
+        const response = await getUserMovieList(payload);
+        setUserMovieList(response.movieList);
+        setUserTvList(response.tvList);
+      })();
+    }
     if (user) {
       if (listType === "all") {
         // getUserMovieList(user.uid, listType, true);
@@ -25,9 +140,14 @@ const ListPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, listType]);
-
   return (
     <>
+      <Tab
+        menu={{ color: "orange", attached: false, tabular: false }}
+        panes={panes}
+      />
+      <Divider />
+
       <Button.Group>
         <Button
           color={`${listType === "all" ? "orange" : "black"}`}
@@ -54,64 +174,6 @@ const ListPage = () => {
           Bloquear
         </Button>
       </Button.Group>
-
-      <Table celled compact>
-        <Table.Header>
-          <Table.Row textAlign="center">
-            <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell>Nome</Table.HeaderCell>
-            <Table.HeaderCell>Para Ver</Table.HeaderCell>
-            <Table.HeaderCell>Já Vi</Table.HeaderCell>
-            <Table.HeaderCell>Bloquear</Table.HeaderCell>
-            <Table.HeaderCell>Remover</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {/* {movies &&
-            movies.map((movie) => (
-              <Table.Row key={movie.id}>
-                <Table.Cell>{movie.movieId}</Table.Cell>
-                <Table.Cell>
-                  <Link to={`/movie?id=${movie.movieId}`}>{movie.title}</Link>
-                </Table.Cell>
-                <Table.Cell
-                  textAlign="center"
-                  negative={!movie.listType.see}
-                  positive={movie.listType.see}
-                >
-                  <Icon
-                    name={`${movie.listType.see ? "checkmark" : "minus"}`}
-                  />
-                </Table.Cell>
-                <Table.Cell
-                  textAlign="center"
-                  negative={!movie.listType.saw}
-                  positive={movie.listType.saw}
-                >
-                  <Icon
-                    name={`${movie.listType.saw ? "checkmark" : "minus"}`}
-                  />
-                </Table.Cell>
-                <Table.Cell
-                  textAlign="center"
-                  negative={!movie.listType.block}
-                  positive={movie.listType.block}
-                >
-                  <Icon
-                    name={`${movie.listType.block ? "checkmark" : "minus"}`}
-                  />
-                </Table.Cell>
-                <Table.Cell collapsing>
-                  <Button size="small" color="red">
-                    <Icon name="delete" />
-                    Delete
-                  </Button>
-                </Table.Cell>
-              </Table.Row>
-            ))} */}
-        </Table.Body>
-      </Table>
     </>
   );
 };

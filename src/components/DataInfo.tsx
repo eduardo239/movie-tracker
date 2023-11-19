@@ -8,7 +8,7 @@ const DataInfo = ({
 }) => {
   return (
     <Segment basic>
-      <Header as="h2">Informações</Header>
+      <Header as="h3">Informações</Header>
       {data.release_date && (
         <p>Data de Lançamento: {formatDate(data.release_date)}</p>
       )}

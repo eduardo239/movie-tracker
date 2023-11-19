@@ -7,23 +7,19 @@ import { Grid, Segment } from "semantic-ui-react";
 import PaginationComponent from "../components/PaginationComponent";
 import PosterLink from "../components/PosterLink";
 import { IMovieResults } from "../abstract/interfaces";
-
-// https://api.themoviedb.org/3/discover/movie?api_key=###&with_genres=28
+import { useMovie } from "../context/MovieContext";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
 const MovieByGenre = () => {
   const { id } = useParams();
 
-  const genreUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=${id}`;
+  const { mediaType } = useMovie();
+
+  const genreUrl = `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${apiKey}&with_genres=${id}`;
 
   const { data, loading, error } = useFetch<IMovieResults>(genreUrl);
 
-  useEffect(() => {
-    return () => {};
-  }, []);
-
-  console.log(data);
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
 
@@ -39,7 +35,7 @@ const MovieByGenre = () => {
                 <PosterLink
                   id={x.id}
                   poster={x.poster_path}
-                  mediaType="movie"
+                  mediaType={mediaType}
                 />
               </Grid.Column>
             ))}

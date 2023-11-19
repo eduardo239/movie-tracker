@@ -10,6 +10,7 @@ const PaginationComponent = () => {
     <Pagination
       pointing
       secondary
+      siblingRange={3}
       activePage={page ? page : "1"}
       totalPages={100}
       onPageChange={(e, x) => {

@@ -180,6 +180,7 @@ export interface IGetUserMovieList {
   userId: string;
   movieId: number;
   fullList: boolean;
+  mediaType?: "movie" | "tv";
 }
 
 export interface ICast {

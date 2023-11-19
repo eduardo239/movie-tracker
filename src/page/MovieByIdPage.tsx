@@ -79,9 +79,8 @@ const MovieByIdPage = () => {
               {/* -------------- genres --------------   */}
               <DataGenre genres={data.genres} />
             </Grid.Column>
-            {/*  */}
+            {/* -------------- options --------------   */}
             <Grid.Column width={16} textAlign="center">
-              {/* -------------- options --------------   */}
               <Divider />
               <MovieOptions movie={data} />
               <Divider />

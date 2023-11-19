@@ -4,6 +4,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -43,7 +44,9 @@ interface MovieContextType {
   //
   addTvToList: (content: IAddTvToList) => void;
   addMovieToList: (content: IAddMovieToList) => void;
-  getUserMovieList: (content: IGetUserMovieList) => Promise<DocumentData[]>;
+  getUserMovieList: (
+    content: IGetUserMovieList
+  ) => Promise<{ movieList: DocumentData[]; tvList: DocumentData[] }>;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -113,6 +116,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
     if (!exists_) {
       const docRef = await addDoc(collection(db, "tracker"), content);
+
       // update list
     } else if (exists_ && docId_) {
       // update list
@@ -128,29 +132,38 @@ export function MovieProvider({ children }: MovieProviderProps) {
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const getUserMovieList = async (
     content: IGetUserMovieList
-  ): Promise<DocumentData[]> => {
-    let q;
+  ): Promise<{ movieList: DocumentData[]; tvList: DocumentData[] }> => {
+    let _query;
     if (content.fullList) {
-      q = query(
+      _query = query(
         collection(db, "tracker"),
         where("userId", "==", content.userId)
       );
     } else {
-      q = query(
+      // get only one document
+      const _mediaType = content.mediaType;
+      _query = query(
         collection(db, "tracker"),
         where("userId", "==", content.userId),
         where("movieId", "==", content.movieId)
+        // movieId for movies and tvs
       );
     }
 
-    const querySnapshot = await getDocs(q);
-    const list: DocumentData[] = [];
+    const querySnapshot = await getDocs(_query);
+    const movieList: DocumentData[] = [];
+    const tvList: DocumentData[] = [];
 
     querySnapshot.forEach((doc) => {
-      list.push({ id: doc.id, ...doc.data() });
+      const _mediaType = doc.data().mediaType;
+      if (_mediaType === "tv") {
+        tvList.push({ id: doc.id, ...doc.data() });
+      } else {
+        movieList.push({ id: doc.id, ...doc.data() });
+      }
     });
 
-    return list;
+    return { movieList, tvList };
   };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -

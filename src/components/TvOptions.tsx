@@ -1,75 +1,82 @@
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { IAddMovieToList, ITvDetails, TListType } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
-import { useMovie } from "../context/MovieContext";
-import {
-  IAddMovieToList,
-  IMovieDetails,
-  TListType,
-} from "../abstract/interfaces";
-import { useEffect, useState } from "react";
-import { Button, Icon, Segment } from "semantic-ui-react";
+import { Button, Divider, Header, Icon, Segment } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
+import { useMovie } from "../context/MovieContext";
+import { useNavigate } from "react-router-dom";
 
-const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
+const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
   const navigate = useNavigate();
 
-  const { addMovieToList, getUserMovieList } = useMovie();
   const { isAuthenticated, user } = useAuth();
+  const { addMovieToList, getUserMovieList } = useMovie();
 
+  const [seasons, setSeasons] = useState<number[] | null>(null);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
+
+  useEffect(() => {
+    if (tv) {
+      if (tv.seasons && tv.seasons.length > 0) {
+        // add seasons to buttons options
+        const _array = Array.from(Array(tv.seasons.length).keys());
+        setSeasons(_array);
+      }
+    }
+    return () => {};
+  }, [tv]);
 
   const handleClick = async (listType: TListType) => {
     if (user) {
       //
-      if (movie) {
+      if (tv) {
         //
         const content: IAddMovieToList = {
-          mediaType: "movie",
+          mediaType: "tv",
           listType: listType,
-          movieId: movie.id,
+          movieId: tv.id,
           userId: user.uid,
-          poster: movie.poster_path,
-          title: movie.title,
+          poster: tv.poster_path,
+          title: tv.name,
         };
 
         await addMovieToList(content);
-        await getMovieList();
+        await getTvList();
       } else {
-        alert("movie required");
+        alert("tv required");
       }
     } else {
       alert("login required");
     }
   };
 
-  const getMovieList = async () => {
-    if (user && movie) {
+  const getTvList = async () => {
+    if (user && tv) {
       const response = await getUserMovieList({
         userId: user.uid,
-        movieId: movie.id,
+        movieId: tv.id,
         fullList: false,
-        mediaType: "movie",
+        mediaType: "tv",
       });
 
-      if (Array.isArray(response.movieList) && response.movieList.length > 0) {
-        setTracker(response.movieList[0]);
+      if (Array.isArray(response.tvList) && response.tvList.length > 0) {
+        setTracker(response.tvList[0]);
       }
     }
   };
 
   useEffect(() => {
-    getMovieList();
+    getTvList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, movie]);
+  }, [user, tv]);
 
-  if (movie)
+  if (tv)
     return (
       <Segment basic>
         {isAuthenticated ? (
-          <Button.Group fluid size="big" positive>
+          <Button.Group fluid size="big" color="black">
             <Button
               icon
-              color={tracker?.listType === "see" ? "black" : "grey"}
               basic={tracker?.listType === "see" ? false : true}
               onClick={() => handleClick("see")}
             >
@@ -77,7 +84,6 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             </Button>
             <Button
               icon
-              color={tracker?.listType === "saw" ? "black" : "grey"}
               basic={tracker?.listType === "saw" ? false : true}
               onClick={() => handleClick("saw")}
             >
@@ -85,7 +91,6 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             </Button>
             <Button
               icon
-              color={tracker?.listType === "block" ? "black" : "grey"}
               basic={tracker?.listType === "block" ? false : true}
               onClick={() => handleClick("block")}
             >
@@ -97,9 +102,15 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             <Icon name="sign in" /> Sign In
           </Button>
         )}
+
+        <Divider />
+        <Header as="h3">Temporadas</Header>
+
+        {seasons &&
+          seasons.map((season, i) => <Button key={i + 1}>{i + 1}</Button>)}
       </Segment>
     );
   else return null;
 };
 
-export default MovieOptions;
+export default TvOptions;

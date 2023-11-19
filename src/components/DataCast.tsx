@@ -7,7 +7,7 @@ const DataCast = ({ data }: { data: { credits: { cast: ICast[] } } }) => {
     return (
       <Segment basic>
         <Divider />
-        <Header as="h2">Elenco</Header>
+        <Header as="h3">Elenco</Header>
         {data.credits && (
           <Card.Group doubling itemsPerRow={6} centered>
             {data.credits.cast

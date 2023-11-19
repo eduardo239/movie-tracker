@@ -4,15 +4,15 @@ import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
 
 const HomeSearch = () => {
-  const { setMediaType, term, setTerm, mediaType, setIsSearching } = useMovie();
-
-  const [query, setQuery] = useState("");
+  const { setMediaType, setPage, setTerm, mediaType, setIsSearching } =
+    useMovie();
 
   const _options = [
     { key: "movie", text: "Movie", value: "movie" },
     { key: "tv", text: "TV", value: "tv" },
   ];
   const [options, _] = useState(_options);
+  const [query, setQuery] = useState("");
 
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,6 +21,7 @@ const HomeSearch = () => {
       setIsSearching(false);
       return;
     } else {
+      setPage(1);
       setTerm(query);
       setIsSearching(true);
     }
