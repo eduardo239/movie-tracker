@@ -3,7 +3,9 @@ import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { IMovieDetailsSimple, IPerson } from "../abstract/interfaces";
-import { Divider, Grid, Image, Item, Segment } from "semantic-ui-react";
+import { Divider, Grid, Image, Item, Segment, Tab } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import PosterLink from "../components/PosterLink";
 
 const PersonPage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -19,8 +21,75 @@ const PersonPage = () => {
 
   const { data, loading, error } = useFetch<IPerson | null>(personUrl);
 
+  const [movies, setMovies] = useState([]);
+  const [tvs, setTvs] = useState([]);
+
+  const panes = [
+    {
+      menuItem: "Movies",
+      render: () => (
+        <Tab.Pane attached={false}>
+          {movies && movies.length > 0 && (
+            <Grid columns={5}>
+              {movies.map((x: IMovieDetailsSimple) => (
+                <Grid.Column
+                  mobile={8}
+                  tablet={5}
+                  computer={4}
+                  key={Math.random()}
+                >
+                  <PosterLink id={x.id} poster={x.poster_path} />
+                </Grid.Column>
+              ))}
+            </Grid>
+          )}
+        </Tab.Pane>
+      ),
+    },
+    {
+      menuItem: "TV",
+      render: () => (
+        <Tab.Pane attached={false}>
+          {tvs && tvs.length > 0 && (
+            <Grid columns={5}>
+              {tvs.map((x: IMovieDetailsSimple) => (
+                <Grid.Column
+                  mobile={8}
+                  tablet={5}
+                  computer={4}
+                  key={Math.random()}
+                >
+                  <PosterLink id={x.id} poster={x.poster_path} />
+                </Grid.Column>
+              ))}
+            </Grid>
+          )}
+        </Tab.Pane>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    if (data) {
+      const _movies = data.combined_credits.cast.filter(
+        (x: IMovieDetailsSimple) => x.media_type === "movie"
+      );
+      const _tvs = data.combined_credits.cast.filter(
+        (x: IMovieDetailsSimple) => x.media_type === "tv"
+      );
+
+      setTvs(_tvs);
+      setMovies(_movies);
+    }
+
+    return () => {};
+  }, [data]);
+
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
+
+  console.log(movies);
+  console.log(tvs);
 
   if (data)
     return (
@@ -46,49 +115,10 @@ const PersonPage = () => {
           </Grid>
 
           <Divider />
-
-          <Item.Group link>
-            {data &&
-              data.combined_credits.cast.map(
-                (movie: IMovieDetailsSimple, i: number) => (
-                  <Item
-                    onClick={() =>
-                      navigate(
-                        `/${movie.media_type === "movie" ? "movie" : "tv"}?id=${
-                          movie.id
-                        }`
-                      )
-                    }
-                    key={movie.id}
-                  >
-                    {movie.poster_path ? (
-                      <Item.Image
-                        size="tiny"
-                        src={`${posterDefault}${movie.poster_path}`}
-                      />
-                    ) : (
-                      <Item.Image size="tiny" src={fbPosterDefault} />
-                    )}
-                    <Item.Content>
-                      <small>
-                        # {i} {movie.id}
-                      </small>
-                      <br />
-                      <Item.Header>
-                        {movie.media_type === "movie"
-                          ? movie.title
-                          : movie.name}
-                      </Item.Header>
-                      <Item.Description>
-                        {movie.media_type === "movie"
-                          ? movie.release_date
-                          : movie.first_air_date}
-                      </Item.Description>
-                    </Item.Content>
-                  </Item>
-                )
-              )}
-          </Item.Group>
+          <Tab
+            menu={{ color: "orange", attached: false, tabular: false }}
+            panes={panes}
+          />
         </Segment>
       </div>
     );
