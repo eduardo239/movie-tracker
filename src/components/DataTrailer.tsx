@@ -33,7 +33,7 @@ const DataTrailer = ({
 
     return () => {};
   }, [trailers]);
-  console.log(trailers);
+
   if (trailers)
     return (
       <>

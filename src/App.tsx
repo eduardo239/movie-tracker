@@ -10,6 +10,7 @@ import Navigation from "./components/Navigation";
 import MovieByIdPage from "./page/MovieByIdPage";
 import TvByIdPage from "./page/TvByIdPage";
 import PersonPage from "./page/PersonPage";
+import MovieByGenre from "./page/MovieByGenre";
 
 function App() {
   const { authMessage } = useAuth();
@@ -30,6 +31,8 @@ function App() {
           {/*  */}
           <Route path="/person/:id" element={<PersonPage />} />
 
+          {/*  */}
+          <Route path="/genre/:id" element={<MovieByGenre />} />
           {/*  */}
           <Route path="/list" element={<ListPage />} />
           {/*  */}
