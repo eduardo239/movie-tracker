@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { IAddMovieToList, ITvDetails, TListType } from "../abstract/interfaces";
+import { useEffect, useState } from "react";
+import {
+  IAddMovieToList,
+  IAddTvToList,
+  ITvDetails,
+  TListType,
+} from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
 import { Button, Divider, Header, Icon, Segment } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
@@ -10,11 +15,13 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList, getUserMovieList } = useMovie();
+  const { addMovieToList, addTvToList, getUserMovieList } = useMovie();
 
   const [seasons, setSeasons] = useState<number[] | null>(null);
+  const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
-
+  console.log("savedSeasons");
+  console.log(savedSeasons);
   useEffect(() => {
     if (tv) {
       if (tv.seasons && tv.seasons.length > 0) {
@@ -64,9 +71,81 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
       }
     }
   };
+  const getSeasons = async () => {
+    if (user && tv) {
+      const response = await getUserMovieList({
+        userId: user.uid,
+        movieId: tv.id,
+        fullList: false,
+        mediaType: "tv",
+      });
+      if (Array.isArray(response.tvList) && response.tvList.length > 0) {
+        const _seasons = response.tvList[0].seasons;
+        if (_seasons.length > 0) {
+          setSavedSeasons(response.tvList[0].seasons);
+        } else {
+          return;
+        }
+      }
+    }
+  };
+
+  const handleSaveSeason = async (season: number) => {
+    if (user) {
+      //
+      if (tv) {
+        //
+        if (tracker) {
+          // get seasons, and update
+
+          // check if exists, filter else add
+          const _alreadySaved = savedSeasons.some((x) => season === x);
+          if (_alreadySaved) {
+            // remove
+            const _updatedList = savedSeasons.filter((x) => x !== season);
+
+            // update
+            const content: IAddTvToList = {
+              mediaType: "tv",
+              listType: tracker.listType,
+              movieId: tv.id,
+              userId: user.uid,
+              poster: tv.poster_path,
+              title: tv.name,
+              seasons: _updatedList,
+            };
+            await addTvToList(content);
+          } else {
+            // save
+            // update
+            const content: IAddTvToList = {
+              mediaType: "tv",
+              listType: tracker.listType,
+              movieId: tv.id,
+              userId: user.uid,
+              poster: tv.poster_path,
+              title: tv.name,
+              seasons: [...savedSeasons, season],
+            };
+            await addTvToList(content);
+          }
+
+          await getTvList();
+          await getSeasons();
+        } else {
+          alert("select see,saw,block");
+        }
+      } else {
+        alert("tv required");
+      }
+    } else {
+      alert("login required");
+    }
+  };
 
   useEffect(() => {
     getTvList();
+    getSeasons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, tv]);
 
@@ -107,7 +186,20 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
         <Header as="h3">Temporadas</Header>
 
         {seasons &&
-          seasons.map((season, i) => <Button key={i + 1}>{i + 1}</Button>)}
+          seasons.map((season, i) => {
+            const _saved = savedSeasons.some((x) => x === season + 1);
+
+            return (
+              <Button
+                basic={_saved ? false : true}
+                color={`${_saved ? "orange" : "grey"}`}
+                onClick={() => handleSaveSeason(i + 1)}
+                key={i + 1}
+              >
+                {i + 1}
+              </Button>
+            );
+          })}
       </Segment>
     );
   else return null;

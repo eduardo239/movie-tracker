@@ -62,21 +62,23 @@ export function MovieProvider({ children }: MovieProviderProps) {
   const [page, setPage] = useState<number>(1);
   const [params, _] = useSearchParams();
   const [adult, setAdult] = useState(false);
+  const [mode, setMode] = useState("popular");
   const [term, setTerm] = useState("lost");
   const [lang, setLang] = useState("pt-BR");
   const [isSearching, setIsSearching] = useState(false);
-
   const [mediaType, setMediaType] = useState<"movie" | "tv">("movie");
-
-  const [url, setUrl] = useState<string | null>(null);
 
   const searchUrl = `${tmdbBaseUrl}/search/${mediaType}?api_key=${apiKey}&language=${lang}&query=${term}&include_adult=${adult}&page=${page}`;
   const baseUrl = `${tmdbBaseUrl}/trending/${mediaType}/day?api_key=${apiKey}&language=${lang}&include_adult=${adult}&page=${page}`;
+  const popularUrl = `https://api.themoviedb.org/3/${mediaType}/latest?api_key=${apiKey}&language=${lang}&include_adult=${adult}&page=${page}`;
+
+  const [url, setUrl] = useState<string | null>(null);
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
     url ? url : baseUrl
   );
 
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   useEffect(() => {
     if (isSearching) setUrl(searchUrl);
     else setUrl(baseUrl);
@@ -94,9 +96,32 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addTvToList = async (content: IAddTvToList) => {
-    // check if already exists
-    // save if not exists
-    // update if exists
+    let exists_ = false;
+    let docId_ = null;
+    const q = query(
+      collection(db, "tracker"),
+      where("userId", "==", content.userId),
+      where("movieId", "==", content.movieId)
+    );
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      exists_ = doc.exists();
+      docId_ = doc.id;
+    });
+
+    if (!exists_) {
+      const docRef = await addDoc(collection(db, "tracker"), content);
+      // update list
+    } else if (exists_ && docId_) {
+      // update list
+      const docRef = doc(db, "tracker", docId_);
+      await updateDoc(docRef, {
+        seasons: content.seasons,
+      });
+    } else {
+      alert("error - addMovieToList");
+    }
   };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addMovieToList = async (content: IAddMovieToList) => {
@@ -116,7 +141,6 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
     if (!exists_) {
       const docRef = await addDoc(collection(db, "tracker"), content);
-
       // update list
     } else if (exists_ && docId_) {
       // update list

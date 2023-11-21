@@ -175,7 +175,15 @@ export interface IAddMovieToList {
   poster: string;
   title: string;
 }
-
+export interface IAddTvToList {
+  mediaType: "movie" | "tv";
+  listType: TListType;
+  movieId: number;
+  userId: string;
+  poster: string;
+  title: string;
+  seasons: number[];
+}
 export interface IGetUserMovieList {
   userId: string;
   movieId: number;
@@ -216,15 +224,6 @@ export interface ITrackerSeasons {
 
 export interface ITrackerTv {
   data: ITrackerSeasons[];
-}
-
-export interface IAddTvToList {
-  mediaType: "movie" | "tv";
-  listType: TListType;
-  movieId: string;
-  userId: string;
-  poster: string;
-  title: string;
 }
 
 type TTrailer = {

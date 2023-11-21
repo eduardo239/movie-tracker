@@ -14,6 +14,8 @@ const Navigation = () => {
     navigate(`${path}`);
   };
 
+  const url = "https://api.themoviedb.org/3/movie/latest";
+
   return (
     <Menu>
       <Menu.Item
@@ -24,7 +26,14 @@ const Navigation = () => {
       >
         Home
       </Menu.Item>
-
+      <Menu.Item
+        name="home"
+        active={activeItem === "latest"}
+        value="home"
+        onClick={() => handleItemClick("/")}
+      >
+        Home
+      </Menu.Item>
       <Menu.Item
         name="lists"
         active={activeItem === "lists"}
