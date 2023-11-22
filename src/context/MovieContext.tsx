@@ -26,6 +26,13 @@ import {
 import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { AxiosError } from "axios";
+import {
+  COLLECTION_TRACKER,
+  ERROR_F_AD_MV_LS,
+  ERROR_F_AD_TV_LS,
+  ERROR_UM_AP,
+  MEDIA_TV,
+} from "../abstract/constants";
 
 interface MovieContextType {
   page: number;
@@ -99,7 +106,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
     let exists_ = false;
     let docId_ = null;
     const q = query(
-      collection(db, "tracker"),
+      collection(db, COLLECTION_TRACKER),
       where("userId", "==", content.userId),
       where("movieId", "==", content.movieId)
     );
@@ -111,16 +118,16 @@ export function MovieProvider({ children }: MovieProviderProps) {
     });
 
     if (!exists_) {
-      const docRef = await addDoc(collection(db, "tracker"), content);
+      const docRef = await addDoc(collection(db, COLLECTION_TRACKER), content);
       // update list
     } else if (exists_ && docId_) {
       // update list
-      const docRef = doc(db, "tracker", docId_);
+      const docRef = doc(db, COLLECTION_TRACKER, docId_);
       await updateDoc(docRef, {
         seasons: content.seasons,
       });
     } else {
-      alert("error - addMovieToList");
+      alert(ERROR_F_AD_TV_LS);
     }
   };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
@@ -128,7 +135,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
     let exists_ = false;
     let docId_ = null;
     const q = query(
-      collection(db, "tracker"),
+      collection(db, COLLECTION_TRACKER),
       where("userId", "==", content.userId),
       where("movieId", "==", content.movieId)
     );
@@ -140,16 +147,16 @@ export function MovieProvider({ children }: MovieProviderProps) {
     });
 
     if (!exists_) {
-      const docRef = await addDoc(collection(db, "tracker"), content);
+      const docRef = await addDoc(collection(db, COLLECTION_TRACKER), content);
       // update list
     } else if (exists_ && docId_) {
       // update list
-      const docRef = doc(db, "tracker", docId_);
+      const docRef = doc(db, COLLECTION_TRACKER, docId_);
       await updateDoc(docRef, {
         listType: content.listType,
       });
     } else {
-      alert("error - addMovieToList");
+      alert(ERROR_F_AD_MV_LS);
     }
   };
 
@@ -160,14 +167,13 @@ export function MovieProvider({ children }: MovieProviderProps) {
     let _query;
     if (content.fullList) {
       _query = query(
-        collection(db, "tracker"),
+        collection(db, COLLECTION_TRACKER),
         where("userId", "==", content.userId)
       );
     } else {
       // get only one document
-      const _mediaType = content.mediaType;
       _query = query(
-        collection(db, "tracker"),
+        collection(db, COLLECTION_TRACKER),
         where("userId", "==", content.userId),
         where("movieId", "==", content.movieId)
         // movieId for movies and tvs
@@ -180,7 +186,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
     querySnapshot.forEach((doc) => {
       const _mediaType = doc.data().mediaType;
-      if (_mediaType === "tv") {
+      if (_mediaType === MEDIA_TV) {
         tvList.push({ id: doc.id, ...doc.data() });
       } else {
         movieList.push({ id: doc.id, ...doc.data() });
@@ -218,7 +224,7 @@ export function useMovie() {
   const context = useContext(MovieContext);
 
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error(ERROR_UM_AP);
   }
 
   return context;

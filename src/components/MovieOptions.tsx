@@ -69,7 +69,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
           <Button.Group fluid size="big" positive>
             <Button
               icon
-              color={tracker?.listType === "see" ? "black" : "grey"}
+              color={tracker?.listType === "see" ? "orange" : "grey"}
               basic={tracker?.listType === "see" ? false : true}
               onClick={() => handleClick("see")}
             >

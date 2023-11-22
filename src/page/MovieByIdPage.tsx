@@ -13,6 +13,7 @@ import DataRating from "../components/DataRating";
 import DataCast from "../components/DataCast";
 import DataInfo from "../components/DataInfo";
 import DataGenre from "../components/DataGenre";
+import DataSimilar from "../components/DataSimilar";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
@@ -97,6 +98,9 @@ const MovieByIdPage = () => {
               />
               {/* -------------- credits --------------   */}
               <DataCast data={{ credits: data.credits }} />
+              {/* -------------- similar --------------   */}
+              <Divider />
+              <DataSimilar id={data.id} />
             </Grid.Column>
           </Grid.Row>
         </Grid>

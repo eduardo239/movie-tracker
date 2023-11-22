@@ -33,7 +33,6 @@ export interface IMovieDetailsSimple {
   video: false;
   vote_average: number;
   vote_count: number;
-
   media_type: "movie" | "tv";
   name: string;
   first_air_date: string;

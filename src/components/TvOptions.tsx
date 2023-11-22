@@ -20,8 +20,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
   const [seasons, setSeasons] = useState<number[] | null>(null);
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
-  console.log("savedSeasons");
-  console.log(savedSeasons);
+
   useEffect(() => {
     if (tv) {
       if (tv.seasons && tv.seasons.length > 0) {
@@ -153,9 +152,10 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
     return (
       <Segment basic>
         {isAuthenticated ? (
-          <Button.Group fluid size="big" color="black">
+          <Button.Group fluid size="big" positive>
             <Button
               icon
+              color={tracker?.listType === "see" ? "orange" : "grey"}
               basic={tracker?.listType === "see" ? false : true}
               onClick={() => handleClick("see")}
             >
@@ -163,13 +163,15 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
             </Button>
             <Button
               icon
+              color={tracker?.listType === "saw" ? "black" : "grey"}
               basic={tracker?.listType === "saw" ? false : true}
               onClick={() => handleClick("saw")}
             >
-              <Icon name="check" /> "I Already Saw
+              <Icon name="check" /> I Already Saw
             </Button>
             <Button
               icon
+              color={tracker?.listType === "block" ? "black" : "grey"}
               basic={tracker?.listType === "block" ? false : true}
               onClick={() => handleClick("block")}
             >

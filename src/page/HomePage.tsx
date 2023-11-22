@@ -3,6 +3,7 @@ import TvPage from "./TvPage";
 import HomeSearch from "../components/HomeSearch";
 import { useMovie } from "../context/MovieContext";
 import MediaType from "../components/MediaType";
+import { MEDIA_MOVIE, MEDIA_TV } from "../abstract/constants";
 
 const HomePage = () => {
   const { mediaType } = useMovie();
@@ -11,8 +12,8 @@ const HomePage = () => {
     <>
       <HomeSearch />
       <MediaType />
-      {mediaType === "movie" && <MoviePage />}
-      {mediaType === "tv" && <TvPage />}
+      {mediaType === MEDIA_MOVIE && <MoviePage />}
+      {mediaType === MEDIA_TV && <TvPage />}
     </>
   );
 };

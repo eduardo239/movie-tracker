@@ -1,9 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { IMovieDetailsSimple, IPerson } from "../abstract/interfaces";
-import { Divider, Grid, Image, Item, Segment, Tab } from "semantic-ui-react";
+import { Divider, Grid, Image, Segment, Tab } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import PosterLink from "../components/PosterLink";
 
@@ -11,11 +11,8 @@ const PersonPage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
   const posterDefault = import.meta.env.VITE_TMDB_POSTER_URL;
-  const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 
   const { id } = useParams();
-
-  const navigate = useNavigate();
 
   const personUrl = `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&language=pt-BR&append_to_response=combined_credits`;
 

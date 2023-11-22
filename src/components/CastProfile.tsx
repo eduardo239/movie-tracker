@@ -7,6 +7,9 @@ const profileDefaultUrl = import.meta.env.VITE_FIREBASE_PROFILE_DEFAULT_URL;
 
 const CastProfile = ({ cast }: { cast: ICast }) => {
   const navigate = useNavigate();
+
+  console.log(cast);
+
   return (
     <Card>
       {cast.profile_path ? (
