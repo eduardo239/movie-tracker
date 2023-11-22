@@ -16,7 +16,7 @@ const MovieByGenre = () => {
 
   const { mediaType } = useMovie();
 
-  const genreUrl = `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${apiKey}&with_genres=${id}`;
+  const genreUrl = `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${apiKey}&with_genres=${id}&page=1`;
 
   const { data, loading, error } = useFetch<IMovieResults>(genreUrl);
 

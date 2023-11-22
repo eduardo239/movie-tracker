@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Container, Segment } from "semantic-ui-react";
 import { useAuth } from "./context/AuthContext";
 import HomePage from "./page/HomePage";
 import SignIn from "./page/SignIn";
@@ -16,7 +16,7 @@ function App() {
   const { authMessage } = useAuth();
 
   return (
-    <>
+    <Segment inverted basic style={{ minHeight: "100vh" }}>
       <Navigation />
 
       <Container>
@@ -41,7 +41,7 @@ function App() {
         </Routes>
       </Container>
       {authMessage && <Message message={authMessage} />}
-    </>
+    </Segment>
   );
 }
 

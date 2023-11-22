@@ -11,8 +11,8 @@ const DataDetails = ({
   };
 }) => {
   return (
-    <Segment basic>
-      <Header as="h1">
+    <Segment basic inverted>
+      <Header as="h1" inverted>
         {data.title} ({data.release_date?.split("-")[0]}){" "}
       </Header>
       <p>

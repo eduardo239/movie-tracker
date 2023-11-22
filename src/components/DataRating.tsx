@@ -22,8 +22,8 @@ const DataRating = ({
 
   if (data)
     return (
-      <Segment basic>
-        <Statistic horizontal>
+      <Segment basic inverted>
+        <Statistic horizontal inverted>
           <Statistic.Group size="tiny">
             <Statistic>
               <Statistic.Value>

@@ -11,7 +11,8 @@ const FormField = ({
 }: React.ComponentProps<"input"> & IUserAuthForm) => {
   return (
     <Form.Field>
-      <label htmlFor={id}>First Name</label>
+      <label htmlFor={id}>{label}</label>
+
       <input
         placeholder="..."
         name={id}

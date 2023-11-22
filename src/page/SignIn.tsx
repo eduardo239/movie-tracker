@@ -2,7 +2,14 @@ import { useState } from "react";
 import FormField from "../components/FormField";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Button, Divider, Form, Grid, Segment } from "semantic-ui-react";
+import {
+  Button,
+  Divider,
+  Form,
+  Grid,
+  Header,
+  Segment,
+} from "semantic-ui-react";
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>("eucrieiumaconta@gmail.com");
@@ -12,18 +19,17 @@ const SignIn = () => {
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    await login({ email, password });
+
+    login({ email, password });
   };
 
   return (
     <Grid centered columns={3}>
       <Grid.Column mobile={16} tablet={10} computer={5}>
-        <Segment>
+        <Segment padded>
           <Form onSubmit={handleSubmit}>
-            <h2>Sign In</h2>
-
+            <Header as="h3">Entrar</Header>
             <Divider />
-
             <FormField
               type="email"
               label="Email"
@@ -31,27 +37,25 @@ const SignIn = () => {
               setState={setEmail}
               id="sign-in-email"
             />
-
             <FormField
               type="password"
-              label="Password"
+              label="Senha"
               value={password}
               setState={setPassword}
               id="sign-in-password"
             />
-
-            <Button color="orange" type="submit">
+            <Button color="green" type="submit" fluid>
               Sign In
             </Button>
           </Form>
 
-          <div>
-            <Link to="">Forgot Password?</Link>
-          </div>
+          <Segment>
+            <Link to="">Esqueceu a senha?</Link>
+          </Segment>
 
-          <div>
-            <Link to="/sign-up">Your first time? Create an account</Link>
-          </div>
+          <Segment>
+            <Link to="/sign-up">Primeira vez aqui? Crie uma conta</Link>
+          </Segment>
         </Segment>
       </Grid.Column>
     </Grid>

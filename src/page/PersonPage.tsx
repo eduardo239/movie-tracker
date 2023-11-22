@@ -13,7 +13,6 @@ const PersonPage = () => {
   const posterDefault = import.meta.env.VITE_TMDB_POSTER_URL;
 
   const { id } = useParams();
-
   const personUrl = `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&language=pt-BR&append_to_response=combined_credits`;
 
   const { data, loading, error } = useFetch<IPerson | null>(personUrl);
@@ -25,7 +24,7 @@ const PersonPage = () => {
     {
       menuItem: "Movies",
       render: () => (
-        <Tab.Pane attached={false}>
+        <Tab.Pane attached={false} inverted>
           {movies && movies.length > 0 && (
             <Grid columns={5}>
               {movies.map((x: IMovieDetailsSimple) => (
@@ -50,7 +49,7 @@ const PersonPage = () => {
     {
       menuItem: "TV",
       render: () => (
-        <Tab.Pane attached={false}>
+        <Tab.Pane attached={false} inverted>
           {tvs && tvs.length > 0 && (
             <Grid columns={5}>
               {tvs.map((x: IMovieDetailsSimple) => (
@@ -96,7 +95,7 @@ const PersonPage = () => {
   if (data)
     return (
       <div>
-        <Segment style={{ margin: 0 }}>
+        <Segment style={{ margin: 0 }} inverted>
           <Grid columns={16}>
             <Grid.Column mobile={16} tablet={4} computer={4}>
               <Image
@@ -124,7 +123,11 @@ const PersonPage = () => {
 
           <Divider />
           <Tab
-            menu={{ color: "orange", attached: false, tabular: false }}
+            menu={{
+              color: "black",
+              pointing: true,
+              inverted: true,
+            }}
             panes={panes}
           />
         </Segment>

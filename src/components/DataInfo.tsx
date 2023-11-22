@@ -7,7 +7,7 @@ const DataInfo = ({
   data: { release_date: string; status: string; original_language?: string };
 }) => {
   return (
-    <Segment basic>
+    <Segment basic inverted>
       <Header as="h3">Informações</Header>
       {data.release_date && (
         <p>Data de Lançamento: {formatDate(data.release_date)}</p>

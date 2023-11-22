@@ -22,8 +22,8 @@ const ListPage = () => {
     {
       menuItem: "Movies",
       render: () => (
-        <Tab.Pane attached={false}>
-          <Table celled compact selectable size="small">
+        <Tab.Pane attached={false} inverted>
+          <Table celled compact selectable size="small" inverted>
             <Table.Header>
               <Table.Row textAlign="center">
                 <Table.HeaderCell>ID</Table.HeaderCell>
@@ -56,8 +56,8 @@ const ListPage = () => {
                   <Table.Cell>{item.mediaType}</Table.Cell>
                   <Table.Cell textAlign="center" style={{ padding: "2px" }}>
                     <Button.Group compact>
-                      <Button>remove</Button>
-                      <Button>remove</Button>
+                      <Button inverted>remove</Button>
+                      <Button inverted>remove</Button>
                     </Button.Group>
                   </Table.Cell>
                 </Table.Row>
@@ -70,8 +70,8 @@ const ListPage = () => {
     {
       menuItem: "TV",
       render: () => (
-        <Tab.Pane attached={false}>
-          <Table celled compact selectable size="small">
+        <Tab.Pane attached={false} inverted>
+          <Table celled compact selectable size="small" inverted>
             <Table.Header>
               <Table.Row textAlign="center">
                 <Table.HeaderCell>ID</Table.HeaderCell>
@@ -104,8 +104,8 @@ const ListPage = () => {
                   <Table.Cell>{item.mediaType}</Table.Cell>
                   <Table.Cell textAlign="center" style={{ padding: "2px" }}>
                     <Button.Group compact>
-                      <Button>remove</Button>
-                      <Button>remove</Button>
+                      <Button inverted>remove</Button>
+                      <Button inverted>remove</Button>
                     </Button.Group>
                   </Table.Cell>
                 </Table.Row>
@@ -143,7 +143,12 @@ const ListPage = () => {
   return (
     <>
       <Tab
-        menu={{ color: "orange", attached: false, tabular: false }}
+        menu={{
+          color: "orange",
+          attached: false,
+          tabular: false,
+          inverted: true,
+        }}
         panes={panes}
       />
       <Divider />

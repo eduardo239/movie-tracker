@@ -45,7 +45,7 @@ const TvByIdPage = () => {
 
   if (data)
     return (
-      <Segment textAlign="center">
+      <Segment textAlign="center" inverted>
         <Grid>
           <Grid.Row>
             {/*  */}

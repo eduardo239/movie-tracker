@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 const PaginationComponent = () => {
   const navigate = useNavigate();
-  const { setPage, page } = useMovie();
+  const { setPage, page, mediaType } = useMovie();
 
   return (
     <Pagination
+      inverted
       pointing
       secondary
       siblingRange={3}
@@ -16,7 +17,7 @@ const PaginationComponent = () => {
       onPageChange={(e, x) => {
         if (x.activePage) {
           setPage(x.activePage ? +x.activePage : 1);
-          navigate(`/movies?page=${x.activePage}`);
+          navigate(`/${mediaType}s?page=${x.activePage}`);
         } else {
           setPage(1);
         }

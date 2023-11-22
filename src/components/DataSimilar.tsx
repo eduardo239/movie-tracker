@@ -14,7 +14,6 @@ const DataSimilar = ({ id }: { id: number }) => {
   const similarUrl = `${tmdbBaseUrl}/${mediaType}/${id}/similar?api_key=${apiKey}&language=pt-BR&include_adult=${false}&page=${1}`;
 
   const { data, loading, error } = useFetch<IMovieResults | null>(similarUrl);
-  console.log(data);
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;

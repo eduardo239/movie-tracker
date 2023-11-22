@@ -22,7 +22,7 @@ const MoviePage = () => {
   if (error) return <MessageInfo message={error.message} />;
 
   return (
-    <Segment textAlign="center">
+    <Segment textAlign="center" inverted>
       <PaginationComponent />
 
       <Segment basic style={{ margin: 0 }}>

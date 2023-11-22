@@ -45,7 +45,7 @@ const MovieByIdPage = () => {
 
   if (data)
     return (
-      <Segment textAlign="center">
+      <Segment textAlign="center" inverted basic>
         <Grid>
           <Grid.Row>
             {/*  */}

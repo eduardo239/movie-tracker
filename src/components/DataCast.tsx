@@ -5,7 +5,7 @@ import { ICast } from "../abstract/interfaces";
 const DataCast = ({ data }: { data: { credits: { cast: ICast[] } } }) => {
   if (data.credits.cast.length > 0)
     return (
-      <Segment basic>
+      <Segment basic inverted>
         <Divider />
         <Header as="h3">Elenco</Header>
         {data.credits && (

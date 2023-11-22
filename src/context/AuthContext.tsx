@@ -50,43 +50,54 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, 2000);
   };
 
-  const register = (user: IUserAuth) => {
+  const register = async (user: IUserAuth) => {
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, user.email, user.password)
-      .then((userCredential) => {
+    try {
+      await createUserWithEmailAndPassword(
+        auth,
+        user.email,
+        user.password
+      ).then((userCredential) => {
         const user = userCredential.user;
         setUser(user);
         setLocal(JSON.stringify(user));
         setIsAuthenticated(true);
         navigate("/");
-      })
-      .catch((error) => {
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
         handleMessage(error.message);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
-        navigate("/");
-      });
+        // navigate("/");
+      }
+    }
   };
 
-  const login = (user: IUserAuth) => {
+  const login = async (user: IUserAuth) => {
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, user.email, user.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        setUser(user);
-        setLocal(JSON.stringify(user));
-        setIsAuthenticated(true);
-        navigate("/");
-      })
-      .catch((error) => {
-        // const errorCode = error.code;
+    try {
+      await signInWithEmailAndPassword(auth, user.email, user.password).then(
+        (userCredential) => {
+          const user = userCredential.user;
+          setUser(user);
+          setLocal(JSON.stringify(user));
+          setIsAuthenticated(true);
+          navigate("/");
+        }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
         handleMessage(error.message);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
-        navigate("/");
-      });
+        // navigate("/");
+      }
+    }
   };
 
   const logout = () => {

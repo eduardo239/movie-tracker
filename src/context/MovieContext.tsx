@@ -4,7 +4,6 @@ import {
   collection,
   doc,
   getDocs,
-  orderBy,
   query,
   updateDoc,
   where,
@@ -95,8 +94,8 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   useEffect(() => {
-    const _p = params.get("page");
-    if (_p) setPage(+_p);
+    const _page = params.get("page");
+    if (_page) setPage(+_page);
 
     return () => {};
   }, [params, setPage]);

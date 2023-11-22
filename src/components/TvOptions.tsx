@@ -150,10 +150,11 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
 
   if (tv)
     return (
-      <Segment basic>
+      <Segment basic inverted>
         {isAuthenticated ? (
           <Button.Group fluid size="big" positive>
             <Button
+              inverted
               icon
               color={tracker?.listType === "see" ? "orange" : "grey"}
               basic={tracker?.listType === "see" ? false : true}
@@ -162,6 +163,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
               <Icon name="add" /> Add to List
             </Button>
             <Button
+              inverted
               icon
               color={tracker?.listType === "saw" ? "black" : "grey"}
               basic={tracker?.listType === "saw" ? false : true}
@@ -170,6 +172,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
               <Icon name="check" /> I Already Saw
             </Button>
             <Button
+              inverted
               icon
               color={tracker?.listType === "block" ? "black" : "grey"}
               basic={tracker?.listType === "block" ? false : true}
@@ -179,7 +182,12 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
             </Button>
           </Button.Group>
         ) : (
-          <Button icon color="orange" onClick={() => navigate("/sign-in")}>
+          <Button
+            inverted
+            icon
+            color="orange"
+            onClick={() => navigate("/sign-in")}
+          >
             <Icon name="sign in" /> Sign In
           </Button>
         )}

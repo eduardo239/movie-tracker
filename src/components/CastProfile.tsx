@@ -8,8 +8,6 @@ const profileDefaultUrl = import.meta.env.VITE_FIREBASE_PROFILE_DEFAULT_URL;
 const CastProfile = ({ cast }: { cast: ICast }) => {
   const navigate = useNavigate();
 
-  console.log(cast);
-
   return (
     <Card>
       {cast.profile_path ? (
@@ -28,7 +26,7 @@ const CastProfile = ({ cast }: { cast: ICast }) => {
         <Card.Meta>
           <span className="date">Personagem: {cast.character}</span>
         </Card.Meta>
-        <Card.Description></Card.Description>
+        {/* <Card.Description>13123</Card.Description> */}
       </Card.Content>
       <Card.Content extra>
         <a>

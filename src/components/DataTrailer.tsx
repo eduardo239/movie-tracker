@@ -1,8 +1,10 @@
-import { Button, Segment } from "semantic-ui-react";
+import { Button, Icon, Segment } from "semantic-ui-react";
 import { ITrailers } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { fetchTrailers } from "../fetch/tmdb";
 import LoadingInfo from "./LoadingInfo";
+import useFetch from "../hooks/useFetch";
+import MessageInfo from "./Message";
 
 const DataTrailer = ({
   id,
@@ -11,48 +13,49 @@ const DataTrailer = ({
   id: string;
   mediaType: "movie" | "tv";
 }) => {
-  const [trailers, setTrailers] = useState<ITrailers>();
-  const [keyTrailer, setKeyTrailer] = useState("");
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+  const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
-  const handleTrailerChange = (id: string) => setKeyTrailer(id);
+  const trailerUrl = `${tmdbBaseUrl}/${mediaType}/${id}/videos?api_key=${apiKey}`;
 
-  useEffect(() => {
-    (async () => {
-      if (id) {
-        const result = await fetchTrailers(mediaType, id);
-        setTrailers(result.data);
-      }
-    })();
-  }, [id, mediaType]);
+  const { data, loading, error } = useFetch<ITrailers | null>(trailerUrl);
+
+  const [trailerKey, setTrailerKey] = useState("");
+
+  const handleTrailerChange = (id: string) => setTrailerKey(id);
 
   useEffect(() => {
-    if (trailers && trailers.results.length > 0) {
-      const _key = trailers.results[trailers.results.length - 1].key;
-      setKeyTrailer(_key);
+    if (data && data.results.length > 0) {
+      setTrailerKey(data.results[data.results.length - 1].key);
     }
-
     return () => {};
-  }, [trailers]);
+  }, [data]);
 
-  if (trailers)
+  if (loading) return <LoadingInfo />;
+  if (error) return <MessageInfo message={error.message} />;
+
+  if (data)
     return (
-      <>
-        {trailers?.results.length > 0 ? (
+      <Segment basic inverted>
+        {data?.results.length > 0 ? (
           <div className="trailer">
             <iframe
               title="movie-trailer"
-              src={`https://www.youtube.com/embed/${keyTrailer}`}
+              src={`https://www.youtube.com/embed/${trailerKey}`}
               allowFullScreen
             />
           </div>
         ) : (
-          <Segment basic>Trailer não encontrado</Segment>
+          <>
+            Trailer não encontrado <Icon name="exclamation" />
+          </>
         )}
         <Segment basic>
-          {trailers?.results.length > 0 &&
-            trailers?.results
+          {data?.results.length > 0 &&
+            data?.results
               .map((x) => (
                 <Button
+                  inverted
                   style={{ marginBottom: ".25rem" }}
                   onClick={() => handleTrailerChange(x.key)}
                   key={x.key}
@@ -63,7 +66,7 @@ const DataTrailer = ({
               .splice(-5)
               .reverse()}
         </Segment>
-      </>
+      </Segment>
     );
   else return null;
 };

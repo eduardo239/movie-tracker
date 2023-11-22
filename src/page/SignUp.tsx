@@ -2,7 +2,7 @@ import { useState } from "react";
 import FormField from "../components/FormField";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Button, Form, Grid, Segment } from "semantic-ui-react";
+import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 
 const SignIn = () => {
   const [username, setUsername] = useState<string>("eu_1");
@@ -19,9 +19,9 @@ const SignIn = () => {
   return (
     <Grid centered columns={3}>
       <Grid.Column mobile={16} tablet={10} computer={5}>
-        <Segment>
+        <Segment padded>
           <Form onSubmit={handleSubmit}>
-            <h2>Sign Up</h2>
+            <Header as="h3">Registrar</Header>
 
             <FormField
               type="email"
@@ -47,14 +47,15 @@ const SignIn = () => {
               id="sign-in-password"
             />
 
-            <Button color="orange" type="submit">
+            <Button color="green" type="submit">
               Sign In
             </Button>
           </Form>
+
+          <Segment>
+            <Link to="/sign-in">Já possui uma conta?</Link>
+          </Segment>
         </Segment>
-        <div>
-          <Link to="/sign-in">Already have an account?</Link>
-        </div>
       </Grid.Column>
     </Grid>
   );
