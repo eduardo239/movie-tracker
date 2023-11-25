@@ -10,35 +10,32 @@ const DataOptions = ({
   handleClick: (listType: TListType) => void;
 }) => {
   return (
-    <Button.Group fluid size="medium">
-      <Button
-        inverted
-        icon
-        color={listType === "see" ? "green" : "grey"}
-        basic={listType === "see" ? false : true}
+    <div className="flex flex-center gap-sm ">
+      <button
+        className={`${
+          listType === "see" ? "app-button__primary" : ""
+        } app-button`}
         onClick={() => handleClick("see")}
       >
         <Icon name="add" /> Vou Ver
-      </Button>
-      <Button
-        inverted
-        icon
-        color={listType === "saw" ? "green" : "grey"}
-        basic={listType === "saw" ? false : true}
+      </button>
+      <button
+        className={`${
+          listType === "saw" ? "app-button__primary" : ""
+        } app-button`}
         onClick={() => handleClick("saw")}
       >
         <Icon name="check" /> Já Vi
-      </Button>
-      <Button
-        inverted
-        icon
-        color={listType === "block" ? "green" : "grey"}
-        basic={listType === "block" ? false : true}
+      </button>
+      <button
+        className={`${
+          listType === "block" ? "app-button__primary" : ""
+        } app-button`}
         onClick={() => handleClick("block")}
       >
         <Icon name="delete" /> Bloquear
-      </Button>
-    </Button.Group>
+      </button>
+    </div>
   );
 };
 

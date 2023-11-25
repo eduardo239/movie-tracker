@@ -11,8 +11,6 @@ const PosterLink = ({
   poster: string | null;
   mediaType: "movie" | "tv";
 }) => {
-  // const { mediaType } = useMovie();
-
   return (
     <Link to={`/${mediaType}?id=${id}`}>
       <DataPoster data={{ poster_path: poster }} />

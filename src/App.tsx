@@ -16,32 +16,31 @@ function App() {
   const { authMessage } = useAuth();
 
   return (
-    <Segment inverted basic style={{ minHeight: "100vh" }}>
+    <div className="container">
       <Navigation />
 
-      <Container>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search" element={<HomePage />} />
-          <Route path="/tvs" element={<HomePage />} />
-          <Route path="/movies" element={<HomePage />} />
-          {/*  */}
-          <Route path="/tv" element={<TvByIdPage />} />
-          <Route path="/movie" element={<MovieByIdPage />} />
-          {/*  */}
-          <Route path="/person/:id" element={<PersonPage />} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<HomePage />} />
+        <Route path="/tvs" element={<HomePage />} />
+        <Route path="/movies" element={<HomePage />} />
+        {/*  */}
+        <Route path="/tv" element={<TvByIdPage />} />
+        <Route path="/movie" element={<MovieByIdPage />} />
+        {/*  */}
+        <Route path="/person/:id" element={<PersonPage />} />
 
-          {/*  */}
-          <Route path="/genre/:id" element={<MovieByGenre />} />
-          {/*  */}
-          <Route path="/list" element={<ListPage />} />
-          {/*  */}
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-        </Routes>
-      </Container>
+        {/*  */}
+        <Route path="/genre/:id" element={<MovieByGenre />} />
+        {/*  */}
+        <Route path="/list" element={<ListPage />} />
+        {/*  */}
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+      </Routes>
+
       {authMessage && <Message message={authMessage} />}
-    </Segment>
+    </div>
   );
 }
 

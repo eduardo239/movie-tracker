@@ -3,7 +3,7 @@ import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { IMovieDetailsSimple, IPerson } from "../abstract/interfaces";
-import { Divider, Grid, Image, Segment, Tab } from "semantic-ui-react";
+import { Card, Divider, Grid, Image, Segment, Tab } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import PosterLink from "../components/PosterLink";
 
@@ -25,24 +25,20 @@ const PersonPage = () => {
       menuItem: "Movies",
       render: () => (
         <Tab.Pane attached={false} inverted>
-          {movies && movies.length > 0 && (
-            <Grid columns={5}>
-              {movies.map((x: IMovieDetailsSimple) => (
-                <Grid.Column
-                  mobile={8}
-                  tablet={5}
-                  computer={4}
-                  key={Math.random()}
-                >
-                  <PosterLink
-                    id={x.id}
-                    poster={x.poster_path}
-                    mediaType={x.media_type}
-                  />
-                </Grid.Column>
-              ))}
-            </Grid>
-          )}
+          <Card.Group className="gap-md flex flex-center">
+            {movies.length > 0 &&
+              movies
+                .map((x: IMovieDetailsSimple) => {
+                  return (
+                    <PosterLink
+                      id={x.id}
+                      poster={x.poster_path}
+                      mediaType={x.media_type}
+                    />
+                  );
+                })
+                .slice(0, 10)}
+          </Card.Group>
         </Tab.Pane>
       ),
     },
@@ -50,24 +46,20 @@ const PersonPage = () => {
       menuItem: "TV",
       render: () => (
         <Tab.Pane attached={false} inverted>
-          {tvs && tvs.length > 0 && (
-            <Grid columns={5}>
-              {tvs.map((x: IMovieDetailsSimple) => (
-                <Grid.Column
-                  mobile={8}
-                  tablet={5}
-                  computer={4}
-                  key={Math.random()}
-                >
-                  <PosterLink
-                    id={x.id}
-                    poster={x.poster_path}
-                    mediaType={x.media_type}
-                  />
-                </Grid.Column>
-              ))}
-            </Grid>
-          )}
+          <Card.Group className="gap-md flex flex-center">
+            {tvs.length > 0 &&
+              tvs
+                .map((x: IMovieDetailsSimple) => {
+                  return (
+                    <PosterLink
+                      id={x.id}
+                      poster={x.poster_path}
+                      mediaType={x.media_type}
+                    />
+                  );
+                })
+                .slice(0, 10)}
+          </Card.Group>
         </Tab.Pane>
       ),
     },
@@ -95,13 +87,13 @@ const PersonPage = () => {
   if (data)
     return (
       <div>
-        <Segment style={{ margin: 0 }} inverted>
-          <Grid columns={16}>
+        <Segment basic style={{ margin: 0 }} inverted>
+          <Grid>
             <Grid.Column mobile={16} tablet={4} computer={4}>
-              <Image
-                size="medium"
+              <img
                 src={`${posterDefault}${data.profile_path}`}
                 alt={data.name}
+                className="poster-lg"
               />
             </Grid.Column>
             <Grid.Column mobile={16} tablet={12} computer={12}>

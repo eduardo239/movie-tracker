@@ -6,12 +6,9 @@ const DataPoster = ({ data }: { data: { poster_path: string | null } }) => {
 
   if (data && data.poster_path)
     return (
-      <Image
-        src={`${tmdbPosterUrl}${data.poster_path}`}
-        verticalAlign="middle"
-      />
+      <img src={`${tmdbPosterUrl}${data.poster_path}`} className="poster-lg" />
     );
-  else return <Image src={fbPosterDefault} verticalAlign="middle" />;
+  else return <img src={fbPosterDefault} className="poster-lg" />;
 };
 
 export default DataPoster;

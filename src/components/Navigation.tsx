@@ -26,48 +26,48 @@ const Navigation = () => {
       >
         Home
       </Menu.Item>
-      <Menu.Item
-        name="home"
-        active={activeItem === "latest"}
-        value="home"
-        onClick={() => handleItemClick("/")}
-      >
-        Home
-      </Menu.Item>
-      <Menu.Item
-        name="lists"
-        active={activeItem === "lists"}
-        onClick={() => handleItemClick("/list")}
-      >
-        Listas
-      </Menu.Item>
+      {user && (
+        <Menu.Item
+          name="lists"
+          active={activeItem === "lists"}
+          onClick={() => handleItemClick("/list")}
+        >
+          Listas
+        </Menu.Item>
+      )}
 
-      <Menu.Item
-        name="sing-in"
-        active={activeItem === "sing-in"}
-        onClick={() => handleItemClick("/sign-in")}
-        disabled={!!user}
-      >
-        Entrar
-      </Menu.Item>
+      {!user && (
+        <Menu.Item
+          name="sing-in"
+          active={activeItem === "sing-in"}
+          onClick={() => handleItemClick("/sign-in")}
+          disabled={!!user}
+        >
+          Entrar
+        </Menu.Item>
+      )}
 
-      <Menu.Item
-        name="sign-up"
-        active={activeItem === "sign-up"}
-        onClick={() => handleItemClick("/sign-up")}
-        disabled={!!user}
-      >
-        Registrar
-      </Menu.Item>
+      {!user && (
+        <Menu.Item
+          name="sign-up"
+          active={activeItem === "sign-up"}
+          onClick={() => handleItemClick("/sign-up")}
+          disabled={!!user}
+        >
+          Registrar
+        </Menu.Item>
+      )}
 
-      <Menu.Item
-        name="logout"
-        active={activeItem === "logout"}
-        onClick={logout}
-        disabled={!user}
-      >
-        Sair
-      </Menu.Item>
+      {user && (
+        <Menu.Item
+          name="logout"
+          active={activeItem === "logout"}
+          onClick={logout}
+          disabled={!user}
+        >
+          Sair
+        </Menu.Item>
+      )}
     </Menu>
   );
 };

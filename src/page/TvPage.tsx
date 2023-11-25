@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
-import { Grid, Segment } from "semantic-ui-react";
+import { Grid, Icon, Pagination, Segment } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 import PosterLink from "../components/PosterLink";
 import PaginationComponent from "../components/PaginationComponent";
@@ -22,14 +22,13 @@ const MoviePage = () => {
   if (error) return <MessageInfo message={error.message} />;
 
   return (
-    <Segment textAlign="center" inverted>
+    <div>
       <PaginationComponent />
-
-      <Segment basic style={{ margin: 0 }}>
-        <Grid columns={5}>
+      <Segment textAlign="left" basic>
+        <Grid centered>
           {data?.results &&
             data.results.map((x) => (
-              <Grid.Column mobile={8} tablet={5} computer={4} key={x.id}>
+              <Grid.Column key={x.id} mobile={5} computer={3}>
                 <PosterLink
                   id={x.id}
                   poster={x.poster_path}
@@ -39,9 +38,8 @@ const MoviePage = () => {
             ))}
         </Grid>
       </Segment>
-
       <PaginationComponent />
-    </Segment>
+    </div>
   );
 };
 

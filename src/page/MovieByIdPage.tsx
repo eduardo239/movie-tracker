@@ -45,66 +45,62 @@ const MovieByIdPage = () => {
 
   if (data)
     return (
-      <Segment textAlign="center" inverted basic>
-        <Grid>
-          <Grid.Row>
-            {/*  */}
-            <Grid.Column width={16}>
-              {/* -------------- trailer --------------   */}
-              <DataTrailer mediaType="movie" id={params.get("id") + ""} />
-            </Grid.Column>
-            {/*  */}
-            <Grid.Column width={4} textAlign="left">
-              {/* -------------- poster --------------   */}
-              <DataPoster data={data} />
-            </Grid.Column>
-            {/*  */}
-            <Grid.Column width={12} textAlign="left">
-              {/* -------------- details --------------   */}
-              <DataDetails
-                data={{
-                  title: data.title,
-                  original_title: data.original_title,
-                  overview: data.overview,
-                  release_date: data.release_date,
-                }}
-              />
-              {/* -------------- rating --------------   */}
-              <DataRating
-                data={{
-                  runtime: data.runtime,
-                  vote_average: data.vote_average,
-                }}
-              />
+      <Grid>
+        <Grid.Row>
+          {/*  */}
+          {/* -------------- trailer --------------   */}
+          <Grid.Column width={16}>
+            <DataTrailer mediaType="movie" id={params.get("id") + ""} />
+          </Grid.Column>
+          {/* -------------- poster --------------   */}
+          <Grid.Column textAlign="center" mobile={16} tablet={4} computer={4}>
+            <DataPoster data={data} />
+          </Grid.Column>
+          {/* -------------- details --------------   */}
+          <Grid.Column textAlign="left" mobile={16} tablet={12} computer={12}>
+            <DataDetails
+              data={{
+                title: data.title,
+                original_title: data.original_title,
+                overview: data.overview,
+                release_date: data.release_date,
+              }}
+            />
+            {/* -------------- rating --------------   */}
+            <DataRating
+              data={{
+                runtime: data.runtime,
+                vote_average: data.vote_average,
+              }}
+            />
 
-              {/* -------------- genres --------------   */}
-              <DataGenre genres={data.genres} />
-            </Grid.Column>
-            {/* -------------- options --------------   */}
-            <Grid.Column width={16} textAlign="center">
-              <Divider />
-              <MovieOptions movie={data} />
-              <Divider />
-            </Grid.Column>
+            {/* -------------- genres --------------   */}
+            <DataGenre genres={data.genres} />
+          </Grid.Column>
+          {/* -------------- options --------------   */}
+          <Grid.Column width={16} textAlign="center">
+            <Divider />
+            <MovieOptions movie={data} />
+            <Divider />
+          </Grid.Column>
 
-            <Grid.Column width={16} textAlign="center">
-              {/* -------------- info --------------   */}
-              <DataInfo
-                data={{
-                  release_date: data.release_date,
-                  status: data.status,
-                  original_language: data.original_language,
-                }}
-              />
-              {/* -------------- credits --------------   */}
-              <DataCast data={{ credits: data.credits }} />
-              {/* -------------- similar --------------   */}
-              <Divider />
-              <DataSimilar id={data.id} />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Segment>
+          <Grid.Column width={16} textAlign="center">
+            {/* -------------- info --------------   */}
+            <DataInfo
+              data={{
+                release_date: data.release_date,
+                status: data.status,
+                original_language: data.original_language,
+              }}
+            />
+            {/* -------------- credits --------------   */}
+            <DataCast data={{ credits: data.credits }} />
+            {/* -------------- similar --------------   */}
+
+            <DataSimilar id={data.id} />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
   else return null;
 };

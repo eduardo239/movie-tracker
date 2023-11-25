@@ -45,67 +45,62 @@ const TvByIdPage = () => {
 
   if (data)
     return (
-      <Segment textAlign="center" inverted>
-        <Grid>
-          <Grid.Row>
-            {/*  */}
-            <Grid.Column width={16}>
-              {/* -------------- trailer --------------   */}
-              <DataTrailer mediaType="tv" id={params.get("id") + ""} />
-            </Grid.Column>
-            {/*  */}
-            <Grid.Column width={4} textAlign="left">
-              {/* -------------- poster --------------   */}
-              <DataPoster data={data} />
-            </Grid.Column>
+      <Grid>
+        <Grid.Row>
+          {/* -------------- trailer --------------   */}
+          <Grid.Column width={16}>
+            <DataTrailer mediaType="tv" id={params.get("id") + ""} />
+          </Grid.Column>
+          {/* -------------- poster --------------   */}
+          <Grid.Column textAlign="center" mobile={16} tablet={4} computer={4}>
+            <DataPoster data={data} />
+          </Grid.Column>
+          {/* -------------- details --------------   */}
+          <Grid.Column textAlign="left" mobile={16} tablet={12} computer={12}>
+            <DataDetails
+              data={{
+                title: data.name,
+                original_title: data.original_name,
+                overview: data.overview,
+                release_date: data.first_air_date,
+              }}
+            />
+            {/* -------------- rating --------------   */}
+            <DataRating
+              data={{
+                runtime: data.number_of_episodes,
+                vote_average: data.vote_average,
+              }}
+            />
 
-            <Grid.Column width={12} textAlign="left">
-              {/* -------------- details --------------   */}
-              <DataDetails
-                data={{
-                  title: data.name,
-                  original_title: data.original_name,
-                  overview: data.overview,
-                  release_date: data.first_air_date,
-                }}
-              />
-              {/* -------------- rating --------------   */}
-              <DataRating
-                data={{
-                  runtime: data.number_of_episodes,
-                  vote_average: data.vote_average,
-                }}
-              />
+            {/* -------------- genres --------------   */}
+            <DataGenre genres={data.genres} />
+          </Grid.Column>
 
-              {/* -------------- genres --------------   */}
-              <DataGenre genres={data.genres} />
-            </Grid.Column>
+          {/* -------------- options --------------   */}
+          <Grid.Column width={16} textAlign="center">
+            <Divider />
+            <TvOptions tv={data} />
+            <Divider />
+          </Grid.Column>
 
-            {/* -------------- options --------------   */}
-            <Grid.Column width={16} textAlign="center">
-              <Divider />
-              <TvOptions tv={data} />
-              <Divider />
-            </Grid.Column>
+          <Grid.Column width={16} textAlign="center">
+            {/* -------------- info --------------   */}
+            <DataInfo
+              data={{
+                release_date: data.first_air_date,
+                status: data.status,
+                original_language: data.original_language,
+              }}
+            />
+            {/* -------------- credits --------------   */}
+            <DataCast data={{ credits: data.credits }} />
+            {/* -------------- similar --------------   */}
 
-            <Grid.Column width={16} textAlign="center">
-              {/* -------------- info --------------   */}
-              <DataInfo
-                data={{
-                  release_date: data.first_air_date,
-                  status: data.status,
-                  original_language: data.original_language,
-                }}
-              />
-              {/* -------------- credits --------------   */}
-              <DataCast data={{ credits: data.credits }} />
-              {/* -------------- similar --------------   */}
-              <Divider />
-              <DataSimilar id={data.id} />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Segment>
+            <DataSimilar id={data.id} />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
   else return null;
 };

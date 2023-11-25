@@ -155,17 +155,11 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
         {isAuthenticated ? (
           <DataOptions listType={tracker?.listType} handleClick={handleClick} />
         ) : (
-          <Button
-            inverted
-            icon
-            color="orange"
-            onClick={() => navigate("/sign-in")}
-          >
+          <Button icon color="green" onClick={() => navigate("/sign-in")}>
             <Icon name="sign in" /> Sign In
           </Button>
         )}
 
-        <Divider />
         <Header as="h3">Temporadas</Header>
 
         {seasons &&

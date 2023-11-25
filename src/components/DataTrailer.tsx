@@ -36,7 +36,7 @@ const DataTrailer = ({
 
   if (data)
     return (
-      <Segment basic inverted>
+      <>
         {data?.results.length > 0 ? (
           <div className="trailer">
             <iframe
@@ -50,23 +50,22 @@ const DataTrailer = ({
             Trailer não encontrado <Icon name="exclamation" />
           </>
         )}
-        <Segment basic>
+        <div className="flex flex-center p-2">
           {data?.results.length > 0 &&
             data?.results
               .map((x) => (
-                <Button
-                  inverted
-                  style={{ marginBottom: ".25rem" }}
+                <button
+                  className="app-button app-button__small app-button__dark"
                   onClick={() => handleTrailerChange(x.key)}
                   key={x.key}
                 >
                   {x.name}
-                </Button>
+                </button>
               ))
               .splice(-5)
               .reverse()}
-        </Segment>
-      </Segment>
+        </div>
+      </>
     );
   else return null;
 };

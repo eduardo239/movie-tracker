@@ -1,20 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormField from "../components/FormField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
+import LoadingInfo from "../components/LoadingInfo";
 
 const SignIn = () => {
+  const navigate = useNavigate();
+  const { user, register } = useAuth();
+
   const [username, setUsername] = useState<string>("eu_1");
   const [email, setEmail] = useState<string>("eucrieiumaconta@gmail.com");
   const [password, setPassword] = useState<string>("123123");
 
-  const { isAuthenticated, register } = useAuth();
-
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    await register({ username, email, password });
+    register({ username, email, password });
   };
+
+  useEffect(() => {
+    if (user) navigate("/");
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  if (user) return <LoadingInfo />;
 
   return (
     <Grid centered columns={3}>

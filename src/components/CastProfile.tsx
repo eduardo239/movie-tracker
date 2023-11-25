@@ -9,32 +9,27 @@ const CastProfile = ({ cast }: { cast: ICast }) => {
   const navigate = useNavigate();
 
   return (
-    <Card>
-      {cast.profile_path ? (
-        <Image
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate(`/person/${cast.id}`)}
-          src={`${apiPosterUrl}${cast.profile_path}`}
-          wrapped
-          ui={false}
-        />
-      ) : (
-        <Image src={profileDefaultUrl} wrapped ui={false} />
-      )}
-      <Card.Content>
-        <Card.Header>{cast.name}</Card.Header>
-        <Card.Meta>
-          <span className="date">Personagem: {cast.character}</span>
-        </Card.Meta>
-        {/* <Card.Description>13123</Card.Description> */}
-      </Card.Content>
-      <Card.Content extra>
-        <a>
-          <Icon name="like" />
-          {cast.popularity}
-        </a>
-      </Card.Content>
-    </Card>
+    <Link to={`/person/${cast.id}`}>
+      <div className="app-card">
+        <div className="app-card-header">
+          {cast.profile_path ? (
+            <img
+              className="poster"
+              src={`${apiPosterUrl}${cast.profile_path}`}
+            />
+          ) : (
+            <img className="poster" src={profileDefaultUrl} />
+          )}
+        </div>
+        <div className="app-card-body">
+          <h4>{cast.name}</h4>
+          <span className="opacity-6">Personagem: {cast.character}</span>
+        </div>
+        <div className="app-card-extra">
+          <Icon name="like" /> {cast.popularity}
+        </div>
+      </div>
+    </Link>
   );
 };
 

@@ -7,22 +7,25 @@ const PaginationComponent = () => {
   const { setPage, page, mediaType } = useMovie();
 
   return (
-    <Pagination
-      inverted
-      pointing
-      secondary
-      siblingRange={3}
-      activePage={page ? page : "1"}
-      totalPages={100}
-      onPageChange={(e, x) => {
-        if (x.activePage) {
-          setPage(x.activePage ? +x.activePage : 1);
-          navigate(`/${mediaType}s?page=${x.activePage}`);
-        } else {
-          setPage(1);
-        }
-      }}
-    />
+    <div className="flex flex-center">
+      <Pagination
+        firstItem={null}
+        lastItem={null}
+        boundaryRange={1}
+        inverted
+        siblingRange={1}
+        activePage={page ? page : "1"}
+        totalPages={99}
+        onPageChange={(e, x) => {
+          if (x.activePage) {
+            setPage(x.activePage ? +x.activePage : 1);
+            navigate(`/${mediaType}s?page=${x.activePage}`);
+          } else {
+            setPage(1);
+          }
+        }}
+      />
+    </div>
   );
 };
 

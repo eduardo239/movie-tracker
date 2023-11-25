@@ -1,3 +1,139 @@
+:root {
+  --color-dark: #232323;
+  --color-darker: #121212;
+
+  --color-grey: #a9a9a9;
+
+  --color-light: #efefef;
+  --color-lighter: #ffffff;
+
+  --color-primary: #21ba45;
+  --color-primary-darker: #133513;
+
+  --color-secondary: #f2711c;
+  --color-secondary-darker: #a84e12;
+
+  --color-tertiary: #66b16a;
+  --color-tertiary-darker: #133513;
+
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+}
+/*  */
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+/*  */
+body {
+  background-color: var(--color-dark) !important;
+}
+/*  */
+button {
+  letter-spacing: 0.5px;
+  border: none;
+  outline: none;
+  border-radius: var(--border-radius-sm);
+}
+
+.app-button {
+  padding: 0.8rem 1.6rem;
+}
+.app-button__small {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+}
+.app-button:hover {
+  cursor: pointer;
+  filter: brightness(110%);
+}
+
+.app-button__primary {
+  background-color: var(--color-primary);
+  color: var(--color-lighter);
+}
+.app-button__secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-darker);
+}
+.app-button__dark {
+  background-color: var(--color-darker);
+  color: var(--color-grey);
+}
+/*  */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+/*  */
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+.flex-center {
+  justify-content: center;
+}
+/*  */
+.m-0 {
+  margin: 0;
+}
+.m-2 {
+  margin: 0.5rem;
+}
+.p-0 {
+  padding: 0;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+/*  */
+.app-card {
+  max-width: 12rem;
+  cursor: pointer;
+  background-color: var(--color-dark);
+  border: 1px solid var(--color-darker);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.app-card-body {
+  flex: 1;
+}
+.app-card-body,
+.app-card-extra {
+  color: var(--color-light);
+  padding: 0.5rem 1rem;
+}
+.app-card-body p {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+/*  */
+img {
+  max-width: 100%;
+  height: auto;
+}
+.poster-md {
+  width: 10rem !important;
+}
+.poster-lg {
+  width: 15rem !important;
+}
+/*  */
+.opacity-6 {
+  opacity: 0.6;
+}
+/*  */
+.gap-sm {
+  gap: 0.5rem;
+}
+.gap-md {
+  gap: 1rem;
+}
+/*  */
 .trailer {
   position: relative;
   width: 100%;
@@ -11,35 +147,20 @@ iframe {
   left: 0;
   width: 100%;
   height: 100%;
-
   border: 0;
   outline: 0;
 }
 
-.flex {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem;
+/*  */
+::-webkit-scrollbar {
+  width: 10px;
 }
-
-.flex-center {
-  justify-content: center;
+::-webkit-scrollbar-track {
+  background: var(--color-dark);
 }
-
-.green {
-  color: #133513;
-  background-color: #66b16a;
+::-webkit-scrollbar-thumb {
+  background: var(--color-grey);
 }
-.yellow {
-  color: #31310f;
-  background-color: #fafa96;
-}
-.orange {
-  color: #4b3b1e;
-  background-color: #ecbe67;
-}
-
-.active {
-  background-color: orange;
-  color: orange;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-light);
 }

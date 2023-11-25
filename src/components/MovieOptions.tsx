@@ -24,7 +24,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
           fullList: false,
           mediaType: "movie",
         });
-        console.log(response);
+
         if (response.movieList.length > 0) {
           setTracker(response.movieList[0]);
         }
@@ -57,12 +57,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
         {isAuthenticated ? (
           <DataOptions listType={tracker?.listType} handleClick={handleClick} />
         ) : (
-          <Button
-            inverted
-            icon
-            color="orange"
-            onClick={() => navigate("/sign-in")}
-          >
+          <Button icon color="green" onClick={() => navigate("/sign-in")}>
             <Icon name="sign in" /> Entrar
           </Button>
         )}

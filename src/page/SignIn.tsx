@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormField from "../components/FormField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   Button,
@@ -10,18 +10,27 @@ import {
   Header,
   Segment,
 } from "semantic-ui-react";
+import LoadingInfo from "../components/LoadingInfo";
 
 const SignIn = () => {
+  const navigate = useNavigate();
+  const { user, login } = useAuth();
+
   const [email, setEmail] = useState<string>("eucrieiumaconta@gmail.com");
   const [password, setPassword] = useState<string>("123123");
 
-  const { isAuthenticated, login, logout } = useAuth();
-
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-
     login({ email, password });
   };
+
+  useEffect(() => {
+    if (user) navigate("/");
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  if (user) return <LoadingInfo />;
 
   return (
     <Grid centered columns={3}>
