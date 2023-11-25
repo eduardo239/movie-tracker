@@ -1,64 +1,53 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
-import {
-  IAddMovieToList,
-  IMovieDetails,
-  TListType,
-} from "../abstract/interfaces";
+import { IMovieDetails, TListType } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { Button, Icon, Segment } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
+import DataOptions from "./DataOptions";
 
 const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const navigate = useNavigate();
 
-  const { addMovieToList, getUserMovieList } = useMovie();
+  const { getUserMovieList, handleSaveListType } = useMovie();
   const { isAuthenticated, user } = useAuth();
 
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  const handleClick = async (listType: TListType) => {
+  const getMovieList = async () => {
     if (user) {
-      //
       if (movie) {
-        //
-        const content: IAddMovieToList = {
-          mediaType: "movie",
-          listType: listType,
-          movieId: movie.id,
+        const response = await getUserMovieList({
           userId: user.uid,
-          poster: movie.poster_path,
-          title: movie.title,
-        };
-
-        await addMovieToList(content);
-        await getMovieList();
+          movieId: movie.id,
+          fullList: false,
+          mediaType: "movie",
+        });
+        console.log(response);
+        if (response.movieList.length > 0) {
+          setTracker(response.movieList[0]);
+        }
       } else {
-        alert("movie required");
+        alert("error movie get movie list");
       }
     } else {
-      alert("login required");
+      alert("error user get movie list");
     }
   };
 
-  const getMovieList = async () => {
-    if (user && movie) {
-      const response = await getUserMovieList({
-        userId: user.uid,
-        movieId: movie.id,
-        fullList: false,
-        mediaType: "movie",
-      });
+  const handleClick = async (listType: TListType) => {
+    const response = await handleSaveListType(listType, movie, "movie");
 
-      if (Array.isArray(response.movieList) && response.movieList.length > 0) {
-        setTracker(response.movieList[0]);
-      }
+    if (response) {
+      setTracker(response.movieList[0]);
+    } else {
+      alert("error get response, handle click");
     }
   };
 
   useEffect(() => {
-    getMovieList();
+    if (user) getMovieList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, movie]);
 
@@ -66,35 +55,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     return (
       <Segment basic inverted>
         {isAuthenticated ? (
-          <Button.Group fluid size="big" positive>
-            <Button
-              inverted
-              icon
-              color={tracker?.listType === "see" ? "orange" : "grey"}
-              basic={tracker?.listType === "see" ? false : true}
-              onClick={() => handleClick("see")}
-            >
-              <Icon name="add" /> Add to List
-            </Button>
-            <Button
-              inverted
-              icon
-              color={tracker?.listType === "saw" ? "black" : "grey"}
-              basic={tracker?.listType === "saw" ? false : true}
-              onClick={() => handleClick("saw")}
-            >
-              <Icon name="check" /> "I Already Saw
-            </Button>
-            <Button
-              inverted
-              icon
-              color={tracker?.listType === "block" ? "black" : "grey"}
-              basic={tracker?.listType === "block" ? false : true}
-              onClick={() => handleClick("block")}
-            >
-              <Icon name="delete" /> Block
-            </Button>
-          </Button.Group>
+          <DataOptions listType={tracker?.listType} handleClick={handleClick} />
         ) : (
           <Button
             inverted
@@ -102,7 +63,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             color="orange"
             onClick={() => navigate("/sign-in")}
           >
-            <Icon name="sign in" /> Sign In
+            <Icon name="sign in" /> Entrar
           </Button>
         )}
       </Segment>

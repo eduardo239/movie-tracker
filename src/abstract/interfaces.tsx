@@ -162,7 +162,7 @@ export interface IUserAuthForm {
   setState: React.Dispatch<React.SetStateAction<string>>;
 }
 
-type TMediaType = "movie" | "tv";
+export type TMediaType = "movie" | "tv";
 
 export type TListType = "all" | "see" | "saw" | "block";
 

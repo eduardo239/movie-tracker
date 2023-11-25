@@ -20,7 +20,11 @@ import {
   IAddMovieToList,
   IAddTvToList,
   IGetUserMovieList,
+  IMovieDetails,
   IMovieResults,
+  ITvDetails,
+  TListType,
+  TMediaType,
 } from "../abstract/interfaces";
 import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
@@ -32,6 +36,7 @@ import {
   ERROR_UM_AP,
   MEDIA_TV,
 } from "../abstract/constants";
+import { useAuth } from "./AuthContext";
 
 interface MovieContextType {
   page: number;
@@ -53,6 +58,11 @@ interface MovieContextType {
   getUserMovieList: (
     content: IGetUserMovieList
   ) => Promise<{ movieList: DocumentData[]; tvList: DocumentData[] }>;
+  handleSaveListType: (
+    listType: TListType,
+    movie: IMovieDetails | ITvDetails | null,
+    mediaType: TMediaType
+  ) => DocumentData | null;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -65,6 +75,8 @@ const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 export function MovieProvider({ children }: MovieProviderProps) {
+  const { user } = useAuth();
+
   const [page, setPage] = useState<number>(1);
   const [params, _] = useSearchParams();
   const [adult, setAdult] = useState(false);
@@ -99,6 +111,69 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
     return () => {};
   }, [params, setPage]);
+
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  const handleSaveListType = async (
+    listType: TListType,
+    data: IMovieDetails | ITvDetails | null,
+    mediaType: TMediaType
+  ) => {
+    if (user) {
+      if (data) {
+        if ("title" in data) {
+          const content: IAddMovieToList = {
+            mediaType: "movie",
+            listType: listType,
+            movieId: data.id,
+            userId: user.uid,
+            poster: data.poster_path,
+            title: data.title,
+          };
+          await addMovieToList(content);
+          const response = await getMovieList(data, mediaType);
+          return response;
+        } else if ("name" in data) {
+          const content: IAddMovieToList = {
+            mediaType: "tv",
+            listType: listType,
+            movieId: data.id,
+            userId: user.uid,
+            poster: data.poster_path,
+            title: data.name,
+          };
+          await addMovieToList(content);
+          const response = await getMovieList(data, mediaType);
+          return response;
+        }
+      } else {
+        alert("movie required");
+      }
+    } else {
+      alert("login required");
+    }
+  };
+
+  const getMovieList = async (
+    movie: IMovieDetails | ITvDetails | null,
+    mediaType: TMediaType
+  ) => {
+    if (user) {
+      if (movie) {
+        const response = await getUserMovieList({
+          userId: user.uid,
+          movieId: movie.id,
+          fullList: false,
+          mediaType: mediaType,
+        });
+
+        return response;
+      } else {
+        alert("movie required get movie list");
+      }
+    } else {
+      alert("user required get movie list");
+    }
+  };
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addTvToList = async (content: IAddTvToList) => {
@@ -212,6 +287,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
         addMovieToList,
         addTvToList,
         getUserMovieList,
+        handleSaveListType,
       }}
     >
       {children}

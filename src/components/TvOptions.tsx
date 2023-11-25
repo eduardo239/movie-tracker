@@ -10,82 +10,72 @@ import { Button, Divider, Header, Icon, Segment } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
+import { MEDIA_TYPE } from "../abstract/constants";
+import DataOptions from "./DataOptions";
 
 const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useAuth();
-  const { addMovieToList, addTvToList, getUserMovieList } = useMovie();
+  const { addTvToList, getUserMovieList, handleSaveListType } = useMovie();
 
   const [seasons, setSeasons] = useState<number[] | null>(null);
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  useEffect(() => {
-    if (tv) {
-      if (tv.seasons && tv.seasons.length > 0) {
-        // add seasons to buttons options
-        const _array = Array.from(Array(tv.seasons.length).keys());
-        setSeasons(_array);
-      }
-    }
-    return () => {};
-  }, [tv]);
-
-  const handleClick = async (listType: TListType) => {
+  const getTvList = async () => {
     if (user) {
-      //
       if (tv) {
-        //
-        const content: IAddMovieToList = {
-          mediaType: "tv",
-          listType: listType,
-          movieId: tv.id,
+        const response = await getUserMovieList({
           userId: user.uid,
-          poster: tv.poster_path,
-          title: tv.name,
-        };
+          movieId: tv.id,
+          fullList: false,
+          mediaType: "tv",
+        });
 
-        await addMovieToList(content);
-        await getTvList();
+        const isTvListArray = Array.isArray(response.tvList);
+        if (isTvListArray && response.tvList.length > 0) {
+          setTracker(response.tvList[0]);
+        }
       } else {
-        alert("tv required");
+        alert("error tv get tv list");
       }
     } else {
-      alert("login required");
-    }
-  };
-
-  const getTvList = async () => {
-    if (user && tv) {
-      const response = await getUserMovieList({
-        userId: user.uid,
-        movieId: tv.id,
-        fullList: false,
-        mediaType: "tv",
-      });
-
-      if (Array.isArray(response.tvList) && response.tvList.length > 0) {
-        setTracker(response.tvList[0]);
-      }
+      alert("error user get tv list");
     }
   };
   const getSeasons = async () => {
-    if (user && tv) {
-      const response = await getUserMovieList({
-        userId: user.uid,
-        movieId: tv.id,
-        fullList: false,
-        mediaType: "tv",
-      });
-      if (Array.isArray(response.tvList) && response.tvList.length > 0) {
-        const _seasons = response.tvList[0].seasons;
-        if (_seasons.length > 0) {
-          setSavedSeasons(response.tvList[0].seasons);
-        } else {
-          return;
+    if (user) {
+      if (tv) {
+        const response = await getUserMovieList({
+          userId: user.uid,
+          movieId: tv.id,
+          fullList: false,
+          mediaType: "tv",
+        });
+
+        if (response.tvList.length > 0) {
+          const _seasons = response.tvList[0].seasons;
+
+          const isArray = Array.isArray(_seasons);
+          if (isArray && _seasons.length > 0) {
+            setSavedSeasons(response.tvList[0].seasons);
+          }
         }
+      } else {
+        alert("error, get seasons,tv required");
       }
+    } else {
+      alert("error, get seasons, user required");
+    }
+  };
+
+  const handleClick = async (listType: TListType) => {
+    const response = await handleSaveListType(listType, tv, "tv");
+    if (response) {
+      setTracker(response.tvList[0]);
+    } else {
+      alert("error get response, handle click");
     }
   };
 
@@ -143,8 +133,19 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
   };
 
   useEffect(() => {
-    getTvList();
-    getSeasons();
+    if (tv) {
+      if (tv.seasons && tv.seasons.length > 0) {
+        // add seasons to buttons options
+        const _array = Array.from(Array(tv.seasons.length).keys());
+        setSeasons(_array);
+      }
+    }
+    return () => {};
+  }, [tv]);
+
+  useEffect(() => {
+    if (user) getTvList();
+    if (user) getSeasons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, tv]);
 
@@ -152,35 +153,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
     return (
       <Segment basic inverted>
         {isAuthenticated ? (
-          <Button.Group fluid size="big" positive>
-            <Button
-              inverted
-              icon
-              color={tracker?.listType === "see" ? "orange" : "grey"}
-              basic={tracker?.listType === "see" ? false : true}
-              onClick={() => handleClick("see")}
-            >
-              <Icon name="add" /> Add to List
-            </Button>
-            <Button
-              inverted
-              icon
-              color={tracker?.listType === "saw" ? "black" : "grey"}
-              basic={tracker?.listType === "saw" ? false : true}
-              onClick={() => handleClick("saw")}
-            >
-              <Icon name="check" /> I Already Saw
-            </Button>
-            <Button
-              inverted
-              icon
-              color={tracker?.listType === "block" ? "black" : "grey"}
-              basic={tracker?.listType === "block" ? false : true}
-              onClick={() => handleClick("block")}
-            >
-              <Icon name="delete" /> Block
-            </Button>
-          </Button.Group>
+          <DataOptions listType={tracker?.listType} handleClick={handleClick} />
         ) : (
           <Button
             inverted
@@ -197,12 +170,12 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
 
         {seasons &&
           seasons.map((season, i) => {
-            const _saved = savedSeasons.some((x) => x === season + 1);
+            const isSaved = savedSeasons.some((x) => x === season + 1);
 
             return (
               <Button
-                basic={_saved ? false : true}
-                color={`${_saved ? "orange" : "grey"}`}
+                basic={isSaved ? false : true}
+                color={`${isSaved ? "green" : "grey"}`}
                 onClick={() => handleSaveSeason(i + 1)}
                 key={i + 1}
               >

@@ -11,6 +11,11 @@ export const ALL = "all";
 export const MEDIA_TV = "tv";
 export const MEDIA_MOVIE = "movie";
 
+export const MEDIA_TYPE = {
+  TV: "tv",
+  MOVIE: "movie",
+};
+
 export const TRENDING = "trending";
 export const POPULAR = "popular";
 export const LATEST = "latest";
