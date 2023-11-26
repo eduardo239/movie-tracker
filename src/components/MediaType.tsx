@@ -1,4 +1,4 @@
-import { Button, Icon, Segment } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const MediaType = () => {
   };
 
   return (
-    <Segment basic textAlign="center">
+    <div className="flex flex-center">
       <Button
         icon
         color="instagram"
@@ -21,7 +21,7 @@ const MediaType = () => {
         onClick={() => handleChangePage("movie")}
       >
         <Icon name="film" />
-        Movie
+        Filmes
       </Button>
       <Button
         icon
@@ -30,9 +30,9 @@ const MediaType = () => {
         onClick={() => handleChangePage("tv")}
       >
         <Icon name="television" />
-        TV
+        Séries
       </Button>
-    </Segment>
+    </div>
   );
 };
 

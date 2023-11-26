@@ -7,8 +7,10 @@ const DataInfo = ({
   data: { release_date: string; status: string; original_language?: string };
 }) => {
   return (
-    <Segment basic inverted>
-      <Header as="h3">Informações</Header>
+    <>
+      <Header as="h3" inverted>
+        Informações
+      </Header>
 
       {data.release_date && (
         <p>Data de Lançamento: {formatDate(data.release_date)}</p>
@@ -18,7 +20,7 @@ const DataInfo = ({
       {data.original_language && (
         <p>Lingua Original: {data.original_language.toUpperCase()}</p>
       )}
-    </Segment>
+    </>
   );
 };
 

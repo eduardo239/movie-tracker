@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
-import { Grid, Segment } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
-import PosterLink from "../components/PosterLink";
-import PaginationComponent from "../components/PaginationComponent";
+import Pagination_ from "../components/Pagination_";
+import GridContainer from "../components/GridContainer";
+import DataGroup from "../components/DataGroup";
 
 const MoviePage = () => {
   const { data, loading, error, page, mediaType, setMediaType, setPage } =
@@ -22,24 +22,13 @@ const MoviePage = () => {
   if (error) return <MessageInfo message={error.message} />;
 
   return (
-    <div>
-      <PaginationComponent />
-      <Segment textAlign="left" basic>
-        <Grid centered>
-          {data?.results &&
-            data.results.map((x) => (
-              <Grid.Column key={x.id} mobile={5} computer={3}>
-                <PosterLink
-                  id={x.id}
-                  poster={x.poster_path}
-                  mediaType={mediaType}
-                />
-              </Grid.Column>
-            ))}
-        </Grid>
-      </Segment>
-      <PaginationComponent />
-    </div>
+    <>
+      <Pagination_ />
+      <GridContainer centered gap="gap-sm">
+        <DataGroup data={data ? data.results : []} mediaType={mediaType} />
+      </GridContainer>
+      <Pagination_ />
+    </>
   );
 };
 

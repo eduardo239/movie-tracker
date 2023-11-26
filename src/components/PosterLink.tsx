@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useMovie } from "../context/MovieContext";
 import DataPoster from "./DataPoster";
 
 const PosterLink = ({

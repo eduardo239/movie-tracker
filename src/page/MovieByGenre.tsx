@@ -4,10 +4,12 @@ import MessageInfo from "../components/Message";
 import useFetch from "../hooks/useFetch";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Card, Grid, Segment } from "semantic-ui-react";
-import PaginationComponent from "../components/PaginationComponent";
+import PaginationComponent from "../components/Pagination_";
 import PosterLink from "../components/PosterLink";
 import { IMovieResults } from "../abstract/interfaces";
 import { useMovie } from "../context/MovieContext";
+import GridContainer from "../components/GridContainer";
+import DataGroup from "../components/DataGroup";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -26,18 +28,11 @@ const MovieByGenre = () => {
   return (
     <Segment inverted basic style={{ margin: 0 }}>
       {/* <PaginationComponent /> */}
-      <Card.Group itemsPerRow={6} className="gap-md flex flex-center">
-        {data?.results &&
-          data.results.map((x) => (
-            <Grid.Column mobile={8} tablet={5} computer={4} key={x.id}>
-              <PosterLink
-                id={x.id}
-                poster={x.poster_path}
-                mediaType={mediaType}
-              />
-            </Grid.Column>
-          ))}
-      </Card.Group>
+
+      <GridContainer centered gap="gap-sm">
+        <DataGroup data={data ? data.results : []} mediaType={mediaType} />
+      </GridContainer>
+
       {/* <PaginationComponent /> */}
     </Segment>
   );

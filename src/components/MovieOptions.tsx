@@ -53,7 +53,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
 
   if (movie)
     return (
-      <Segment basic inverted>
+      <>
         {isAuthenticated ? (
           <DataOptions listType={tracker?.listType} handleClick={handleClick} />
         ) : (
@@ -61,7 +61,7 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
             <Icon name="sign in" /> Entrar
           </Button>
         )}
-      </Segment>
+      </>
     );
   else return null;
 };

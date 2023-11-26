@@ -73,14 +73,24 @@ const ListPage = () => {
         <Tab.Pane attached={false} inverted>
           <Table celled compact selectable size="small" inverted>
             <Table.Header>
-              <Table.Row textAlign="center">
-                <Table.HeaderCell>ID</Table.HeaderCell>
+              <Table.Row>
+                <Table.HeaderCell width={2} textAlign="left">
+                  ID
+                </Table.HeaderCell>
                 <Table.HeaderCell>Nome</Table.HeaderCell>
-                <Table.HeaderCell>Vou Ver</Table.HeaderCell>
-                <Table.HeaderCell>Já Vi</Table.HeaderCell>
-                <Table.HeaderCell>Bloqueado</Table.HeaderCell>
-                <Table.HeaderCell>Tipo</Table.HeaderCell>
-                <Table.HeaderCell>Opções</Table.HeaderCell>
+                <Table.HeaderCell width={2} textAlign="center">
+                  Vou Ver
+                </Table.HeaderCell>
+                <Table.HeaderCell width={2} textAlign="center">
+                  Já Vi
+                </Table.HeaderCell>
+                <Table.HeaderCell width={2} textAlign="center">
+                  Bloqueado
+                </Table.HeaderCell>
+                {/* <Table.HeaderCell>Tipo</Table.HeaderCell> */}
+                <Table.HeaderCell width={3} textAlign="center">
+                  Opções
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
 
@@ -101,12 +111,17 @@ const ListPage = () => {
                   </Table.Cell>
 
                   <ListItemType listType={item.listType} />
-                  <Table.Cell>{item.mediaType}</Table.Cell>
+                  {/* <Table.Cell>{item.mediaType}</Table.Cell> */}
+
                   <Table.Cell textAlign="center" style={{ padding: "2px" }}>
-                    <Button.Group compact>
-                      <Button inverted>remove</Button>
-                      <Button inverted>remove</Button>
-                    </Button.Group>
+                    <div className="flex gap-sm">
+                      <button className="app-button app-button__small">
+                        Remover
+                      </button>
+                      <button className="app-button app-button__small">
+                        Atualizar
+                      </button>
+                    </div>
                   </Table.Cell>
                 </Table.Row>
               ))}

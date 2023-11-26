@@ -46,9 +46,9 @@ const DataTrailer = ({
             />
           </div>
         ) : (
-          <>
-            Trailer não encontrado <Icon name="exclamation" />
-          </>
+          <p className="flex flex-center">
+            <Icon name="exclamation" /> Trailer não encontrado
+          </p>
         )}
         <div className="flex flex-center p-2">
           {data?.results.length > 0 &&

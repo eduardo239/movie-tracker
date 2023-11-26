@@ -1,10 +1,11 @@
 import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
-import { Card, Divider, Grid, Header, Segment } from "semantic-ui-react";
-import PosterLink from "./PosterLink";
+import { Divider, Header } from "semantic-ui-react";
 import { IMovieResults } from "../abstract/interfaces";
 import LoadingInfo from "./LoadingInfo";
 import MessageInfo from "./Message";
+import GridContainer from "./GridContainer";
+import DataGroup from "./DataGroup";
 
 const DataSimilar = ({ id }: { id: number }) => {
   const { mediaType } = useMovie();
@@ -26,22 +27,12 @@ const DataSimilar = ({ id }: { id: number }) => {
           Similar
         </Header>
 
-        <Segment basic style={{ margin: 0 }}>
-          <Card.Group className="gap-md flex flex-center">
-            {data?.results &&
-              data.results
-                .map((x) => {
-                  return (
-                    <PosterLink
-                      id={x.id}
-                      poster={x.poster_path}
-                      mediaType={mediaType}
-                    />
-                  );
-                })
-                .slice(0, 10)}
-          </Card.Group>
-        </Segment>
+        <GridContainer centered gap="gap-sm">
+          <DataGroup
+            data={data ? data.results.slice(0, 10) : []}
+            mediaType={mediaType}
+          />
+        </GridContainer>
       </>
     );
   else return null;

@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Select } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
-import { useNavigate } from "react-router-dom";
 
 const HomeSearch = () => {
   const { setMediaType, setPage, setTerm, mediaType, setIsSearching } =
     useMovie();
 
   const _options = [
-    { key: "movie", text: "Movie", value: "movie" },
-    { key: "tv", text: "TV", value: "tv" },
+    { key: "movie", text: "Filmes", value: "movie" },
+    { key: "tv", text: "Séries", value: "tv" },
   ];
   const [options, _] = useState(_options);
   const [query, setQuery] = useState("");

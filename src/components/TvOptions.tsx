@@ -151,7 +151,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
 
   if (tv)
     return (
-      <Segment basic inverted>
+      <>
         {isAuthenticated ? (
           <DataOptions listType={tracker?.listType} handleClick={handleClick} />
         ) : (
@@ -160,7 +160,9 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
           </Button>
         )}
 
-        <Header as="h3">Temporadas</Header>
+        <Header as="h3" inverted>
+          Temporadas
+        </Header>
 
         {seasons &&
           seasons.map((season, i) => {
@@ -177,7 +179,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
               </Button>
             );
           })}
-      </Segment>
+      </>
     );
   else return null;
 };

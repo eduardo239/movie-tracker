@@ -6,7 +6,7 @@ const DataGenre = ({ genres }: { genres: IGenre[] }) => {
   if (genres)
     return (
       <Segment inverted>
-        <div className="flex gap-sm flex-center">
+        <div className="flex gap-sm ">
           {genres.map((genre) => (
             <Link to={`/genre/${genre.id}`} key={genre.id}>
               <Label color="green" tag key={genre.id}>

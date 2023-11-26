@@ -3,9 +3,19 @@ import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { IMovieDetailsSimple, IPerson } from "../abstract/interfaces";
-import { Card, Divider, Grid, Image, Segment, Tab } from "semantic-ui-react";
+import {
+  Card,
+  Divider,
+  Grid,
+  Header,
+  Image,
+  Segment,
+  Tab,
+} from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import PosterLink from "../components/PosterLink";
+import GridContainer from "../components/GridContainer";
+import DataGroup from "../components/DataGroup";
 
 const PersonPage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -22,44 +32,22 @@ const PersonPage = () => {
 
   const panes = [
     {
-      menuItem: "Movies",
+      menuItem: "Filmes",
       render: () => (
         <Tab.Pane attached={false} inverted>
-          <Card.Group className="gap-md flex flex-center">
-            {movies.length > 0 &&
-              movies
-                .map((x: IMovieDetailsSimple) => {
-                  return (
-                    <PosterLink
-                      id={x.id}
-                      poster={x.poster_path}
-                      mediaType={x.media_type}
-                    />
-                  );
-                })
-                .slice(0, 10)}
-          </Card.Group>
+          <GridContainer centered gap="gap-sm">
+            <DataGroup data={data ? movies : []} mediaType="movie" />
+          </GridContainer>
         </Tab.Pane>
       ),
     },
     {
-      menuItem: "TV",
+      menuItem: "Séries",
       render: () => (
         <Tab.Pane attached={false} inverted>
-          <Card.Group className="gap-md flex flex-center">
-            {tvs.length > 0 &&
-              tvs
-                .map((x: IMovieDetailsSimple) => {
-                  return (
-                    <PosterLink
-                      id={x.id}
-                      poster={x.poster_path}
-                      mediaType={x.media_type}
-                    />
-                  );
-                })
-                .slice(0, 10)}
-          </Card.Group>
+          <GridContainer centered gap="gap-sm">
+            <DataGroup data={data ? tvs : []} mediaType="tv" />
+          </GridContainer>
         </Tab.Pane>
       ),
     },
@@ -86,44 +74,49 @@ const PersonPage = () => {
 
   if (data)
     return (
-      <div>
-        <Segment basic style={{ margin: 0 }} inverted>
-          <Grid>
-            <Grid.Column mobile={16} tablet={4} computer={4}>
-              <img
-                src={`${posterDefault}${data.profile_path}`}
-                alt={data.name}
-                className="poster-lg"
-              />
-            </Grid.Column>
-            <Grid.Column mobile={16} tablet={12} computer={12}>
-              <h2>{data.name}</h2>
-              <p>Data de nascimento: {data.birthday}</p>
-              <p>Local de nascimento: {data.place_of_birth}</p>
-              <p>Popularidade: {data.popularity}</p>
-              <Divider />
-              {data.biography && (
-                <div>
-                  <h4>Biografia</h4>
-                  <p style={{ fontSize: "1.15rem" }}>{data.biography}</p>
-                  <Divider />
-                </div>
-              )}
-              <small>ID # {data.id}</small>
-            </Grid.Column>
-          </Grid>
+      <>
+        <Grid>
+          <Grid.Column mobile={16} tablet={4} computer={4}>
+            <img
+              src={`${posterDefault}${data.profile_path}`}
+              alt={data.name}
+              className="poster-lg"
+            />
+          </Grid.Column>
+          <Grid.Column mobile={16} tablet={12} computer={12}>
+            <Header as="h1" inverted>
+              {data.name}
+            </Header>
 
-          <Divider />
-          <Tab
-            menu={{
-              color: "black",
-              pointing: true,
-              inverted: true,
-            }}
-            panes={panes}
-          />
-        </Segment>
-      </div>
+            <p>Data de nascimento: {data.birthday}</p>
+            <p>Local de nascimento: {data.place_of_birth}</p>
+            <p>Popularidade: {data.popularity}</p>
+            <Divider />
+            {data.biography && (
+              <div>
+                <Header as="h3" inverted>
+                  Biografia
+                </Header>
+                <p style={{ fontSize: "1.15rem" }}>{data.biography}</p>
+                <Divider />
+              </div>
+            )}
+            <div>
+              <code>ID # {data.id}</code>
+            </div>
+          </Grid.Column>
+        </Grid>
+
+        <Divider />
+        <Tab
+          menu={{
+            color: "green",
+            pointing: true,
+            inverted: true,
+          }}
+          panes={panes}
+        />
+      </>
     );
   else return null;
 };

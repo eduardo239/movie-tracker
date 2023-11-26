@@ -94,6 +94,7 @@ const MovieByIdPage = () => {
               }}
             />
             {/* -------------- credits --------------   */}
+            <Divider />
             <DataCast data={{ credits: data.credits }} />
             {/* -------------- similar --------------   */}
 
