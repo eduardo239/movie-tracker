@@ -31,14 +31,9 @@ a {
 }
 body {
   background-color: var(--color-dark) !important;
+  color: var(--color-light) !important;
 }
 
-p,
-code,
-small,
-span {
-  color: var(--color-light);
-}
 /*  */
 button {
   letter-spacing: 0.5px;
@@ -73,7 +68,7 @@ button {
 }
 /*  */
 .container {
-  max-width: 1200px;
+  max-width: 1150px;
   margin: 0 auto;
 }
 /*  */
@@ -101,6 +96,8 @@ button {
 .p-2 {
   padding: 0.5rem;
 }
+/*  */
+
 /*  */
 .app-card {
   max-width: 13.125rem;

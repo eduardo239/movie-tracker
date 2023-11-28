@@ -1,5 +1,4 @@
-import { Card, Header, Segment } from "semantic-ui-react";
-import CastProfile from "./CastProfile";
+import { Header } from "semantic-ui-react";
 import { ICast } from "../abstract/interfaces";
 import GridContainer from "./GridContainer";
 import PersonGroup from "./PersonGroup";

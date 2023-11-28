@@ -3,17 +3,8 @@ import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { IMovieDetailsSimple, IPerson } from "../abstract/interfaces";
-import {
-  Card,
-  Divider,
-  Grid,
-  Header,
-  Image,
-  Segment,
-  Tab,
-} from "semantic-ui-react";
+import { Divider, Grid, Header, Tab } from "semantic-ui-react";
 import { useEffect, useState } from "react";
-import PosterLink from "../components/PosterLink";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 

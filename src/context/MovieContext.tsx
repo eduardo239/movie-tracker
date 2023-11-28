@@ -20,9 +20,11 @@ import {
   IAddMovieToList,
   IAddTvToList,
   IGetUserMovieList,
+  IList,
   IMovieDetails,
   IMovieResults,
   ITvDetails,
+  IUserList,
   TListType,
   TMediaType,
 } from "../abstract/interfaces";
@@ -30,6 +32,7 @@ import { useSearchParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { AxiosError } from "axios";
 import {
+  COLLECTION_LIST,
   COLLECTION_TRACKER,
   ERROR_F_AD_MV_LS,
   ERROR_F_AD_TV_LS,
@@ -63,6 +66,8 @@ interface MovieContextType {
     movie: IMovieDetails | ITvDetails | null,
     mediaType: TMediaType
   ) => DocumentData | null;
+  createNewList: (payload: IList) => void;
+  getUserLists: (payload: IUserList) => Promise<DocumentData[]>;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -152,7 +157,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
       alert("login required");
     }
   };
-
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const getMovieList = async (
     movie: IMovieDetails | ITvDetails | null,
     mediaType: TMediaType
@@ -174,7 +179,6 @@ export function MovieProvider({ children }: MovieProviderProps) {
       alert("user required get movie list");
     }
   };
-
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const addTvToList = async (content: IAddTvToList) => {
     let exists_ = false;
@@ -233,7 +237,6 @@ export function MovieProvider({ children }: MovieProviderProps) {
       alert(ERROR_F_AD_MV_LS);
     }
   };
-
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const getUserMovieList = async (
     content: IGetUserMovieList
@@ -269,7 +272,60 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
     return { movieList, tvList };
   };
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  const createNewList = async (payload: IList) => {
+    let exists_ = false;
+    let docId_ = null;
+    const q = query(
+      collection(db, COLLECTION_LIST),
+      where("userId", "==", payload.userId),
+      where("name", "==", payload.name)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      exists_ = doc.exists();
+      docId_ = doc.id;
+    });
 
+    if (!exists_) {
+      // add new list
+      const docRef = await addDoc(collection(db, COLLECTION_LIST), payload);
+    } else if (exists_ && docId_) {
+      // update list
+      const docRef = doc(db, COLLECTION_LIST, docId_);
+      await updateDoc(docRef, {
+        list: [{ movieId: 347181, poster: "5UaMtHDN4OnALvm19KCO0kPMYwm.jpg" }],
+      });
+    } else {
+      alert("ERROR_F_AD_MV_LS");
+    }
+  };
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  const getUserLists = async (payload: IUserList): Promise<DocumentData[]> => {
+    let _query;
+    if (payload.fullList) {
+      _query = query(
+        collection(db, COLLECTION_LIST),
+        where("userId", "==", payload.userId)
+      );
+    } else {
+      // get only one document
+      // TODO: fix not working
+      _query = query(
+        collection(db, COLLECTION_LIST),
+        where("id", "==", payload.id),
+        where("userId", "==", payload.userId)
+        // movieId for movies and tvs
+      );
+    }
+    const querySnapshot = await getDocs(_query);
+    const userList: DocumentData[] = [];
+
+    querySnapshot.forEach((doc) => {
+      userList.push({ id: doc.id, ...doc.data() });
+    });
+    return userList;
+  };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   return (
     <MovieContext.Provider
@@ -288,6 +344,8 @@ export function MovieProvider({ children }: MovieProviderProps) {
         addTvToList,
         getUserMovieList,
         handleSaveListType,
+        createNewList,
+        getUserLists,
       }}
     >
       {children}

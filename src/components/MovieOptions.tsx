@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
 import { IMovieDetails, TListType } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import { Button, Icon, Segment } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import DataOptions from "./DataOptions";
 
@@ -55,7 +55,11 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
     return (
       <>
         {isAuthenticated ? (
-          <DataOptions listType={tracker?.listType} handleClick={handleClick} />
+          <DataOptions
+            listType={tracker?.listType}
+            handleClick={handleClick}
+            data={movie}
+          />
         ) : (
           <Button icon color="green" onClick={() => navigate("/sign-in")}>
             <Icon name="sign in" /> Entrar

@@ -1,0 +1,87 @@
+import { useState } from "react";
+import { Button, Checkbox, Form, TextArea, Header } from "semantic-ui-react";
+import { useAuth } from "../context/AuthContext";
+import { useMovie } from "../context/MovieContext";
+import { DocumentData } from "firebase/firestore";
+
+const CreateList = () => {
+  const { user } = useAuth();
+  const { createNewList } = useMovie();
+
+  const [list, setList] = useState<DocumentData[] | null>([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
+
+  const handleAddNewList = async () => {
+    //
+    if (!name) {
+      alert("handle add list, name required");
+      return;
+    }
+
+    if (!user) {
+      alert("add new list, user required");
+      return;
+    }
+
+    const payload = {
+      name,
+      description,
+      isPublic,
+      list: [],
+      userId: user.uid,
+    };
+    console.log(payload);
+
+    await createNewList(payload);
+  };
+
+  return (
+    <div
+      style={{
+        maxWidth: "30rem",
+        display: "block",
+        margin: "0 auto",
+        padding: "2rem",
+      }}
+    >
+      <Header as="h3" inverted>
+        Criar uma nova lista
+      </Header>
+
+      <Form inverted onSubmit={handleAddNewList}>
+        <Form.Field>
+          <label>Nome</label>
+          <input
+            placeholder="Nome da lista"
+            value={name}
+            onChange={(e) => setName(e.currentTarget.value)}
+          />
+        </Form.Field>
+        <Form.Field>
+          <label>Descrição</label>
+
+          <TextArea
+            rows={4}
+            placeholder="Tell us more"
+            value={description}
+            onChange={(e) => setDescription(e.currentTarget.value)}
+          />
+        </Form.Field>
+        <Form.Field>
+          <Checkbox
+            label="A lista é pública?"
+            checked={isPublic}
+            onChange={(e) => setIsPublic(!isPublic)}
+          />
+        </Form.Field>
+        <Button color="green" type="submit">
+          Salvar
+        </Button>
+      </Form>
+    </div>
+  );
+};
+
+export default CreateList;

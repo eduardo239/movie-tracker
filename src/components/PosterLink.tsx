@@ -7,11 +7,12 @@ const PosterLink = ({
   mediaType,
 }: {
   id: number;
+
   poster: string | null;
   mediaType: "movie" | "tv";
 }) => {
   return (
-    <Link to={`/${mediaType}?id=${id}`}>
+    <Link to={`/${mediaType}?id=${id}`} key={id}>
       <DataPoster data={{ poster_path: poster }} />
     </Link>
   );

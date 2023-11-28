@@ -24,6 +24,7 @@ export const DAY = "day";
 export const WEEK = "week";
 
 export const COLLECTION_TRACKER = "tracker";
+export const COLLECTION_LIST = "list";
 
 export const ERROR_UM_AP = "useMovie must be used within an AuthProvider";
 export const ERROR_F_AD_MV_LS = "Erro ao adicionar o item na lista dos filmes.";

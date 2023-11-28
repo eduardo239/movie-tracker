@@ -1,11 +1,8 @@
-import { useEffect } from "react";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import useFetch from "../hooks/useFetch";
-import { useParams, useSearchParams } from "react-router-dom";
-import { Card, Grid, Segment } from "semantic-ui-react";
-import PaginationComponent from "../components/Pagination_";
-import PosterLink from "../components/PosterLink";
+import { useParams } from "react-router-dom";
+import { Segment } from "semantic-ui-react";
 import { IMovieResults } from "../abstract/interfaces";
 import { useMovie } from "../context/MovieContext";
 import GridContainer from "../components/GridContainer";

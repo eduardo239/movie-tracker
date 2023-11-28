@@ -153,7 +153,11 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
     return (
       <>
         {isAuthenticated ? (
-          <DataOptions listType={tracker?.listType} handleClick={handleClick} />
+          <DataOptions
+            data={tv}
+            listType={tracker?.listType}
+            handleClick={handleClick}
+          />
         ) : (
           <Button icon color="green" onClick={() => navigate("/sign-in")}>
             <Icon name="sign in" /> Sign In

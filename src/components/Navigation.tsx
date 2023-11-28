@@ -30,7 +30,7 @@ const Navigation = () => {
         <Menu.Item
           name="lists"
           active={activeItem === "lists"}
-          onClick={() => handleItemClick("/list")}
+          onClick={() => handleItemClick("/lists")}
         >
           Listas
         </Menu.Item>

@@ -276,3 +276,23 @@ export interface IPersonTvs {
   total_pages: number;
   total_results: number;
 }
+
+export interface TListItemData {
+  id: number;
+  name: string;
+  poster_path: string;
+  mediaType: "movie" | "tv";
+}
+
+export interface IList {
+  name: string;
+  description: string;
+  isPublic: boolean;
+  list?: TListItemData[];
+  userId: string;
+}
+export interface IUserList {
+  fullList?: boolean;
+  userId: string;
+  id?: string;
+}

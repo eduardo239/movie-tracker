@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import { Container, Segment } from "semantic-ui-react";
 import { useAuth } from "./context/AuthContext";
 import HomePage from "./page/HomePage";
 import SignIn from "./page/SignIn";
 import SignUp from "./page/SignUp";
 import Message from "./components/Message";
+import ListsPage from "./page/ListsPage";
 import ListPage from "./page/ListPage";
 import Navigation from "./components/Navigation";
 import MovieByIdPage from "./page/MovieByIdPage";
@@ -33,6 +33,7 @@ function App() {
         {/*  */}
         <Route path="/genre/:id" element={<MovieByGenre />} />
         {/*  */}
+        <Route path="/lists" element={<ListsPage />} />
         <Route path="/list" element={<ListPage />} />
         {/*  */}
         <Route path="/sign-in" element={<SignIn />} />
