@@ -12,6 +12,7 @@ import { DocumentData } from "firebase/firestore";
 import ListItemType from "../components/ListItemType";
 import CreateList from "./CreateList";
 import { splitAndAddEllipsis } from "../helper";
+import ModalCreateList from "../components/ModalCreateList";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -20,7 +21,6 @@ const ListPage = () => {
 
   const { user } = useAuth();
 
-  const [listType, setListType] = useState<TListType>("all");
   const [userMovieList, setUserMovieList] = useState<DocumentData[]>([]);
   const [userLists, setUserLists] = useState<DocumentData[]>([]);
   const [userTvList, setUserTvList] = useState<DocumentData[]>([]);
@@ -143,11 +143,9 @@ const ListPage = () => {
                 <Table.HeaderCell width={2} textAlign="left">
                   ID
                 </Table.HeaderCell>
-                <Table.HeaderCell width={2} textAlign="left">
-                  Nome
-                </Table.HeaderCell>
-                <Table.HeaderCell width={2} textAlign="left">
-                  Quantidade
+                <Table.HeaderCell textAlign="left">Nome</Table.HeaderCell>
+                <Table.HeaderCell width={1} textAlign="left">
+                  Itens
                 </Table.HeaderCell>
                 <Table.HeaderCell textAlign="left">Descrição</Table.HeaderCell>
                 <Table.HeaderCell width={3} textAlign="center">
@@ -200,7 +198,7 @@ const ListPage = () => {
     },
   ];
 
-  useEffect(() => {
+  const fetchWatchList = () => {
     if (user) {
       const payload: IGetUserMovieList = {
         userId: user.uid,
@@ -214,30 +212,34 @@ const ListPage = () => {
         setUserTvList(response.tvList);
       })();
     }
+  };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, listType]);
-
-  // user lists
-  useEffect(() => {
+  const fetchUserLists = () => {
     if (user) {
       const payload: IUserList = {
         userId: user.uid,
         fullList: true,
       };
-
       (async () => {
         const response = await getUserLists(payload);
         setUserLists(response);
       })();
     }
+  };
 
+  useEffect(() => {
+    fetchWatchList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  // user lists
+  useEffect(() => {
+    fetchUserLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (
-    <div>
-      <CreateList />
+    <div className="grid-list">
       <Tab
         menu={{
           color: "orange",
@@ -247,6 +249,7 @@ const ListPage = () => {
         }}
         panes={panes}
       />
+      <ModalCreateList fetchUserLists={fetchUserLists} />
     </div>
   );
 };

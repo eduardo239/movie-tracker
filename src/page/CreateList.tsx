@@ -4,7 +4,13 @@ import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
 import { DocumentData } from "firebase/firestore";
 
-const CreateList = () => {
+const CreateList = ({
+  fetchUserLists,
+  setOpen,
+}: {
+  fetchUserLists: () => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const { user } = useAuth();
   const { createNewList } = useMovie();
 
@@ -35,6 +41,8 @@ const CreateList = () => {
     console.log(payload);
 
     await createNewList(payload);
+    fetchUserLists();
+    setOpen(false);
   };
 
   return (
@@ -46,11 +54,9 @@ const CreateList = () => {
         padding: "2rem",
       }}
     >
-      <Header as="h3" inverted>
-        Criar uma nova lista
-      </Header>
+      <Header as="h3">Criar uma nova lista</Header>
 
-      <Form inverted onSubmit={handleAddNewList}>
+      <Form onSubmit={handleAddNewList}>
         <Form.Field>
           <label>Nome</label>
           <input

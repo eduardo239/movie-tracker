@@ -13,6 +13,7 @@ import { useAuth } from "../context/AuthContext";
 import { db } from "../config/firebase";
 import { COLLECTION_LIST } from "../abstract/constants";
 import { containsItemWithId } from "../helper";
+import { useNavigate } from "react-router-dom";
 
 const DataOptions = ({
   data,
@@ -31,11 +32,12 @@ const DataOptions = ({
     onClick: () => void;
   };
 
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { getUserLists } = useMovie();
   const [options, setOptions] = useState<DocumentData[]>([]);
 
-  const addToList = async (item: DocumentData) => {
+  const addOrRemoveFromList = async (item: DocumentData) => {
     // get user list
     const docRef = doc(db, COLLECTION_LIST, item.id);
     const docSnap = await getDoc(docRef);
@@ -64,7 +66,6 @@ const DataOptions = ({
         });
       } else {
         // add item to list
-
         const _data: TListItemData = {
           id: data.id,
           name: "title" in data ? data.title : data.name,
@@ -80,12 +81,13 @@ const DataOptions = ({
           list: _newList,
         });
       }
+      fetchUserList();
     } else {
       alert("doc not founded");
     }
   };
 
-  useEffect(() => {
+  const fetchUserList = async () => {
     if (user) {
       const payload: IUserList = {
         userId: user.uid,
@@ -97,12 +99,14 @@ const DataOptions = ({
         if (response) {
           const _options: TOptions[] = [];
           response.forEach((item, index) => {
+            const isItOnTheList = containsItemWithId(item.list, data.id);
+
             const _option = {
               key: "list " + index,
-              icon: "list",
+              icon: isItOnTheList ? "check" : "list",
               text: item.name,
               value: item.name,
-              onClick: () => addToList(item),
+              onClick: () => addOrRemoveFromList(item),
             };
             _options.push(_option);
           });
@@ -110,7 +114,10 @@ const DataOptions = ({
         }
       })();
     }
+  };
 
+  useEffect(() => {
+    fetchUserList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -140,23 +147,18 @@ const DataOptions = ({
       >
         <Icon name="delete" /> Bloquear
       </button>
-      <button
-        className={`${
-          listType === "block" ? "app-button__primary" : ""
-        } app-button`}
-      >
-        <Icon name="list" /> Lista
-      </button>
 
-      <Button.Group color="green">
-        <Button>Salvar</Button>
+      <>
+        <button className="app-button" onClick={() => navigate("/lists")}>
+          <Icon name="list" /> Listas
+        </button>
         <Dropdown
-          className="button icon"
+          className="app-button app-dropdown"
           floating
           options={options}
-          trigger={<></>}
+          trigger={<>Adicionar</>}
         />
-      </Button.Group>
+      </>
     </div>
   );
 };

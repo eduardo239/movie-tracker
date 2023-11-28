@@ -4,6 +4,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -40,6 +41,7 @@ import {
   MEDIA_TV,
 } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
+import { containsItemWithId } from "../helper";
 
 interface MovieContextType {
   page: number;
@@ -326,6 +328,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
     });
     return userList;
   };
+
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   return (
     <MovieContext.Provider

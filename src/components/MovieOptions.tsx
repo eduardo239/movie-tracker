@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
 import { IMovieDetails, TListType } from "../abstract/interfaces";
@@ -12,6 +12,9 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
 
   const { getUserMovieList, handleSaveListType } = useMovie();
   const { isAuthenticated, user } = useAuth();
+
+  const [params, _] = useSearchParams();
+  const [id, setId] = useState<string>(params.get("id") + "");
 
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
@@ -49,7 +52,13 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   useEffect(() => {
     if (user) getMovieList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, movie]);
+  }, [user, movie, params]);
+
+  useEffect(() => {
+    // FIXME: remover bug - ao mudar de movie page, a opção de watch list não altera
+    const _id = params.get("id");
+    if (_id) setId(_id);
+  }, [params]);
 
   if (movie)
     return (

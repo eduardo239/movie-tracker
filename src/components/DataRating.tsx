@@ -31,26 +31,26 @@ const DataRating = ({
                   {data.vote_average.toFixed(2)}
                 </span>
               </Statistic.Value>
-              <Statistic.Label>Rating</Statistic.Label>
+              <Statistic.Label>Avaliação</Statistic.Label>
             </Statistic>
             {data.seasons && (
               <Statistic>
                 <Statistic.Value>{data.seasons}</Statistic.Value>
-                <Statistic.Label>Seasons</Statistic.Label>
+                <Statistic.Label>Temporadas</Statistic.Label>
               </Statistic>
             )}
 
             {data.episodes && (
               <Statistic>
                 <Statistic.Value>{data.episodes}</Statistic.Value>
-                <Statistic.Label>Episodes</Statistic.Label>
+                <Statistic.Label>Episódios</Statistic.Label>
               </Statistic>
             )}
 
             {data.runtime && (
               <Statistic>
                 <Statistic.Value>{data.runtime}</Statistic.Value>
-                <Statistic.Label>Runtime Min.</Statistic.Label>
+                <Statistic.Label>Duração</Statistic.Label>
               </Statistic>
             )}
           </Statistic.Group>

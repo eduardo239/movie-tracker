@@ -33,6 +33,12 @@ export function splitAndAddEllipsis(inputString, length = 20) {
   }
 }
 
+/**
+ *
+ * @param {Array} array
+ * @param {number} itemId
+ * @returns Recebe uma array e retorna true, se um item com o id fornecido for encontrado na array
+ */
 export function containsItemWithId(array, itemId) {
   return array.some((item) => item.id === itemId);
 }

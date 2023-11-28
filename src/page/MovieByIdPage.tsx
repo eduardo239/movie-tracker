@@ -34,9 +34,9 @@ const MovieByIdPage = () => {
   }, [data]);
 
   useEffect(() => {
-    // remover
-    // const _id = params.get("id");
-    // if (_id) setId(_id);
+    // load data when similar movie is selected
+    const _id = params.get("id");
+    if (_id) setId(_id);
 
     return () => {};
   }, [params]);
