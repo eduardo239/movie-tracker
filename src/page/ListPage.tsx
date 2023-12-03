@@ -10,7 +10,7 @@ import { Header } from "semantic-ui-react";
 
 const ListPage = () => {
   const { user } = useAuth();
-  const { getUserLists } = useMovie();
+  // const { handleGetUserLists } = useMovie();
 
   const [userList, setUserList] = useState<DocumentData | null>(null);
   const [params, _] = useSearchParams();
@@ -26,19 +26,16 @@ const ListPage = () => {
         };
 
         // TODO: fix fullList
-        (async () => {
-          const response = await getUserLists(payload);
-          // TODO: fix
-          setUserList(response.filter((x) => x.id === id)[0]);
-        })();
+        // (async () => {
+        //   const response = await handleGetUserLists(payload);
+        //   // TODO: fix
+        //   setUserList(response.filter((x) => x.id === id)[0]);
+        // })();
       }
     } else {
       alert("list id not found");
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, id]);
-  console.log(userList);
 
   if (userList)
     return (

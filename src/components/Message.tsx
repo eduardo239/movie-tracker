@@ -1,6 +1,8 @@
 import { Message } from "semantic-ui-react";
 
-const MessageInfo = ({ message }: { message: string }) => {
+type TMessageInfo = { message: string };
+
+const MessageInfo = ({ message }: TMessageInfo) => {
   return (
     <Message negative>
       <Message.Header>Error</Message.Header>

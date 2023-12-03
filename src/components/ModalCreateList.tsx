@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Button, Header, Modal } from "semantic-ui-react";
 import CreateList from "../page/CreateList";
 
-const ModalCreateList = ({
-  fetchUserLists,
-}: {
+type TModalCreateList = {
   fetchUserLists: () => void;
-}) => {
+};
+
+const ModalCreateList = ({ fetchUserLists }: TModalCreateList) => {
   const [open, setOpen] = useState(false);
 
   return (

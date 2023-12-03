@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
 import {
-  IAddMovieToList,
   IAddTvToList,
   ITvDetails,
+  IGetUserWatchList,
   TListType,
+  ISaveItemToWatchList,
 } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
-import { Button, Divider, Header, Icon, Segment } from "semantic-ui-react";
+import { Button, Header, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
-import { MEDIA_TYPE } from "../abstract/constants";
 import DataOptions from "./DataOptions";
+import { getUserWatchList } from "../fetch/firebase";
 
-const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
+type TTvOptions = { tv: ITvDetails | null };
+
+const TvOptions = ({ tv }: TTvOptions) => {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useAuth();
-  const { addTvToList, getUserMovieList, handleSaveListType } = useMovie();
+  const { handleAddSeasonToTvList, handleSaveToWatchList } = useMovie();
 
   const [seasons, setSeasons] = useState<number[] | null>(null);
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
@@ -25,43 +28,42 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
 
   const getTvList = async () => {
     if (user) {
+      //
       if (tv) {
-        const response = await getUserMovieList({
-          userId: user.uid,
-          movieId: tv.id,
-          fullList: false,
+        const _data: IGetUserWatchList = {
+          data: tv,
           mediaType: "tv",
-        });
-
-        const isTvListArray = Array.isArray(response.tvList);
-        if (isTvListArray && response.tvList.length > 0) {
+          user,
+        };
+        const response = await getUserWatchList(_data);
+        if (!response) {
+          alert("response not found, get movie list");
+          return;
+        }
+        console.log(response.tvList);
+        if (response.tvList.length > 0) {
           setTracker(response.tvList[0]);
+          // atualiza as temporadas salvas
+          setSavedSeasons(response.tvList[0].seasons);
         }
       } else {
-        alert("error tv get tv list");
+        alert("error movie get movie list");
       }
     } else {
-      alert("error user get tv list");
+      alert("error user get movie list");
     }
   };
+  // TODO: refazer get seasons
   const getSeasons = async () => {
     if (user) {
       if (tv) {
-        const response = await getUserMovieList({
-          userId: user.uid,
-          movieId: tv.id,
-          fullList: false,
-          mediaType: "tv",
-        });
+        await getTvList();
 
-        if (response.tvList.length > 0) {
-          const _seasons = response.tvList[0].seasons;
+        // get user watch list, tv seasons
 
-          const isArray = Array.isArray(_seasons);
-          if (isArray && _seasons.length > 0) {
-            setSavedSeasons(response.tvList[0].seasons);
-          }
-        }
+        // if contains, remove
+
+        // else add
       } else {
         alert("error, get seasons,tv required");
       }
@@ -71,7 +73,14 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
   };
 
   const handleClick = async (listType: TListType) => {
-    const response = await handleSaveListType(listType, tv, "tv");
+    const _data: ISaveItemToWatchList = {
+      listType,
+      data: tv,
+      mediaType: "tv",
+      user,
+    };
+    const response = await handleSaveToWatchList(_data);
+    // const response = await handleSaveToWatchList(listType, tv, "tv");
     if (response) {
       setTracker(response.tvList[0]);
     } else {
@@ -88,7 +97,9 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
           // get seasons, and update
 
           // check if exists, filter else add
+
           const _alreadySaved = savedSeasons.some((x) => season === x);
+
           if (_alreadySaved) {
             // remove
             const _updatedList = savedSeasons.filter((x) => x !== season);
@@ -103,7 +114,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
               title: tv.name,
               seasons: _updatedList,
             };
-            await addTvToList(content);
+            await handleAddSeasonToTvList(content);
           } else {
             // save
             // update
@@ -116,7 +127,7 @@ const TvOptions = ({ tv }: { tv: ITvDetails | null }) => {
               title: tv.name,
               seasons: [...savedSeasons, season],
             };
-            await addTvToList(content);
+            await handleAddSeasonToTvList(content);
           }
 
           await getTvList();

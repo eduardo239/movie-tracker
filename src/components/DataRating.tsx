@@ -12,11 +12,11 @@ const DataRating = ({
 }) => {
   const checkRating = (rating: number) => {
     if (rating > 8) {
-      return "green";
+      return "label-success";
     } else if (rating > 5) {
-      return "yellow";
+      return "label-warning";
     } else {
-      return "orange";
+      return "label-danger";
     }
   };
 

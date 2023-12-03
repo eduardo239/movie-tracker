@@ -42,3 +42,16 @@ export function splitAndAddEllipsis(inputString, length = 20) {
 export function containsItemWithId(array, itemId) {
   return array.some((item) => item.id === itemId);
 }
+
+/**
+ *
+ * @param {number} min
+ * @param {number} max
+ * @returns Retorna um número aleatório
+ */
+export function getRandomNumberInRange(min, max) {
+  // Math.random() returns a floating-point number between 0 (inclusive) and 1 (exclusive)
+  // Multiply it by the range and add the minimum value to shift the range
+  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomNumber;
+}

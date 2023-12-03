@@ -7,11 +7,14 @@ import MessageInfo from "./Message";
 import GridContainer from "./GridContainer";
 import DataGroup from "./DataGroup";
 
-const DataSimilar = ({ id }: { id: number }) => {
+type TDataSimilar = { id: number };
+
+const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
+
+const DataSimilar = ({ id }: TDataSimilar) => {
   const { mediaType } = useMovie();
 
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-  const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
   const similarUrl = `${tmdbBaseUrl}/${mediaType}/${id}/similar?api_key=${apiKey}&language=pt-BR&include_adult=${false}&page=${1}`;
 
   const { data, loading, error } = useFetch<IMovieResults | null>(similarUrl);

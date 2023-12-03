@@ -1,11 +1,11 @@
 import { Header, Segment } from "semantic-ui-react";
 import { formatDate } from "../helper";
 
-const DataInfo = ({
-  data,
-}: {
+type TDataInfo = {
   data: { release_date: string; status: string; original_language?: string };
-}) => {
+};
+
+const DataInfo = ({ data }: TDataInfo) => {
   return (
     <>
       <Header as="h3" inverted>

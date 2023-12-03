@@ -1,18 +1,26 @@
 import { IMovieDetails } from "../abstract/interfaces";
+import { getRandomNumberInRange } from "../helper";
 import PosterLink from "./PosterLink";
 
-const DataGroup = ({
-  data,
-  mediaType,
-}: {
+type TDataGroup = {
   data: IMovieDetails[];
   mediaType: "tv" | "movie";
-}) => {
+};
+
+const DataGroup = ({ data, mediaType }: TDataGroup) => {
   return (
     data &&
-    data.map((x) => (
-      <PosterLink id={x.id} poster={x.poster_path} mediaType={mediaType} />
-    ))
+    data.map((x) => {
+      // const id = getRandomNumberInRange(0, 999999);
+      return (
+        <PosterLink
+          key={x.id}
+          id={x.id}
+          poster={x.poster_path}
+          mediaType={mediaType}
+        />
+      );
+    })
   );
 };
 

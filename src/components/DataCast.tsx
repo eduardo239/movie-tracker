@@ -3,7 +3,11 @@ import { ICast } from "../abstract/interfaces";
 import GridContainer from "./GridContainer";
 import PersonGroup from "./PersonGroup";
 
-const DataCast = ({ data }: { data: { credits: { cast: ICast[] } } }) => {
+type TDataCast = {
+  data: { credits: { cast: ICast[] } };
+};
+
+const DataCast = ({ data }: TDataCast) => {
   if (data.credits.cast.length > 0)
     return (
       <>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, Checkbox, Form, TextArea, Header } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
-import { DocumentData } from "firebase/firestore";
 
 const CreateList = ({
   fetchUserLists,
@@ -12,9 +11,8 @@ const CreateList = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { user } = useAuth();
-  const { createNewList } = useMovie();
+  const { handleCreateNewList } = useMovie();
 
-  const [list, setList] = useState<DocumentData[] | null>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(true);
@@ -38,9 +36,8 @@ const CreateList = ({
       list: [],
       userId: user.uid,
     };
-    console.log(payload);
 
-    await createNewList(payload);
+    await handleCreateNewList(payload);
     fetchUserLists();
     setOpen(false);
   };

@@ -1,18 +1,16 @@
-import { Button, Icon, Segment } from "semantic-ui-react";
 import { ITrailers } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import { fetchTrailers } from "../fetch/tmdb";
 import LoadingInfo from "./LoadingInfo";
 import useFetch from "../hooks/useFetch";
 import MessageInfo from "./Message";
+import MessageNotFound from "./MessageNotFound";
 
-const DataTrailer = ({
-  id,
-  mediaType,
-}: {
+type TDataTrailer = {
   id: string;
   mediaType: "movie" | "tv";
-}) => {
+};
+
+const DataTrailer = ({ id, mediaType }: TDataTrailer) => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
@@ -46,9 +44,7 @@ const DataTrailer = ({
             />
           </div>
         ) : (
-          <p className="flex flex-center">
-            <Icon name="exclamation" /> Trailer não encontrado
-          </p>
+          <MessageNotFound message="Trailer não encontrado" />
         )}
         <div className="flex flex-center p-2">
           {data?.results.length > 0 &&

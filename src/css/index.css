@@ -13,8 +13,8 @@
   --color-secondary: #f2711c;
   --color-secondary-darker: #a84e12;
 
-  --color-tertiary: #66b16a;
-  --color-tertiary-darker: #133513;
+  --color-tertiary: #b16679;
+  --color-tertiary-darker: #351313;
 
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
@@ -74,6 +74,21 @@ button {
 
   line-height: 1.15;
 }
+
+/*  */
+.label-success {
+  color: var(--color-primary);
+  background-color: var(--color-primary-darker);
+}
+.label-warning {
+  color: var(--color-secondary);
+  background-color: var(--color-secondary-darker);
+}
+.label-danger {
+  color: var(--color-tertiary);
+  background-color: var(--color-tertiary-darker);
+}
+
 /*  */
 .container {
   max-width: 1150px;

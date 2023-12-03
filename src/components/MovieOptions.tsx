@@ -1,16 +1,27 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
-import { IMovieDetails, TListType } from "../abstract/interfaces";
+import {
+  IMovieDetails,
+  IGetUserWatchList,
+  TListType,
+  ISaveListType,
+  ISaveItemToWatchList,
+} from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { Button, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import DataOptions from "./DataOptions";
+import { getUserWatchList } from "../fetch/firebase";
+import { MEDIA_TYPE } from "../abstract/constants";
 
-const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
+type TMovieOptions = { movie: IMovieDetails | null };
+
+const MovieOptions = ({ movie }: TMovieOptions) => {
   const navigate = useNavigate();
 
-  const { getUserMovieList, handleSaveListType } = useMovie();
+  const { handleSaveToWatchList } = useMovie();
+
   const { isAuthenticated, user } = useAuth();
 
   const [params, _] = useSearchParams();
@@ -21,13 +32,16 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   const getMovieList = async () => {
     if (user) {
       if (movie) {
-        const response = await getUserMovieList({
-          userId: user.uid,
-          movieId: movie.id,
-          fullList: false,
+        const _data: IGetUserWatchList = {
+          data: movie,
           mediaType: "movie",
-        });
-
+          user,
+        };
+        const response = await getUserWatchList(_data);
+        if (!response) {
+          alert("response not found, get movie list");
+          return;
+        }
         if (response.movieList.length > 0) {
           setTracker(response.movieList[0]);
         }
@@ -40,7 +54,13 @@ const MovieOptions = ({ movie }: { movie: IMovieDetails | null }) => {
   };
 
   const handleClick = async (listType: TListType) => {
-    const response = await handleSaveListType(listType, movie, "movie");
+    const _data: ISaveItemToWatchList = {
+      listType,
+      data: movie,
+      mediaType: "movie",
+      user,
+    };
+    const response = await handleSaveToWatchList(_data);
 
     if (response) {
       setTracker(response.movieList[0]);

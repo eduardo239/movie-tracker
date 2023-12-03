@@ -38,7 +38,7 @@ const SignIn = () => {
               label="E-mail"
               value={email}
               setState={setEmail}
-              id="sign-in-email"
+              id="sign-up-email"
             />
 
             <FormField
@@ -46,7 +46,7 @@ const SignIn = () => {
               label="Username"
               value={username}
               setState={setUsername}
-              id="sign-in-username"
+              id="sign-up-username"
             />
 
             <FormField
@@ -54,7 +54,7 @@ const SignIn = () => {
               label="Password"
               value={password}
               setState={setPassword}
-              id="sign-in-password"
+              id="sign-up-password"
             />
 
             <Button color="green" type="submit">

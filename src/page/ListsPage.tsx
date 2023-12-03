@@ -4,20 +4,23 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
   IGetUserMovieList,
+  IList,
   IUserList,
-  TListType,
+  IGetUserWatchList,
 } from "../abstract/interfaces";
 import { Tab, Table, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import ListItemType from "../components/ListItemType";
-import CreateList from "./CreateList";
 import { splitAndAddEllipsis } from "../helper";
 import ModalCreateList from "../components/ModalCreateList";
+import TableDataListHeader from "../components/TableDataListHeader";
+import TableDataListBody from "../components/TableDataListBody";
+import { getUserWatchListFB } from "../fetch/firebase";
 
 const ListPage = () => {
   const navigate = useNavigate();
 
-  const { getUserMovieList, getUserLists } = useMovie();
+  const { handleGetUserLists } = useMovie();
 
   const { user } = useAuth();
 
@@ -31,46 +34,8 @@ const ListPage = () => {
       render: () => (
         <Tab.Pane attached={false} inverted>
           <Table celled compact selectable size="small" inverted>
-            <Table.Header>
-              <Table.Row textAlign="center">
-                <Table.HeaderCell>ID</Table.HeaderCell>
-                <Table.HeaderCell>Nome</Table.HeaderCell>
-                <Table.HeaderCell>Vou Ver</Table.HeaderCell>
-                <Table.HeaderCell>Já Vi</Table.HeaderCell>
-                <Table.HeaderCell>Bloqueado</Table.HeaderCell>
-                <Table.HeaderCell>Tipo</Table.HeaderCell>
-                <Table.HeaderCell>Opções</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-
-            <Table.Body>
-              {userMovieList.map((item) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell
-                    onClick={() => navigate(`/movie?id=${item.movieId}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {item.movieId}
-                  </Table.Cell>
-                  <Table.Cell
-                    onClick={() => navigate(`/movie?id=${item.movieId}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {item.title}
-                  </Table.Cell>
-
-                  <ListItemType listType={item.listType} />
-                  <Table.Cell>{item.mediaType}</Table.Cell>
-                  <Table.Cell textAlign="center" style={{ padding: "2px" }}>
-                    <div className="flex flex-center gap-sm">
-                      <button className="app-button app-button__small">
-                        <Icon name="trash" />
-                      </button>
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
+            <TableDataListHeader />
+            <TableDataListBody list={userMovieList} />
           </Table>
         </Tab.Pane>
       ),
@@ -80,55 +45,8 @@ const ListPage = () => {
       render: () => (
         <Tab.Pane attached={false} inverted>
           <Table celled compact selectable size="small" inverted>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell width={2} textAlign="left">
-                  ID
-                </Table.HeaderCell>
-                <Table.HeaderCell>Nome</Table.HeaderCell>
-                <Table.HeaderCell width={2} textAlign="center">
-                  Vou Ver
-                </Table.HeaderCell>
-                <Table.HeaderCell width={2} textAlign="center">
-                  Já Vi
-                </Table.HeaderCell>
-                <Table.HeaderCell width={2} textAlign="center">
-                  Bloqueado
-                </Table.HeaderCell>
-                {/* <Table.HeaderCell>Tipo</Table.HeaderCell> */}
-                <Table.HeaderCell width={3} textAlign="center">
-                  Opções
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-
-            <Table.Body>
-              {userTvList.map((item) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell
-                    onClick={() => navigate(`/tv?id=${item.movieId}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {item.movieId}
-                  </Table.Cell>
-                  <Table.Cell
-                    onClick={() => navigate(`/tv?id=${item.movieId}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {item.title}
-                  </Table.Cell>
-
-                  <ListItemType listType={item.listType} />
-                  <Table.Cell textAlign="center" style={{ padding: "2px" }}>
-                    <div className="flex flex-center gap-sm">
-                      <button className="app-button app-button__small">
-                        <Icon name="trash" />
-                      </button>
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
+            <TableDataListHeader />
+            <TableDataListBody list={userTvList} />
           </Table>
         </Tab.Pane>
       ),
@@ -173,13 +91,15 @@ const ListPage = () => {
                     onClick={() => navigate(`/list?id=${item.id}`)}
                     style={{ cursor: "pointer" }}
                   >
-                    {item.list.length}
+                    123
                   </Table.Cell>
                   <Table.Cell
                     onClick={() => navigate(`/list?id=${item.id}`)}
                     style={{ cursor: "pointer" }}
                   >
-                    {splitAndAddEllipsis(item.description, 70)}
+                    {item.description
+                      ? splitAndAddEllipsis(item.description, 70)
+                      : "..."}
                   </Table.Cell>
 
                   <Table.Cell textAlign="center" style={{ padding: "2px" }}>
@@ -198,19 +118,19 @@ const ListPage = () => {
     },
   ];
 
-  const fetchWatchList = () => {
+  const fetchUserWatchList = async () => {
     if (user) {
       const payload: IGetUserMovieList = {
-        userId: user.uid,
-        movieId: 1,
         fullList: true,
+        userId: user.uid,
+        mediaType: "movie",
       };
-
-      (async () => {
-        const response = await getUserMovieList(payload);
-        setUserMovieList(response.movieList);
-        setUserTvList(response.tvList);
-      })();
+      const response = await getUserWatchListFB(payload);
+      if (!response) {
+        return;
+      }
+      setUserTvList(response.tvList);
+      setUserMovieList(response.movieList);
     }
   };
 
@@ -220,15 +140,20 @@ const ListPage = () => {
         userId: user.uid,
         fullList: true,
       };
+
       (async () => {
-        const response = await getUserLists(payload);
-        setUserLists(response);
+        const response = await handleGetUserLists(payload);
+
+        if (!response) {
+          return;
+        }
+        setUserLists(response.userLists);
       })();
     }
   };
 
   useEffect(() => {
-    fetchWatchList();
+    fetchUserWatchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

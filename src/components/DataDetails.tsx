@@ -1,19 +1,19 @@
 import { Header, Segment } from "semantic-ui-react";
 
-const DataDetails = ({
-  data,
-}: {
+type TDataDetails = {
   data: {
     title?: string;
     overview: string;
     release_date?: string;
     original_title: string;
   };
-}) => {
+};
+
+const DataDetails = ({ data }: TDataDetails) => {
   return (
     <Segment basic inverted>
       <Header as="h1" inverted>
-        {data.title} ({data.release_date?.split("-")[0]}){" "}
+        {data.title} ({data.release_date?.split("-")[0]})
       </Header>
       <p>
         <span className="date">Original Name: {data.original_title}</span>

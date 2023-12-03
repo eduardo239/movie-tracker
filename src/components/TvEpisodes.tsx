@@ -17,7 +17,9 @@ const _trackerDefault: ITracker = {
   data: [],
 };
 
-const TvEpisodes = ({ data }: { data: ITvDetails }) => {
+type TTvEpisodes = { data: ITvDetails };
+
+const TvEpisodes = ({ data }: TTvEpisodes) => {
   const { user } = useAuth();
 
   const [tvTracker, setTvTracker] = useState<ITracker>(_trackerDefault);

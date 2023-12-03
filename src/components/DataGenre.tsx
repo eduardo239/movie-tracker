@@ -1,8 +1,11 @@
 import { Label, Segment } from "semantic-ui-react";
 import { IGenre } from "../abstract/interfaces";
 import { Link } from "react-router-dom";
+import MessageNotFound from "./MessageNotFound";
 
-const DataGenre = ({ genres }: { genres: IGenre[] }) => {
+type TDataGenre = { genres: IGenre[] };
+
+const DataGenre = ({ genres }: TDataGenre) => {
   if (genres)
     return (
       <Segment inverted>
@@ -17,6 +20,7 @@ const DataGenre = ({ genres }: { genres: IGenre[] }) => {
         </div>
       </Segment>
     );
+  else return <MessageNotFound message="Gêneros não encontrados" />;
 };
 
 export default DataGenre;

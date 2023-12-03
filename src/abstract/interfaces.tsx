@@ -1,3 +1,7 @@
+// - - - - - - - - - - movie - - - - - - - - - -
+
+import { User } from "firebase/auth";
+
 export interface IMovieDetails {
   adult: boolean;
   id: number;
@@ -45,11 +49,11 @@ export interface IMovieResults {
   total_results: number;
 }
 
+// - - - - - - - - - -  genre created network - - - -
 export interface IGenre {
   id: number;
   name: string;
 }
-
 export interface ICreatedBy {
   id: number;
   credit_id: string;
@@ -57,7 +61,6 @@ export interface ICreatedBy {
   gender: number;
   profile_path: string;
 }
-
 export interface INetwork {
   id: number;
   logo_path: string;
@@ -65,6 +68,7 @@ export interface INetwork {
   origin_country: string;
 }
 
+// - - - - - - - - - -  tv - - - - - - - - - -
 export interface ISeason {
   air_date: string;
   episode_count: number;
@@ -75,7 +79,6 @@ export interface ISeason {
   season_number: number;
   vote_average: number;
 }
-
 export interface ITvDetails {
   adult: boolean;
   backdrop_path: string;
@@ -125,6 +128,7 @@ export interface ITvDetailsSimple {
   vote_count: number;
 }
 
+// - - - - - - - - - - trailers - - - - - - - - - -
 export interface IMovieTrailer {
   id: string;
   iso_639_1: string;
@@ -137,59 +141,23 @@ export interface IMovieTrailer {
   size: number;
   type: string;
 }
-
-// remover
-export interface IMovieTrailers {
+type TTrailer = {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: true;
+  published_at: string;
   id: string;
-  results: IMovieTrailer[] | [];
-}
-
-export interface IUserAuth {
-  email: string;
-  password: string;
-  username?: string;
-}
-
-export interface IUser {
-  username: string;
-  email: string;
-}
-export interface IUserAuthForm {
-  label: string;
+};
+export interface ITrailers {
   id: string;
-  type?: string;
-  value: string;
-  setState: React.Dispatch<React.SetStateAction<string>>;
+  results: TTrailer[];
 }
-
-export type TMediaType = "movie" | "tv";
-
-export type TListType = "all" | "see" | "saw" | "block";
-
-export interface IAddMovieToList {
-  mediaType: TMediaType;
-  listType: TListType;
-  movieId: number;
-  userId: string;
-  poster: string;
-  title: string;
-}
-export interface IAddTvToList {
-  mediaType: "movie" | "tv";
-  listType: TListType;
-  movieId: number;
-  userId: string;
-  poster: string;
-  title: string;
-  seasons: number[];
-}
-export interface IGetUserMovieList {
-  userId: string;
-  movieId: number;
-  fullList: boolean;
-  mediaType?: "movie" | "tv";
-}
-
+// - - - - - - - - - - cast - - - - - - - - - -
 export interface ICast {
   adult: boolean;
   cast_id?: number;
@@ -204,45 +172,11 @@ export interface ICast {
   popularity: number;
   profile_path: string;
 }
-
 export interface ICredits {
   cast: ICast[];
   crew: [];
   id: number;
 }
-
-export interface ITrackerEpisodes {
-  episode_number: number;
-  watched: boolean;
-}
-
-export interface ITrackerSeasons {
-  episodes: ITrackerEpisodes[];
-  season_number: number;
-}
-
-export interface ITrackerTv {
-  data: ITrackerSeasons[];
-}
-
-type TTrailer = {
-  iso_639_1: string;
-  iso_3166_1: string;
-  name: string;
-  key: string;
-  site: string;
-  size: number;
-  type: string;
-  official: true;
-  published_at: string;
-  id: string;
-};
-
-export interface ITrailers {
-  id: string;
-  results: TTrailer[];
-}
-
 export interface IPerson {
   adult: boolean;
   also_known_as: [];
@@ -263,7 +197,6 @@ export interface IPerson {
   popularity: number;
   profile_path: string;
 }
-
 export interface IPersonMovies {
   page: number;
   results: IMovieDetailsSimple[];
@@ -276,14 +209,54 @@ export interface IPersonTvs {
   total_pages: number;
   total_results: number;
 }
+// - - - - - - - - - - type - - - - - - - - - -
+export type TMediaType = "movie" | "tv";
+export type TListType = "all" | "see" | "saw" | "block";
 
+// - - - - - - - - - - payload add movie - - - - - - - - - -
+export interface IAddMovieToList {
+  mediaType: TMediaType;
+  listType: TListType;
+  movieId: number;
+  userId: string;
+  poster: string;
+  title: string;
+}
+// - - - - - - - - - - payload add tv - - - - - - - - - -
+export interface IAddTvToList {
+  mediaType: "movie" | "tv";
+  listType: TListType;
+  movieId: number;
+  userId: string;
+  poster: string;
+  title: string;
+  seasons: number[];
+}
+// - - - - - - - - - - user list - - - - - - - - - -
+export interface IGetUserMovieList {
+  userId: string;
+  movieId?: number;
+  fullList: boolean;
+  mediaType?: "movie" | "tv";
+}
+export interface ITrackerSeasons {
+  episodes: ITrackerEpisodes[];
+  season_number: number;
+}
+export interface ITrackerTv {
+  data: ITrackerSeasons[];
+}
+export interface ITrackerEpisodes {
+  episode_number: number;
+  watched: boolean;
+}
+// - - - - - - - - - - list item - - - - - - - - - -
 export interface TListItemData {
   id: number;
   name: string;
   poster_path: string;
   mediaType: "movie" | "tv";
 }
-
 export interface IList {
   name: string;
   description: string;
@@ -295,4 +268,42 @@ export interface IUserList {
   fullList?: boolean;
   userId: string;
   id?: string;
+}
+// - - - - - - - - - -  user - - - - - - - - - -
+export interface IUserAuth {
+  email: string;
+  password: string;
+  username?: string;
+}
+export interface IUser {
+  username: string;
+  email: string;
+}
+export interface IUserAuthForm {
+  label: string;
+  id: string;
+  type?: string;
+  value: string;
+  setState: React.Dispatch<React.SetStateAction<string>>;
+}
+
+//
+
+export interface ISaveItemToWatchList {
+  listType: TListType;
+  data: IMovieDetails | ITvDetails | null;
+  mediaType: TMediaType;
+  user: null | User;
+}
+
+export interface IGetUserWatchList {
+  mediaType: TMediaType;
+  data: IMovieDetails | ITvDetails | null;
+  user: null | User;
+}
+
+export interface ISaveListType {
+  listType: TListType;
+  data: IMovieDetails | ITvDetails | null;
+  mediaType: TMediaType;
 }

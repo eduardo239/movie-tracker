@@ -3,6 +3,7 @@ import {
   IMovieDetails,
   ITvDetails,
   IUserList,
+  IGetUserWatchList,
   TListItemData,
   TListType,
 } from "../abstract/interfaces";
@@ -14,27 +15,26 @@ import { db } from "../config/firebase";
 import { COLLECTION_LIST } from "../abstract/constants";
 import { containsItemWithId } from "../helper";
 import { useNavigate } from "react-router-dom";
+import { getUserWatchList } from "../fetch/firebase";
 
-const DataOptions = ({
-  data,
-  listType,
-  handleClick,
-}: {
+type TDataOptions = {
   data: IMovieDetails | ITvDetails;
   listType: TListType;
   handleClick: (listType: TListType) => void;
-}) => {
-  type TOptions = {
-    key: string;
-    icon: string;
-    text: string;
-    value: string;
-    onClick: () => void;
-  };
+};
 
+type TOptions = {
+  key: string;
+  icon: string;
+  text: string;
+  value: string;
+  onClick: () => void;
+};
+
+const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { getUserLists } = useMovie();
+  const { mediaType } = useMovie();
   const [options, setOptions] = useState<DocumentData[]>([]);
 
   const addOrRemoveFromList = async (item: DocumentData) => {
@@ -89,29 +89,34 @@ const DataOptions = ({
 
   const fetchUserList = async () => {
     if (user) {
-      const payload: IUserList = {
-        userId: user.uid,
-        fullList: true,
-      };
-
       (async () => {
-        const response = await getUserLists(payload);
-        if (response) {
-          const _options: TOptions[] = [];
-          response.forEach((item, index) => {
-            const isItOnTheList = containsItemWithId(item.list, data.id);
-
-            const _option = {
-              key: "list " + index,
-              icon: isItOnTheList ? "check" : "list",
-              text: item.name,
-              value: item.name,
-              onClick: () => addOrRemoveFromList(item),
-            };
-            _options.push(_option);
-          });
-          setOptions(_options);
-        }
+        // Antes::
+        // const payload: IUserList = {
+        //   userId: user.uid,
+        //   fullList: true,
+        // };
+        // const payload: IGetUserWatchList = {
+        //   data: null,
+        //   mediaType: mediaType,
+        //   user: user,
+        // };
+        // const response = await getUserWatchList(payload);
+        // if (response) {
+        //   console.log(response);
+        //   const _options: TOptions[] = [];
+        //   response.forEach((item, index) => {
+        //     const isItOnTheList = containsItemWithId(item.list, data.id);
+        //     const _option = {
+        //       key: "list " + index,
+        //       icon: isItOnTheList ? "check" : "list",
+        //       text: item.name,
+        //       value: item.name,
+        //       onClick: () => addOrRemoveFromList(item),
+        //     };
+        //     _options.push(_option);
+        //   });
+        //   setOptions(_options);
+        // }
       })();
     }
   };
