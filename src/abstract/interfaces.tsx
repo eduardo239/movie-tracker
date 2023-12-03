@@ -20,6 +20,7 @@ export interface IMovieDetails {
   status: string;
   original_language: string;
   release_date: string;
+  media_type?: "movie" | "tv";
 }
 
 export interface IMovieDetailsSimple {
@@ -255,7 +256,7 @@ export interface TListItemData {
   id: number;
   name: string;
   poster_path: string;
-  mediaType: "movie" | "tv";
+  media_type: "movie" | "tv";
 }
 export interface IList {
   name: string;
@@ -287,21 +288,18 @@ export interface IUserAuthForm {
   setState: React.Dispatch<React.SetStateAction<string>>;
 }
 
-//
-
+// - - - - - - - - - -  watch list - - - - - - - - - -
 export interface ISaveItemToWatchList {
   listType: TListType;
   data: IMovieDetails | ITvDetails | null;
   mediaType: TMediaType;
   user: null | User;
 }
-
 export interface IGetUserWatchList {
   mediaType: TMediaType;
   data: IMovieDetails | ITvDetails | null;
   user: null | User;
 }
-
 export interface ISaveListType {
   listType: TListType;
   data: IMovieDetails | ITvDetails | null;

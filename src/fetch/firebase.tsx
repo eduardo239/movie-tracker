@@ -1,15 +1,10 @@
-import { User } from "firebase/auth";
 import {
   IAddMovieToList,
   IAddTvToList,
   IGetUserMovieList,
   IList,
-  IMovieDetails,
-  ITvDetails,
   IUserList,
   IGetUserWatchList,
-  TListType,
-  TMediaType,
   ISaveItemToWatchList,
 } from "../abstract/interfaces";
 import {
@@ -26,11 +21,11 @@ import { db } from "../config/firebase";
 import {
   COLLECTION_LIST,
   COLLECTION_TRACKER,
-  ERROR_F_AD_MV_LS,
   ERROR_F_AD_TV_LS,
   MEDIA_TV,
 } from "../abstract/constants";
 
+// - - - - - - - - - - - SET WATCH LIST - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param payload listType, data, mediaType, user
@@ -38,7 +33,10 @@ import {
  */
 export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
   if (payload.user) {
+    //
     if (payload.data) {
+      // valida se é do tipo filme
+
       if ("title" in payload.data) {
         const content: IAddMovieToList = {
           mediaType: "movie",
@@ -58,6 +56,8 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
 
         const response = await getUserWatchList(_data);
         return response;
+
+        // valida se é do tipo série
       } else if ("name" in payload.data) {
         const content: IAddMovieToList = {
           mediaType: "tv",
@@ -86,6 +86,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
   }
 };
 
+// - - - - - - - - - - - SET WATCH LIST FB - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param content recebe mediaType, listType, movieId, userId, poster e title
@@ -93,6 +94,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
 const saveItemToWatchListFB = async (content: IAddMovieToList) => {
   let exists_ = false;
   let docId_ = null;
+
   const q = query(
     collection(db, COLLECTION_TRACKER),
     where("userId", "==", content.userId),
@@ -114,11 +116,10 @@ const saveItemToWatchListFB = async (content: IAddMovieToList) => {
     await updateDoc(docRef, {
       listType: content.listType,
     });
-  } else {
-    alert(ERROR_F_AD_MV_LS);
   }
 };
 
+// - - - - - - - - - - - GET WATCH LIST - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param payload movie, mediaType, user
@@ -144,6 +145,7 @@ export const getUserWatchList = async (payload: IGetUserWatchList) => {
   }
 };
 
+// - - - - - - - - - - - GET WATCH LIST FB - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param content user, data, mediaType
@@ -184,6 +186,7 @@ export const getUserWatchListFB = async (
   return { movieList, tvList };
 };
 
+// - - - - - - - - - - - SET TV SEASON - - - - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param content mediaType, listType, movieId, userId, poster, title, seasons[]
@@ -219,6 +222,7 @@ export const saveTvSeasonFB = async (content: IAddTvToList) => {
   }
 };
 
+// - - - - - - - - - - - SET LISTS - - - - - - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param payload name, description, isPublic, list[], userId
@@ -253,6 +257,12 @@ export const saveNewListFB = async (payload: IList) => {
   }
 };
 
+// - - - - - - - - - - - GET LISTS - - - - - - - - - - - - - - - - - - - - - - - //
+/**
+ *
+ * @param content busca as listas do usuário no FB
+ * @returns um objeto userLists, com a lista
+ */
 export const getUserListsFB = async (
   content: IUserList
 ): Promise<{ userLists: DocumentData[] }> => {

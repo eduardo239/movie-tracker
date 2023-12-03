@@ -5,7 +5,6 @@ import {
   IMovieDetails,
   IGetUserWatchList,
   TListType,
-  ISaveListType,
   ISaveItemToWatchList,
 } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
@@ -13,7 +12,6 @@ import { Button, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import DataOptions from "./DataOptions";
 import { getUserWatchList } from "../fetch/firebase";
-import { MEDIA_TYPE } from "../abstract/constants";
 
 type TMovieOptions = { movie: IMovieDetails | null };
 
@@ -21,7 +19,6 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
   const navigate = useNavigate();
 
   const { handleSaveToWatchList } = useMovie();
-
   const { isAuthenticated, user } = useAuth();
 
   const [params, _] = useSearchParams();
@@ -29,9 +26,11 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
 
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  const getMovieList = async () => {
+  const handleGetUserWatchList = async () => {
     if (user) {
+      //
       if (movie) {
+        //
         const _data: IGetUserWatchList = {
           data: movie,
           mediaType: "movie",
@@ -39,17 +38,17 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
         };
         const response = await getUserWatchList(_data);
         if (!response) {
-          alert("response not found, get movie list");
+          alert("[handleGetUserWatchList] - response not found");
           return;
         }
         if (response.movieList.length > 0) {
           setTracker(response.movieList[0]);
         }
       } else {
-        alert("error movie get movie list");
+        alert("[getMovieList] - movie not found");
       }
     } else {
-      alert("error user get movie list");
+      alert("[getMovieList] - user not found");
     }
   };
 
@@ -65,20 +64,16 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
     if (response) {
       setTracker(response.movieList[0]);
     } else {
-      alert("error get response, handle click");
+      alert("[handleClick] - response not found");
     }
   };
 
   useEffect(() => {
-    if (user) getMovieList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, movie, params]);
+    if (user && movie) handleGetUserWatchList();
 
-  useEffect(() => {
-    // FIXME: remover bug - ao mudar de movie page, a opção de watch list não altera
-    const _id = params.get("id");
-    if (_id) setId(_id);
-  }, [params]);
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, movie]);
 
   if (movie)
     return (

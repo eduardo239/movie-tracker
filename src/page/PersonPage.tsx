@@ -27,7 +27,7 @@ const PersonPage = () => {
       render: () => (
         <Tab.Pane attached={false} inverted>
           <GridContainer centered gap="gap-sm">
-            <DataGroup data={data ? movies : []} mediaType="movie" />
+            <DataGroup data={data ? movies : []} />
           </GridContainer>
         </Tab.Pane>
       ),
@@ -37,7 +37,7 @@ const PersonPage = () => {
       render: () => (
         <Tab.Pane attached={false} inverted>
           <GridContainer centered gap="gap-sm">
-            <DataGroup data={data ? tvs : []} mediaType="tv" />
+            <DataGroup data={data ? tvs : []} />
           </GridContainer>
         </Tab.Pane>
       ),

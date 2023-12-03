@@ -14,8 +14,6 @@ const Navigation = () => {
     navigate(`${path}`);
   };
 
-  const url = "https://api.themoviedb.org/3/movie/latest";
-
   return (
     <Menu>
       <Menu.Item

@@ -29,3 +29,13 @@ export const COLLECTION_LIST = "list";
 export const ERROR_UM_AP = "useMovie must be used within an AuthProvider";
 export const ERROR_F_AD_MV_LS = "Erro ao adicionar o item na lista dos filmes.";
 export const ERROR_F_AD_TV_LS = "Erro ao adicionar o item na lista das séries.";
+export const ERROR_F_GET_SEA_TV = "[getSeasons] Erro. Série não encontrada.";
+export const ERROR_F_GET_SEA_USR = "[getSeasons] Erro. Usuário não encontrado.";
+export const ERROR_F_GET_LIS_RES = "[getTvList] Erro. Nada encontrado.";
+export const ERROR_F_GET_LIS_USR = "[getTvList] Erro. Usuário não encontrado.";
+export const ERROR_F_GET_LIS_TV = "[getTvList] Erro. Série não encontrada.";
+
+export const ERR_NOT_FOUND = "Não encontrado.";
+export const ERR_USER_NOT_FOUND = "Usuário não encontrado.";
+export const ERR_TV_NOT_FOUND = "Série não encontrado.";
+export const ERR_MOVIE_NOT_FOUND = "Filme não encontrado.";

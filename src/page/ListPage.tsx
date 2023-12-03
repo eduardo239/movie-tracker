@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import { Header } from "semantic-ui-react";
+import { getUserListsFB } from "../fetch/firebase";
 
 const ListPage = () => {
   const { user } = useAuth();
@@ -22,35 +23,29 @@ const ListPage = () => {
         const payload: IUserList = {
           userId: user.uid,
           id: id,
-          fullList: true,
         };
 
-        // TODO: fix fullList
-        // (async () => {
-        //   const response = await handleGetUserLists(payload);
-        //   // TODO: fix
-        //   setUserList(response.filter((x) => x.id === id)[0]);
-        // })();
+        (async () => {
+          const response = await getUserListsFB(payload);
+          setUserList(response.userLists.filter((x) => x.id === id)[0]);
+        })();
       }
-    } else {
-      alert("list id not found");
     }
   }, [user, id]);
-
+  console.log(userList);
   if (userList)
     return (
       <div>
-        <Header textAlign="center" as="h3" inverted>
-          Lista: {userList.name}
+        <Header textAlign="center" as="h1" inverted>
+          Nome: {userList.name}
         </Header>
+        <p className="center p-2">{userList.description}</p>
         <div>
           {userList && userList.list.length > 0 && (
             <div>
               <GridContainer centered gap="gap-sm">
-                <DataGroup
-                  data={userList ? userList.list.reverse() : []}
-                  mediaType={"movie"}
-                />
+                <DataGroup data={userList ? userList.list.reverse() : []} />
+                {/* TODO: alternar entre mediaType */}
               </GridContainer>
             </div>
           )}

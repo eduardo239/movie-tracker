@@ -13,6 +13,7 @@ import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
 import DataOptions from "./DataOptions";
 import { getUserWatchList } from "../fetch/firebase";
+import { ERROR_F_GET_SEA_TV, ERROR_F_GET_SEA_USR } from "../abstract/constants";
 
 type TTvOptions = { tv: ITvDetails | null };
 
@@ -26,7 +27,7 @@ const TvOptions = ({ tv }: TTvOptions) => {
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  const getTvList = async () => {
+  const handleGetUserWatchList = async () => {
     if (user) {
       //
       if (tv) {
@@ -37,38 +38,33 @@ const TvOptions = ({ tv }: TTvOptions) => {
         };
         const response = await getUserWatchList(_data);
         if (!response) {
-          alert("response not found, get movie list");
+          alert("[handleGetUserWatchList] - response not found");
           return;
         }
-        console.log(response.tvList);
+
         if (response.tvList.length > 0) {
           setTracker(response.tvList[0]);
           // atualiza as temporadas salvas
           setSavedSeasons(response.tvList[0].seasons);
         }
       } else {
-        alert("error movie get movie list");
+        alert("[handleGetUserWatchList] TV not found");
       }
     } else {
-      alert("error user get movie list");
+      alert("[handleGetUserWatchList] User not found");
     }
   };
-  // TODO: refazer get seasons
+
   const getSeasons = async () => {
     if (user) {
+      //
       if (tv) {
-        await getTvList();
-
-        // get user watch list, tv seasons
-
-        // if contains, remove
-
-        // else add
+        await handleGetUserWatchList();
       } else {
-        alert("error, get seasons,tv required");
+        alert("[getSeasons] - TV not found");
       }
     } else {
-      alert("error, get seasons, user required");
+      alert("[getSeasons] - User not found");
     }
   };
 
@@ -94,10 +90,7 @@ const TvOptions = ({ tv }: TTvOptions) => {
       if (tv) {
         //
         if (tracker) {
-          // get seasons, and update
-
           // check if exists, filter else add
-
           const _alreadySaved = savedSeasons.some((x) => season === x);
 
           if (_alreadySaved) {
@@ -117,7 +110,7 @@ const TvOptions = ({ tv }: TTvOptions) => {
             await handleAddSeasonToTvList(content);
           } else {
             // save
-            // update
+
             const content: IAddTvToList = {
               mediaType: "tv",
               listType: tracker.listType,
@@ -130,7 +123,7 @@ const TvOptions = ({ tv }: TTvOptions) => {
             await handleAddSeasonToTvList(content);
           }
 
-          await getTvList();
+          await handleGetUserWatchList();
           await getSeasons();
         } else {
           alert("select see,saw,block");
@@ -145,6 +138,7 @@ const TvOptions = ({ tv }: TTvOptions) => {
 
   useEffect(() => {
     if (tv) {
+      //
       if (tv.seasons && tv.seasons.length > 0) {
         // add seasons to buttons options
         const _array = Array.from(Array(tv.seasons.length).keys());
@@ -155,7 +149,7 @@ const TvOptions = ({ tv }: TTvOptions) => {
   }, [tv]);
 
   useEffect(() => {
-    if (user) getTvList();
+    if (user) handleGetUserWatchList();
     if (user) getSeasons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, tv]);

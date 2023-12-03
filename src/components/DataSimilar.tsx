@@ -31,10 +31,7 @@ const DataSimilar = ({ id }: TDataSimilar) => {
         </Header>
 
         <GridContainer centered gap="gap-sm">
-          <DataGroup
-            data={data ? data.results.slice(0, 10) : []}
-            mediaType={mediaType}
-          />
+          <DataGroup data={data ? data.results.slice(0, 10) : []} />
         </GridContainer>
       </>
     );

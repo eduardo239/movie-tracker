@@ -1,9 +1,8 @@
-import { Button, Dropdown, Icon, Segment } from "semantic-ui-react";
+import { Dropdown, Icon } from "semantic-ui-react";
 import {
   IMovieDetails,
   ITvDetails,
   IUserList,
-  IGetUserWatchList,
   TListItemData,
   TListType,
 } from "../abstract/interfaces";
@@ -14,8 +13,6 @@ import { useAuth } from "../context/AuthContext";
 import { db } from "../config/firebase";
 import { COLLECTION_LIST } from "../abstract/constants";
 import { containsItemWithId } from "../helper";
-import { useNavigate } from "react-router-dom";
-import { getUserWatchList } from "../fetch/firebase";
 
 type TDataOptions = {
   data: IMovieDetails | ITvDetails;
@@ -32,12 +29,12 @@ type TOptions = {
 };
 
 const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const { mediaType } = useMovie();
+  const { handleGetUserLists } = useMovie();
+
   const [options, setOptions] = useState<DocumentData[]>([]);
 
-  const addOrRemoveFromList = async (item: DocumentData) => {
+  const toggleItemFromList = async (item: DocumentData) => {
     // get user list
     const docRef = doc(db, COLLECTION_LIST, item.id);
     const docSnap = await getDoc(docRef);
@@ -47,7 +44,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
       _doc = { id: docSnap.id, ...docSnap.data() };
     } else {
       // docSnap.data() will be undefined in this case
-      alert("No such document!");
+      alert("[addOrRemoveFromList] - No such document!");
     }
 
     if (_doc) {
@@ -70,7 +67,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
           id: data.id,
           name: "title" in data ? data.title : data.name,
           poster_path: data.poster_path,
-          mediaType: "title" in data ? "movie" : "tv",
+          media_type: "title" in data ? "movie" : "tv",
         };
         // if has title is movie, else tv
         const _newList = _doc.list;
@@ -83,87 +80,79 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
       }
       fetchUserList();
     } else {
-      alert("doc not founded");
+      alert("[addOrRemoveFromList] - DOC not found");
     }
   };
 
   const fetchUserList = async () => {
     if (user) {
       (async () => {
-        // Antes::
-        // const payload: IUserList = {
-        //   userId: user.uid,
-        //   fullList: true,
-        // };
-        // const payload: IGetUserWatchList = {
-        //   data: null,
-        //   mediaType: mediaType,
-        //   user: user,
-        // };
-        // const response = await getUserWatchList(payload);
-        // if (response) {
-        //   console.log(response);
-        //   const _options: TOptions[] = [];
-        //   response.forEach((item, index) => {
-        //     const isItOnTheList = containsItemWithId(item.list, data.id);
-        //     const _option = {
-        //       key: "list " + index,
-        //       icon: isItOnTheList ? "check" : "list",
-        //       text: item.name,
-        //       value: item.name,
-        //       onClick: () => addOrRemoveFromList(item),
-        //     };
-        //     _options.push(_option);
-        //   });
-        //   setOptions(_options);
-        // }
+        const _data: IUserList = {
+          userId: user.uid,
+        };
+        const response = await handleGetUserLists(_data);
+
+        if (!response) {
+          alert("[fetchUserList] - response not found.");
+        }
+
+        const _array = checkUserList(response.userLists);
+        setOptions(_array);
       })();
+    } else {
+      alert("[fetchUserList] - User not found");
     }
+  };
+
+  const checkUserList = (array: DocumentData[]) => {
+    const _options: TOptions[] = [];
+
+    array.forEach((item, index) => {
+      if (item.list) {
+        const isItOnTheList = containsItemWithId(item.list, data.id);
+        const _option = {
+          key: "list " + index,
+          icon: isItOnTheList ? "check" : "list",
+          text: item.name,
+          value: item.name,
+          onClick: () => toggleItemFromList(item),
+        };
+        _options.push(_option);
+      }
+    });
+    return _options;
   };
 
   useEffect(() => {
     fetchUserList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, data]);
+
+  const handleButton = (listTypeLabel: TListType, label: string) => {
+    return (
+      <button
+        className={`${
+          listType === listTypeLabel ? "app-button__primary" : ""
+        } app-button`}
+        onClick={() => handleClick(listTypeLabel)}
+      >
+        <Icon name="add" /> {label}
+      </button>
+    );
+  };
 
   return (
     <div className="flex flex-center gap-sm ">
-      <button
-        className={`${
-          listType === "see" ? "app-button__primary" : ""
-        } app-button`}
-        onClick={() => handleClick("see")}
-      >
-        <Icon name="add" /> Vou Ver
-      </button>
-      <button
-        className={`${
-          listType === "saw" ? "app-button__primary" : ""
-        } app-button`}
-        onClick={() => handleClick("saw")}
-      >
-        <Icon name="check" /> Já Vi
-      </button>
-      <button
-        className={`${
-          listType === "block" ? "app-button__primary" : ""
-        } app-button`}
-        onClick={() => handleClick("block")}
-      >
-        <Icon name="delete" /> Bloquear
-      </button>
+      {handleButton("see", "Vou Ver")}
+      {handleButton("saw", "Já Vi")}
+      {handleButton("block", "Bloquear")}
 
-      <>
-        <button className="app-button" onClick={() => navigate("/lists")}>
-          <Icon name="list" /> Listas
-        </button>
-        <Dropdown
-          className="app-button app-dropdown"
-          floating
-          options={options}
-          trigger={<>Adicionar</>}
-        />
-      </>
+      <Dropdown
+        className="app-button app-dropdown"
+        floating
+        options={options}
+        trigger={<>Adicionar</>}
+      />
     </div>
   );
 };

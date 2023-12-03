@@ -27,7 +27,7 @@ const MovieByGenre = () => {
       {/* <PaginationComponent /> */}
 
       <GridContainer centered gap="gap-sm">
-        <DataGroup data={data ? data.results : []} mediaType={mediaType} />
+        <DataGroup data={data ? data.results : []} />
       </GridContainer>
 
       {/* <PaginationComponent /> */}
