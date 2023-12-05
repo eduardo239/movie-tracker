@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
 import LoadingInfo from "../components/LoadingInfo";
+import TitleInfo from "../components/TitleInfo";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const SignIn = () => {
       <Grid.Column mobile={16} tablet={10} computer={5}>
         <Segment padded>
           <Form onSubmit={handleSubmit}>
-            <Header as="h3">Registrar</Header>
+            <TitleInfo title="Registrar" />
 
             <FormField
               type="email"

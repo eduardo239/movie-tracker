@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Checkbox, Form, TextArea, Header } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
+import TitleInfo from "../components/TitleInfo";
 
 const CreateList = ({
   fetchUserLists,
@@ -51,7 +52,7 @@ const CreateList = ({
         padding: "2rem",
       }}
     >
-      <Header as="h3">Criar uma nova lista</Header>
+      <TitleInfo title="Criar uma nova lista" />
 
       <Form onSubmit={handleAddNewList}>
         <Form.Field>

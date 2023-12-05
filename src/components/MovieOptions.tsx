@@ -18,39 +18,13 @@ type TMovieOptions = { movie: IMovieDetails | null };
 const MovieOptions = ({ movie }: TMovieOptions) => {
   const navigate = useNavigate();
 
-  const { handleSaveToWatchList } = useMovie();
+  const { handleSaveToWatchList, handleGetUserWatchList } = useMovie();
   const { isAuthenticated, user } = useAuth();
 
   const [params, _] = useSearchParams();
   const [id, setId] = useState<string>(params.get("id") + "");
 
   const [tracker, setTracker] = useState<DocumentData | null>(null);
-
-  const handleGetUserWatchList = async () => {
-    if (user) {
-      //
-      if (movie) {
-        //
-        const _data: IGetUserWatchList = {
-          data: movie,
-          mediaType: "movie",
-          user,
-        };
-        const response = await getUserWatchList(_data);
-        if (!response) {
-          alert("[handleGetUserWatchList] - response not found");
-          return;
-        }
-        if (response.movieList.length > 0) {
-          setTracker(response.movieList[0]);
-        }
-      } else {
-        alert("[getMovieList] - movie not found");
-      }
-    } else {
-      alert("[getMovieList] - user not found");
-    }
-  };
 
   const handleClick = async (listType: TListType) => {
     const _data: ISaveItemToWatchList = {
@@ -69,7 +43,16 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
   };
 
   useEffect(() => {
-    if (user && movie) handleGetUserWatchList();
+    if (user && movie) {
+      (async () => {
+        const response: DocumentData | null = await handleGetUserWatchList({
+          data: movie,
+          mediaType: "movie",
+          user,
+        });
+        if (response) setTracker(response.userWatchList);
+      })();
+    }
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps

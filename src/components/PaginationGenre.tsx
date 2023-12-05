@@ -1,10 +1,13 @@
 import { Pagination } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const Pagination_ = () => {
+const PaginationGenre = () => {
   const navigate = useNavigate();
-  const { setPage, page, mediaType } = useMovie();
+  const { mediaType } = useMovie();
+
+  const [page, setPage] = useState(1);
 
   return (
     <div className="flex flex-center p-2">
@@ -29,4 +32,4 @@ const Pagination_ = () => {
   );
 };
 
-export default Pagination_;
+export default PaginationGenre;

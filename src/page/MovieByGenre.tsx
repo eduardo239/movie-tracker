@@ -7,6 +7,7 @@ import { IMovieResults } from "../abstract/interfaces";
 import { useMovie } from "../context/MovieContext";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
+import PaginationGenre from "../components/PaginationGenre";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -24,13 +25,12 @@ const MovieByGenre = () => {
 
   return (
     <Segment inverted basic style={{ margin: 0 }}>
-      {/* <PaginationComponent /> */}
+      <PaginationGenre />
 
       <GridContainer centered gap="gap-sm">
         <DataGroup data={data ? data.results : []} />
       </GridContainer>
-
-      {/* <PaginationComponent /> */}
+      <PaginationGenre />
     </Segment>
   );
 };

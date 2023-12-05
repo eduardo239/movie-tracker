@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ITvDetails } from "../abstract/interfaces";
-import { useAuth } from "../context/AuthContext";
-import { Button, Header, Segment } from "semantic-ui-react";
+import { Button, Segment } from "semantic-ui-react";
 import { createArrayOfArrays } from "../helper";
+import TitleInfo from "./TitleInfo";
 
 /*
 season starts with 0
@@ -20,10 +20,9 @@ const _trackerDefault: ITracker = {
 type TTvEpisodes = { data: ITvDetails };
 
 const TvEpisodes = ({ data }: TTvEpisodes) => {
-  const { user } = useAuth();
-
   const [tvTracker, setTvTracker] = useState<ITracker>(_trackerDefault);
 
+  // TODO:
   function addItemToArrayIfNotExists(season: number, episode: number) {
     const exists = tvTracker.data[season].some((x) => x === episode);
 
@@ -49,7 +48,8 @@ const TvEpisodes = ({ data }: TTvEpisodes) => {
     <Segment basic>
       {data.seasons.map((season, indexSeason) => (
         <Segment key={indexSeason}>
-          <Header as="h3">Temporada {indexSeason + 1}</Header>
+          <TitleInfo title={`Temporada ${indexSeason + 1}`} />
+
           <div className="flex flex-center">
             {[...Array(season.episode_count).keys()].map((ep, indexEpisode) => (
               <Button

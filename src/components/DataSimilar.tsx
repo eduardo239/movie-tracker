@@ -6,6 +6,7 @@ import LoadingInfo from "./LoadingInfo";
 import MessageInfo from "./Message";
 import GridContainer from "./GridContainer";
 import DataGroup from "./DataGroup";
+import TitleInfo from "./TitleInfo";
 
 type TDataSimilar = { id: number };
 
@@ -26,9 +27,8 @@ const DataSimilar = ({ id }: TDataSimilar) => {
     return (
       <>
         <Divider />
-        <Header as="h3" inverted>
-          Similar
-        </Header>
+
+        <TitleInfo title="Similar" />
 
         <GridContainer centered gap="gap-sm">
           <DataGroup data={data ? data.results.slice(0, 10) : []} />

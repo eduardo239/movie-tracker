@@ -80,7 +80,7 @@ const TvByIdPage = () => {
           {/* -------------- options --------------   */}
           <Grid.Column width={16} textAlign="center">
             <Divider />
-            <TvOptions tv={data} />
+            <TvOptions data={data} />
             <Divider />
           </Grid.Column>
 

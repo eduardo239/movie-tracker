@@ -6,6 +6,7 @@ import {
   IUserList,
   IGetUserWatchList,
   ISaveItemToWatchList,
+  TMediaType,
 } from "../abstract/interfaces";
 import {
   DocumentData,
@@ -279,4 +280,40 @@ export const getUserListsFB = async (
   });
 
   return { userLists };
+};
+
+//
+export const getUserWatchListsFB = async (
+  content: IGetUserWatchList
+): Promise<DocumentData | null> => {
+  //
+
+  if (content.user) {
+    //
+    if (content.data) {
+      //
+      const _data: IGetUserWatchList = {
+        data: content.data,
+        mediaType: content.mediaType,
+        user: content.user,
+      };
+      const response = await getUserWatchList(_data);
+      if (!response) {
+        alert("[handleGetUserWatchList] - response not found");
+        return null;
+      }
+      if (content.mediaType === "movie" && response.movieList.length > 0) {
+        return { userWatchList: response.movieList[0] };
+      }
+      if (content.mediaType === "tv" && response.tvList.length > 0) {
+        return { userWatchList: response.tvList[0] };
+      }
+    } else {
+      alert("[getMovieList] - movie not found");
+    }
+  } else {
+    alert("[getMovieList] - user not found");
+  }
+
+  return null;
 };

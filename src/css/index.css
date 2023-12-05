@@ -117,11 +117,23 @@ button {
 .m-2 {
   margin: 0.5rem;
 }
+.m-3 {
+  margin: 1rem;
+}
+.m-4 {
+  margin: 2rem;
+}
 .p-0 {
   padding: 0;
 }
 .p-2 {
   padding: 0.5rem;
+}
+.p-3 {
+  padding: 1rem;
+}
+.p-4 {
+  padding: 2rem;
 }
 /*  */
 

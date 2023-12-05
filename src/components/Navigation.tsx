@@ -24,6 +24,17 @@ const Navigation = () => {
       >
         Home
       </Menu.Item>
+
+      {user && (
+        <Menu.Item
+          name="tracker"
+          active={activeItem === "tracker"}
+          onClick={() => handleItemClick("/tracker?type=movie")}
+        >
+          Tracker
+        </Menu.Item>
+      )}
+
       {user && (
         <Menu.Item
           name="lists"

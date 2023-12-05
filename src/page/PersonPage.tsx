@@ -7,6 +7,7 @@ import { Divider, Grid, Header, Tab } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
+import TitleInfo from "../components/TitleInfo";
 
 const PersonPage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -85,9 +86,8 @@ const PersonPage = () => {
             <Divider />
             {data.biography && (
               <div>
-                <Header as="h3" inverted>
-                  Biografia
-                </Header>
+                <TitleInfo title="Biografia" />
+
                 <p style={{ fontSize: "1.15rem" }}>{data.biography}</p>
                 <Divider />
               </div>

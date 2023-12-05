@@ -11,6 +11,7 @@ import MovieByIdPage from "./page/MovieByIdPage";
 import TvByIdPage from "./page/TvByIdPage";
 import PersonPage from "./page/PersonPage";
 import MovieByGenre from "./page/MovieByGenre";
+import TrackerPage from "./page/TrackerPage";
 
 function App() {
   const { authMessage } = useAuth();
@@ -35,6 +36,9 @@ function App() {
         {/*  */}
         <Route path="/lists" element={<ListsPage />} />
         <Route path="/list" element={<ListPage />} />
+        {/*  */}
+        <Route path="/tracker" element={<TrackerPage />} />
+
         {/*  */}
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />

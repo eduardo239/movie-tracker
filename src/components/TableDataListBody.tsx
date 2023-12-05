@@ -10,13 +10,13 @@ const TableDataListBody = ({ list }: { list: DocumentData[] }) => {
       {list.map((item) => (
         <Table.Row key={item.id}>
           <Table.Cell
-            onClick={() => navigate(`/movie?id=${item.movieId}`)}
+            onClick={() => navigate(`/${item.mediaType}?id=${item.movieId}`)}
             style={{ cursor: "pointer" }}
           >
             {item.movieId}
           </Table.Cell>
           <Table.Cell
-            onClick={() => navigate(`/movie?id=${item.movieId}`)}
+            onClick={() => navigate(`/${item.mediaType}?id=${item.movieId}`)}
             style={{ cursor: "pointer" }}
           >
             {item.title}

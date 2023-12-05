@@ -34,6 +34,10 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
 
   const [options, setOptions] = useState<DocumentData[]>([]);
 
+  /**
+   * Ao clicar na temporada, alterna entre assistido e não assistido
+   * @param item documentData
+   */
   const toggleItemFromList = async (item: DocumentData) => {
     // get user list
     const docRef = doc(db, COLLECTION_LIST, item.id);
@@ -86,19 +90,17 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
 
   const fetchUserList = async () => {
     if (user) {
-      (async () => {
-        const _data: IUserList = {
-          userId: user.uid,
-        };
-        const response = await handleGetUserLists(_data);
+      const _data: IUserList = {
+        userId: user.uid,
+      };
+      const response = await handleGetUserLists(_data);
 
-        if (!response) {
-          alert("[fetchUserList] - response not found.");
-        }
+      if (!response) {
+        alert("[fetchUserList] - response not found.");
+      }
 
-        const _array = checkUserList(response.userLists);
-        setOptions(_array);
-      })();
+      const _array = checkUserList(response.userLists);
+      setOptions(_array);
     } else {
       alert("[fetchUserList] - User not found");
     }

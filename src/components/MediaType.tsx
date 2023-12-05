@@ -13,7 +13,7 @@ const MediaType = () => {
   };
 
   return (
-    <div className="flex flex-center">
+    <div className="flex flex-center p-2">
       <Button
         icon
         color="instagram"

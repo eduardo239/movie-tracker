@@ -11,6 +11,7 @@ import {
   Segment,
 } from "semantic-ui-react";
 import LoadingInfo from "../components/LoadingInfo";
+import TitleInfo from "../components/TitleInfo";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -37,7 +38,8 @@ const SignIn = () => {
       <Grid.Column mobile={16} tablet={10} computer={5}>
         <Segment padded>
           <Form onSubmit={handleSubmit}>
-            <Header as="h3">Entrar</Header>
+            <TitleInfo title="Entrar" />
+
             <Divider />
             <FormField
               type="email"

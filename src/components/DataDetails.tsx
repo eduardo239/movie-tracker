@@ -1,4 +1,5 @@
 import { Header, Segment } from "semantic-ui-react";
+import TitleInfo from "./TitleInfo";
 
 type TDataDetails = {
   data: {
@@ -12,13 +13,14 @@ type TDataDetails = {
 const DataDetails = ({ data }: TDataDetails) => {
   return (
     <Segment basic inverted>
-      <Header as="h1" inverted>
-        {data.title} ({data.release_date?.split("-")[0]})
-      </Header>
+      <TitleInfo
+        as="h1"
+        title={`${data.title} (${data.release_date?.split("-")[0]})`}
+      />
+
       <p>
         <span className="date">Original Name: {data.original_title}</span>
       </p>
-
       <p style={{ fontSize: "1.15rem" }}>{data.overview}</p>
     </Segment>
   );

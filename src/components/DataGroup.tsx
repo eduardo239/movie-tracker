@@ -10,14 +10,16 @@ const DataGroup = ({ data }: TDataGroup) => {
   return (
     data &&
     data.map((x) => {
-      // const id = getRandomNumberInRange(0, 999999);
+      const id = getRandomNumberInRange(0, 999999);
 
       return (
         <PosterLink
-          key={x.id}
+          key={x.id + id}
           id={x.id}
           poster={x.poster_path}
-          mediaType={x.media_type ? x.media_type : "movie"}
+          mediaType={
+            x.media_type ? x.media_type : "title" in x ? "movie" : "tv"
+          }
         />
       );
     })

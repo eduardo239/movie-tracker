@@ -9,6 +9,7 @@ import {
 import {
   IAddMovieToList,
   IAddTvToList,
+  IGetUserWatchList,
   IList,
   IMovieDetails,
   IMovieResults,
@@ -26,6 +27,7 @@ import { ERROR_UM_AP } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
 import {
   getUserListsFB,
+  getUserWatchListsFB,
   saveItemToWatchList,
   saveNewListFB,
   saveTvSeasonFB,
@@ -48,6 +50,8 @@ interface MovieContextType {
   //
   handleAddSeasonToTvList: (payload: IAddTvToList) => void;
   handleSaveToWatchList: (payload: ISaveItemToWatchList) => DocumentData | null;
+  handleGetUserWatchList: (payload: IGetUserWatchList) => DocumentData | null;
+
   handleCreateNewList: (payload: IList) => void;
   handleGetUserLists: (
     payload: IUserList
@@ -125,6 +129,10 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     const response = await saveTvSeasonFB(payload);
     return response;
   };
+  const handleGetUserWatchList = async (payload: IGetUserWatchList) => {
+    const response = await getUserWatchListsFB(payload);
+    return response;
+  };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleCreateNewList = async (payload: IList) => {
@@ -135,6 +143,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     const response = await getUserListsFB(payload);
     return response;
   };
+
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   return (
     <MovieContext.Provider
@@ -153,6 +162,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
         handleSaveToWatchList,
         handleCreateNewList,
         handleGetUserLists,
+        handleGetUserWatchList,
       }}
     >
       {children}

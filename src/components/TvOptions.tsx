@@ -2,64 +2,39 @@ import { useEffect, useState } from "react";
 import {
   IAddTvToList,
   ITvDetails,
-  IGetUserWatchList,
   TListType,
   ISaveItemToWatchList,
 } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
-import { Button, Header, Icon } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
 import DataOptions from "./DataOptions";
-import { getUserWatchList } from "../fetch/firebase";
-import { ERROR_F_GET_SEA_TV, ERROR_F_GET_SEA_USR } from "../abstract/constants";
+import TitleInfo from "./TitleInfo";
 
-type TTvOptions = { tv: ITvDetails | null };
+type TTvOptions = { data: ITvDetails | null };
 
-const TvOptions = ({ tv }: TTvOptions) => {
+const TvOptions = ({ data }: TTvOptions) => {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useAuth();
-  const { handleAddSeasonToTvList, handleSaveToWatchList } = useMovie();
+  const {
+    handleAddSeasonToTvList,
+    handleSaveToWatchList,
+    handleGetUserWatchList,
+  } = useMovie();
 
   const [seasons, setSeasons] = useState<number[] | null>(null);
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  const handleGetUserWatchList = async () => {
-    if (user) {
-      //
-      if (tv) {
-        const _data: IGetUserWatchList = {
-          data: tv,
-          mediaType: "tv",
-          user,
-        };
-        const response = await getUserWatchList(_data);
-        if (!response) {
-          alert("[handleGetUserWatchList] - response not found");
-          return;
-        }
-
-        if (response.tvList.length > 0) {
-          setTracker(response.tvList[0]);
-          // atualiza as temporadas salvas
-          setSavedSeasons(response.tvList[0].seasons);
-        }
-      } else {
-        alert("[handleGetUserWatchList] TV not found");
-      }
-    } else {
-      alert("[handleGetUserWatchList] User not found");
-    }
-  };
-
+  // busca as temporadas do usuário
   const getSeasons = async () => {
     if (user) {
       //
-      if (tv) {
-        await handleGetUserWatchList();
+      if (data) {
+        await fetchUserWatchList();
       } else {
         alert("[getSeasons] - TV not found");
       }
@@ -67,27 +42,28 @@ const TvOptions = ({ tv }: TTvOptions) => {
       alert("[getSeasons] - User not found");
     }
   };
-
+  // salva na watch list
   const handleClick = async (listType: TListType) => {
     const _data: ISaveItemToWatchList = {
       listType,
-      data: tv,
+      data: data,
       mediaType: "tv",
       user,
     };
+
     const response = await handleSaveToWatchList(_data);
-    // const response = await handleSaveToWatchList(listType, tv, "tv");
+
     if (response) {
       setTracker(response.tvList[0]);
     } else {
-      alert("error get response, handle click");
+      alert("[handleClick] - response not found");
     }
   };
-
+  // salva a temporada na watch list do usuário
   const handleSaveSeason = async (season: number) => {
     if (user) {
       //
-      if (tv) {
+      if (data) {
         //
         if (tracker) {
           // check if exists, filter else add
@@ -101,65 +77,82 @@ const TvOptions = ({ tv }: TTvOptions) => {
             const content: IAddTvToList = {
               mediaType: "tv",
               listType: tracker.listType,
-              movieId: tv.id,
+              movieId: data.id,
               userId: user.uid,
-              poster: tv.poster_path,
-              title: tv.name,
+              poster: data.poster_path,
+              title: data.name,
               seasons: _updatedList,
             };
             await handleAddSeasonToTvList(content);
+            await fetchUserWatchList();
           } else {
             // save
 
             const content: IAddTvToList = {
               mediaType: "tv",
               listType: tracker.listType,
-              movieId: tv.id,
+              movieId: data.id,
               userId: user.uid,
-              poster: tv.poster_path,
-              title: tv.name,
+              poster: data.poster_path,
+              title: data.name,
               seasons: [...savedSeasons, season],
             };
             await handleAddSeasonToTvList(content);
+            await fetchUserWatchList();
           }
 
-          await handleGetUserWatchList();
           await getSeasons();
         } else {
-          alert("select see,saw,block");
+          alert("[handleSaveSeason] - tracker type not selected");
         }
       } else {
-        alert("tv required");
+        alert("[handleSaveSeason] - data not found");
       }
     } else {
-      alert("login required");
+      alert("[handleSaveSeason] - user not found");
+    }
+  };
+  // busca a watch list do usuário e carrega os valores
+  const fetchUserWatchList = async () => {
+    const response: DocumentData | null = await handleGetUserWatchList({
+      data: data,
+      mediaType: "tv",
+      user,
+    });
+
+    if (response) {
+      if (response.userWatchList.seasons) {
+        setSavedSeasons(response.userWatchList.seasons);
+      } else {
+        setTracker(response.userWatchList);
+      }
     }
   };
 
   useEffect(() => {
-    if (tv) {
+    if (data) {
       //
-      if (tv.seasons && tv.seasons.length > 0) {
-        // add seasons to buttons options
-        const _array = Array.from(Array(tv.seasons.length).keys());
+      if (data.seasons && data.seasons.length > 0) {
+        // adiciona as temporadas dinamicamente na página
+        const _array = Array.from(Array(data.seasons.length).keys());
         setSeasons(_array);
       }
     }
     return () => {};
-  }, [tv]);
+  }, [data]);
 
   useEffect(() => {
-    if (user) handleGetUserWatchList();
+    if (user && data) fetchUserWatchList();
     if (user) getSeasons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, tv]);
+  }, [user, data]);
 
-  if (tv)
+  if (data)
     return (
       <>
         {isAuthenticated ? (
           <DataOptions
-            data={tv}
+            data={data}
             listType={tracker?.listType}
             handleClick={handleClick}
           />
@@ -169,14 +162,11 @@ const TvOptions = ({ tv }: TTvOptions) => {
           </Button>
         )}
 
-        <Header as="h3" inverted>
-          Temporadas
-        </Header>
+        <TitleInfo title="Temporadas" />
 
         {seasons &&
           seasons.map((season, i) => {
             const isSaved = savedSeasons.some((x) => x === season + 1);
-
             return (
               <Button
                 basic={isSaved ? false : true}
