@@ -150,7 +150,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
       {handleButton("block", "Bloquear")}
 
       <Dropdown
-        className="app-button app-dropdown"
+        className="app-button app-dropdown z-100"
         floating
         options={options}
         trigger={<>Adicionar</>}

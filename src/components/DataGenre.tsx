@@ -8,7 +8,7 @@ type TDataGenre = { genres: IGenre[] };
 const DataGenre = ({ genres }: TDataGenre) => {
   if (genres)
     return (
-      <Segment inverted>
+      <div className="p-4 app-dark-mode">
         <div className="flex gap-sm ">
           {genres.map((genre) => (
             <Link to={`/genre/${genre.id}`} key={genre.id}>
@@ -18,7 +18,7 @@ const DataGenre = ({ genres }: TDataGenre) => {
             </Link>
           ))}
         </div>
-      </Segment>
+      </div>
     );
   else return <MessageNotFound message="Gêneros não encontrados" />;
 };

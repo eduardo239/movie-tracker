@@ -26,10 +26,7 @@ const DataSimilar = ({ id }: TDataSimilar) => {
   if (data)
     return (
       <>
-        <Divider />
-
-        <TitleInfo title="Similar" />
-
+        <TitleInfo title="Mais Filmes/Séries" />
         <GridContainer centered gap="gap-sm">
           <DataGroup data={data ? data.results.slice(0, 10) : []} />
         </GridContainer>

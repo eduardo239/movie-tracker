@@ -8,7 +8,7 @@ type TDataInfo = {
 
 const DataInfo = ({ data }: TDataInfo) => {
   return (
-    <>
+    <div className="p-4 app-dark-mode">
       <TitleInfo title="Informações" />
       {data.release_date && (
         <p>Data de Lançamento: {formatDate(data.release_date)}</p>
@@ -18,7 +18,7 @@ const DataInfo = ({ data }: TDataInfo) => {
       {data.original_language && (
         <p>Lingua Original: {data.original_language.toUpperCase()}</p>
       )}
-    </>
+    </div>
   );
 };
 

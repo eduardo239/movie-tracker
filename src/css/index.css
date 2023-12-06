@@ -106,7 +106,7 @@ button {
 .flex-column {
   flex-direction: column;
 }
-
+/*  */
 .center {
   text-align: center;
 }
@@ -136,8 +136,6 @@ button {
   padding: 2rem;
 }
 /*  */
-
-/*  */
 .app-card {
   max-width: 13.125rem;
   cursor: pointer;
@@ -159,6 +157,16 @@ button {
 .app-card-body p {
   font-size: 1.2rem;
   font-weight: 400;
+}
+
+.app-dark-mode {
+  background-color: var(--color-darker);
+  color: var(--color-light);
+}
+
+/*  */
+.z-100 {
+  z-index: 100;
 }
 /*  */
 img {

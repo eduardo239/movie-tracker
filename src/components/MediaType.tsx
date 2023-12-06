@@ -16,8 +16,8 @@ const MediaType = () => {
     <div className="flex flex-center p-2">
       <Button
         icon
-        color="instagram"
-        labelPosition="left"
+        color="orange"
+        labelPosition="right"
         onClick={() => handleChangePage("movie")}
       >
         <Icon name="film" />
@@ -25,8 +25,8 @@ const MediaType = () => {
       </Button>
       <Button
         icon
-        color="instagram"
-        labelPosition="right"
+        color="orange"
+        labelPosition="left"
         onClick={() => handleChangePage("tv")}
       >
         <Icon name="television" />

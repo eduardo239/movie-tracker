@@ -22,7 +22,7 @@ const DataRating = ({
 
   if (data)
     return (
-      <Segment basic inverted>
+      <div className="p-4 app-dark-mode">
         <Statistic horizontal inverted>
           <Statistic.Group size="tiny">
             <Statistic>
@@ -50,12 +50,12 @@ const DataRating = ({
             {data.runtime && (
               <Statistic>
                 <Statistic.Value>{data.runtime}</Statistic.Value>
-                <Statistic.Label>Duração</Statistic.Label>
+                <Statistic.Label>Duração (min)</Statistic.Label>
               </Statistic>
             )}
           </Statistic.Group>
         </Statistic>
-      </Segment>
+      </div>
     );
 };
 

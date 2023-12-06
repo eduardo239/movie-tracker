@@ -68,6 +68,7 @@ const MovieByIdPage = () => {
               }}
             />
             {/* -------------- rating --------------   */}
+            <div className="p-2"></div>
             <DataRating
               data={{
                 runtime: data.runtime,
@@ -76,6 +77,7 @@ const MovieByIdPage = () => {
             />
 
             {/* -------------- genres --------------   */}
+            <div className="p-2"></div>
             <DataGenre genres={data.genres} />
           </Grid.Column>
           {/* -------------- options --------------   */}
@@ -99,6 +101,7 @@ const MovieByIdPage = () => {
             <DataCast data={{ credits: data.credits }} />
             {/* -------------- similar --------------   */}
 
+            <Divider />
             <DataSimilar id={data.id} />
           </Grid.Column>
         </Grid.Row>

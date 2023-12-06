@@ -245,10 +245,9 @@ export const saveNewListFB = async (payload: IList) => {
   if (!_exists) {
     // add new list
     const docRef = await addDoc(collection(db, COLLECTION_LIST), payload);
-    console.log(docRef);
   } else if (_exists && _docId) {
     // update list
-    alert("list já existe");
+    alert("[saveNewListFB] - Esta lista já foi criada.");
     // const docRef = doc(db, COLLECTION_LIST, _docId);
     // await updateDoc(docRef, {
     //   list: [{ movieId: 347181, poster: "5UaMtHDN4OnALvm19KCO0kPMYwm.jpg" }],

@@ -76,9 +76,7 @@ const PersonPage = () => {
             />
           </Grid.Column>
           <Grid.Column mobile={16} tablet={12} computer={12}>
-            <Header as="h1" inverted>
-              {data.name}
-            </Header>
+            <TitleInfo as="h1" title={data.name} />
 
             <p>Data de nascimento: {data.birthday}</p>
             <p>Local de nascimento: {data.place_of_birth}</p>
@@ -101,7 +99,7 @@ const PersonPage = () => {
         <Divider />
         <Tab
           menu={{
-            color: "green",
+            color: "orange",
             pointing: true,
             inverted: true,
           }}

@@ -13,7 +13,6 @@ const DataCast = ({ data }: TDataCast) => {
     return (
       <>
         <TitleInfo title="Elenco" />
-
         <GridContainer centered gap="gap-sm">
           <PersonGroup data={data} />
         </GridContainer>

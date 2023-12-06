@@ -12,7 +12,7 @@ type TDataDetails = {
 
 const DataDetails = ({ data }: TDataDetails) => {
   return (
-    <Segment basic inverted>
+    <div className="p-4 app-dark-mode">
       <TitleInfo
         as="h1"
         title={`${data.title} (${data.release_date?.split("-")[0]})`}
@@ -22,7 +22,7 @@ const DataDetails = ({ data }: TDataDetails) => {
         <span className="date">Original Name: {data.original_title}</span>
       </p>
       <p style={{ fontSize: "1.15rem" }}>{data.overview}</p>
-    </Segment>
+    </div>
   );
 };
 
