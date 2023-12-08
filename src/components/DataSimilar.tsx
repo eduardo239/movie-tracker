@@ -26,7 +26,7 @@ const DataSimilar = ({ id }: TDataSimilar) => {
   if (data)
     return (
       <>
-        <TitleInfo title="Mais Filmes/Séries" />
+        <TitleInfo center title="Mais Filmes/Séries" />
         <GridContainer centered gap="gap-sm">
           <DataGroup data={data ? data.results.slice(0, 10) : []} />
         </GridContainer>

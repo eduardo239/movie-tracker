@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { IUserList, TListItemData } from "../abstract/interfaces";
-import { useMovie } from "../context/MovieContext";
+import { IUserList } from "../abstract/interfaces";
 import { DocumentData } from "firebase/firestore";
 import { useSearchParams } from "react-router-dom";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
-import { Header } from "semantic-ui-react";
 import { getUserListsFB } from "../fetch/firebase";
 import TitleInfo from "../components/TitleInfo";
 
@@ -33,15 +31,15 @@ const ListPage = () => {
       }
     }
   }, [user, id]);
-  console.log(userList);
+
   if (userList)
     return (
       <div>
-        <Header textAlign="center" as="h1" inverted></Header>
         <div className="center">
-          <TitleInfo as="h1" title={`Nome: ${userList.name}`} />
+          <TitleInfo center as="h1" title={`Nome: ${userList.name}`} />
           <p className="center p-2">{userList.description}</p>
         </div>
+        {/*  */}
         <div>
           {userList && userList.list.length > 0 && (
             <div>

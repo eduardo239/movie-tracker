@@ -9,7 +9,7 @@ type TDataInfo = {
 const DataInfo = ({ data }: TDataInfo) => {
   return (
     <div className="p-4 app-dark-mode">
-      <TitleInfo title="Informações" />
+      <TitleInfo center title="Informações" />
       {data.release_date && (
         <p>Data de Lançamento: {formatDate(data.release_date)}</p>
       )}

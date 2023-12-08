@@ -12,7 +12,7 @@ const DataCast = ({ data }: TDataCast) => {
   if (data.credits.cast.length > 0)
     return (
       <>
-        <TitleInfo title="Elenco" />
+        <TitleInfo center title="Elenco" />
         <GridContainer centered gap="gap-sm">
           <PersonGroup data={data} />
         </GridContainer>
