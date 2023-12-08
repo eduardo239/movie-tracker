@@ -5,10 +5,13 @@ import { useMovie } from "../context/MovieContext";
 import Pagination_ from "../components/Pagination_";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
+import MessageNotFound from "../components/MessageNotFound";
 
 const MoviePage = () => {
   const { data, loading, error, page, mediaType, setMediaType, setPage } =
     useMovie();
+
+  console.log(data);
 
   useEffect(() => {
     setMediaType("movie");
@@ -26,6 +29,9 @@ const MoviePage = () => {
       <Pagination_ />
       <GridContainer centered gap="gap-sm">
         <DataGroup data={data ? data.results : []} />
+        {data?.results.length === 0 && (
+          <MessageNotFound message="Filme não encontrado" />
+        )}
       </GridContainer>
       <Pagination_ />
     </>

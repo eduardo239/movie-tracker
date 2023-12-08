@@ -11,87 +11,9 @@ import PaginationGenre from "../components/PaginationGenre";
 import { useEffect, useState } from "react";
 import TitleInfo from "../components/TitleInfo";
 import PaginationBar from "../components/PaginationBar";
+import { GENRES } from "../abstract/genres";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-
-const genres = [
-  {
-    id: 28,
-    name: "Action",
-  },
-  {
-    id: 12,
-    name: "Adventure",
-  },
-  {
-    id: 16,
-    name: "Animation",
-  },
-  {
-    id: 35,
-    name: "Comedy",
-  },
-  {
-    id: 80,
-    name: "Crime",
-  },
-  {
-    id: 99,
-    name: "Documentary",
-  },
-  {
-    id: 18,
-    name: "Drama",
-  },
-  {
-    id: 10751,
-    name: "Family",
-  },
-  {
-    id: 14,
-    name: "Fantasy",
-  },
-  {
-    id: 36,
-    name: "History",
-  },
-  {
-    id: 27,
-    name: "Horror",
-  },
-  {
-    id: 10402,
-    name: "Music",
-  },
-  {
-    id: 9648,
-    name: "Mystery",
-  },
-  {
-    id: 10749,
-    name: "Romance",
-  },
-  {
-    id: 878,
-    name: "Science Fiction",
-  },
-  {
-    id: 10770,
-    name: "TV Movie",
-  },
-  {
-    id: 53,
-    name: "Thriller",
-  },
-  {
-    id: 10752,
-    name: "War",
-  },
-  {
-    id: 37,
-    name: "Western",
-  },
-];
 
 const MovieByGenre = () => {
   const { id } = useParams();
@@ -106,7 +28,7 @@ const MovieByGenre = () => {
 
   useEffect(() => {
     if (id) {
-      const _genreName = genres.filter((x) => x.id === +id)[0];
+      const _genreName = GENRES.filter((x) => x.id === +id)[0];
       if (_genreName) setGenreName(_genreName.name);
     }
   }, [id]);
