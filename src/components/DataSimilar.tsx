@@ -1,12 +1,13 @@
 import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
-import { Divider, Header } from "semantic-ui-react";
+import { Button, Divider, Header } from "semantic-ui-react";
 import { IMovieResults } from "../abstract/interfaces";
 import LoadingInfo from "./LoadingInfo";
 import MessageInfo from "./Message";
 import GridContainer from "./GridContainer";
 import DataGroup from "./DataGroup";
 import TitleInfo from "./TitleInfo";
+import { useState } from "react";
 
 type TDataSimilar = { id: number };
 
@@ -20,6 +21,15 @@ const DataSimilar = ({ id }: TDataSimilar) => {
 
   const { data, loading, error } = useFetch<IMovieResults | null>(similarUrl);
 
+  const [length, setLength] = useState(10);
+
+  const handleChangeLength = (_length: number) => {
+    if (length + _length <= 4) {
+      return;
+    }
+    setLength(length + _length);
+  };
+  console.log(data?.results);
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
 
@@ -28,8 +38,16 @@ const DataSimilar = ({ id }: TDataSimilar) => {
       <>
         <TitleInfo center title="Mais Filmes/Séries" />
         <GridContainer centered gap="gap-sm">
-          <DataGroup data={data ? data.results.slice(0, 10) : []} />
+          <DataGroup data={data ? data.results.slice(0, length) : []} />
         </GridContainer>
+        <div className="p-3">
+          <Button size="tiny" onClick={() => handleChangeLength(-5)}>
+            Ver Menos
+          </Button>
+          <Button size="tiny" onClick={() => handleChangeLength(5)}>
+            Ver Mais
+          </Button>
+        </div>
       </>
     );
   else return null;

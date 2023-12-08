@@ -26,8 +26,11 @@ const DataCast = ({ data }: TDataCast) => {
         <GridContainer centered gap="gap-sm">
           <PersonGroup data={data} length={length} />
         </GridContainer>
-        <Button onClick={() => handleChangeLength(-5)}>Ver Menos</Button>
-        <Button onClick={() => handleChangeLength(5)}>Ver Mais</Button>
+
+        <div className="p-3">
+          <Button onClick={() => handleChangeLength(-5)}>Ver Menos</Button>
+          <Button onClick={() => handleChangeLength(5)}>Ver Mais</Button>
+        </div>
       </>
     );
 };
