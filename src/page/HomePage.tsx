@@ -12,6 +12,7 @@ const HomePage = () => {
     <>
       <HomeSearch />
       <MediaType />
+
       {mediaType === MEDIA_MOVIE && <MoviePage />}
       {mediaType === MEDIA_TV && <TvPage />}
     </>
