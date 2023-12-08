@@ -26,8 +26,6 @@ const PaginationBar = ({
           if (x.activePage) {
             setPage(x.activePage ? +x.activePage : 1);
             navigate(url);
-          } else {
-            setPage(1);
           }
         }}
       />

@@ -6,6 +6,7 @@ import Pagination_ from "../components/Pagination_";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import MessageNotFound from "../components/MessageNotFound";
+import PaginationBar from "../components/PaginationBar";
 
 const MoviePage = () => {
   const { data, loading, error, page, mediaType, setMediaType, setPage } =
@@ -26,14 +27,24 @@ const MoviePage = () => {
 
   return (
     <>
-      <Pagination_ />
+      <PaginationBar
+        page={page}
+        setPage={setPage}
+        url={`/${mediaType}s?page=${page}`}
+      />
+
       <GridContainer centered gap="gap-sm">
         <DataGroup data={data ? data.results : []} />
         {data?.results.length === 0 && (
           <MessageNotFound message="Filme não encontrado" />
         )}
       </GridContainer>
-      <Pagination_ />
+
+      <PaginationBar
+        page={page}
+        setPage={setPage}
+        url={`/${mediaType}s?page=${page}`}
+      />
     </>
   );
 };

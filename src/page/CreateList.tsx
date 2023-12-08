@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Checkbox, Form, TextArea, Header } from "semantic-ui-react";
+import { Button, Checkbox, Form, TextArea } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
 import TitleInfo from "../components/TitleInfo";

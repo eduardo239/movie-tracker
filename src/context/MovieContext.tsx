@@ -7,17 +7,12 @@ import {
   useEffect,
 } from "react";
 import {
-  IAddMovieToList,
   IAddTvToList,
   IGetUserWatchList,
   IList,
-  IMovieDetails,
   IMovieResults,
   ISaveItemToWatchList,
-  ISaveListType,
-  ITvDetails,
   IUserList,
-  TListType,
   TMediaType,
 } from "../abstract/interfaces";
 import { useSearchParams } from "react-router-dom";
@@ -99,11 +94,12 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   }, [baseUrl, searchUrl, isSearching, term]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  useEffect(() => {
-    const _page = params.get("page");
-    if (_page) setPage(+_page);
-    return () => {};
-  }, [params, setPage]);
+  // REMINDER: removido por causa do novo pagination, gerava bug
+  // useEffect(() => {
+  //   const _page = params.get("page");
+  //   if (_page) setPage(+_page);
+  //   return () => {};
+  // }, [params, setPage]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   // search url

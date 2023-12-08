@@ -1,16 +1,9 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  Button,
-  Checkbox,
-  Header,
-  Icon,
-  Image,
-  Table,
-} from "semantic-ui-react";
+import { Button, Table } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { DocumentData } from "firebase/firestore";
-import { IGetUserMovieList, IUserList } from "../abstract/interfaces";
+import { IGetUserMovieList } from "../abstract/interfaces";
 import { getUserWatchListFB } from "../fetch/firebase";
 import TrackerBody from "../components/List/Tracker/TrackerBody";
 

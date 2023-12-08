@@ -1,13 +1,13 @@
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import useFetch from "../hooks/useFetch";
-import { useNavigate, useParams } from "react-router-dom";
-import { Pagination, Segment } from "semantic-ui-react";
+import { useParams } from "react-router-dom";
+import { Segment } from "semantic-ui-react";
 import { IMovieResults } from "../abstract/interfaces";
 import { useMovie } from "../context/MovieContext";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
-import PaginationGenre from "../components/PaginationGenre";
+
 import { useEffect, useState } from "react";
 import TitleInfo from "../components/TitleInfo";
 import PaginationBar from "../components/PaginationBar";
