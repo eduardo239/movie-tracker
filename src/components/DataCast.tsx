@@ -1,4 +1,4 @@
-import { Button } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { ICast } from "../abstract/interfaces";
 import GridContainer from "./GridContainer";
 import PersonGroup from "./PersonGroup";
@@ -26,8 +26,8 @@ const DataCast = ({ data }: TDataCast) => {
         <GridContainer centered gap="gap-sm">
           <PersonGroup data={data} length={length} />
         </GridContainer>
-        <Button onClick={() => handleChangeLength(5)}>Ver Mais</Button>
         <Button onClick={() => handleChangeLength(-5)}>Ver Menos</Button>
+        <Button onClick={() => handleChangeLength(5)}>Ver Mais</Button>
       </>
     );
 };

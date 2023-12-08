@@ -145,8 +145,8 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
 
   return (
     <div className="flex flex-center gap-sm ">
-      {handleButton("see", "Vou Ver")}
       {handleButton("saw", "Já Vi")}
+      {handleButton("see", "Vou Ver")}
       {handleButton("block", "Bloquear")}
 
       <Dropdown

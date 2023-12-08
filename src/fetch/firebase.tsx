@@ -12,6 +12,7 @@ import {
   DocumentData,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -315,4 +316,8 @@ export const getUserWatchListsFB = async (
   }
 
   return null;
+};
+
+export const deleteListByIdFB = async (id: string) => {
+  await deleteDoc(doc(db, COLLECTION_LIST, id));
 };

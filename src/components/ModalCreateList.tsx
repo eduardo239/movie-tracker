@@ -78,7 +78,7 @@ const ModalCreateList = ({
                 setForm({ ...form, name: e.currentTarget.value })
               }
             />
-            {/* <Form.Input fluid label="Last name" placeholder="Last name" /> */}
+
             <Form.Select
               fluid
               label="Gender"
@@ -116,9 +116,6 @@ const ModalCreateList = ({
         </Form>
       </Modal.Content>
       <Modal.Actions>
-        {/* <Button onClick={() => setOpen(false)}>
-          <Icon name="remove" /> Cancelar
-        </Button> */}
         <Button onClick={() => setOpen(false)}>
           <Icon name="remove" /> Sair
         </Button>
