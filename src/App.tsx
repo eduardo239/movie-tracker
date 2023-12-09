@@ -12,12 +12,14 @@ import TvByIdPage from "./page/TvByIdPage";
 import PersonPage from "./page/PersonPage";
 import MovieByGenre from "./page/MovieByGenre";
 import TrackerPage from "./page/TrackerPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const { authMessage } = useAuth();
-
   return (
     <div className="container">
+      <ToastContainer />
+
       <Navigation />
 
       <Routes>
@@ -43,8 +45,6 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
       </Routes>
-
-      {authMessage && <Message message={authMessage} />}
     </div>
   );
 }

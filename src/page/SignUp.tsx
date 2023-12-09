@@ -2,9 +2,17 @@ import { useEffect, useState } from "react";
 import FormField from "../components/FormField";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
+import {
+  Button,
+  Divider,
+  Form,
+  Grid,
+  Header,
+  Segment,
+} from "semantic-ui-react";
 import LoadingInfo from "../components/LoadingInfo";
 import TitleInfo from "../components/TitleInfo";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -16,7 +24,8 @@ const SignIn = () => {
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    register({ username, email, password });
+
+    const response = await register({ username, email, password });
   };
 
   useEffect(() => {
@@ -32,7 +41,9 @@ const SignIn = () => {
       <Grid.Column mobile={16} tablet={10} computer={5}>
         <Segment padded>
           <Form onSubmit={handleSubmit}>
-            <TitleInfo title="Registrar" />
+            <h3 style={{ color: "#232323" }}>Registrar</h3>
+
+            <Divider inverted />
 
             <FormField
               type="email"
@@ -41,7 +52,6 @@ const SignIn = () => {
               setState={setEmail}
               id="sign-up-email"
             />
-
             <FormField
               type="text"
               label="Username"
@@ -49,7 +59,6 @@ const SignIn = () => {
               setState={setUsername}
               id="sign-up-username"
             />
-
             <FormField
               type="password"
               label="Password"
@@ -57,9 +66,8 @@ const SignIn = () => {
               setState={setPassword}
               id="sign-up-password"
             />
-
             <Button color="green" type="submit">
-              Sign In
+              Registrar
             </Button>
           </Form>
 

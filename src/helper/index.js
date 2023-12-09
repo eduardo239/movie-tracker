@@ -1,3 +1,6 @@
+import { FirebaseError } from "firebase/app";
+import { toast } from "react-toastify";
+
 export function isEmptyObject(obj) {
   for (let key in obj) {
     // eslint-disable-next-line no-prototype-builtins
@@ -55,3 +58,18 @@ export function getRandomNumberInRange(min, max) {
   const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
   return randomNumber;
 }
+
+export const handleError = (error) => {
+  switch (error.code) {
+    case "auth/email-already-in-use":
+      toast.error("Erro: Este email já está em uso.");
+      break;
+    case "auth/weak-password":
+      toast.error("Erro: A senha é fraca, deve ter no mínimo 6 caracteres.");
+      break;
+    default:
+      console.log(error.code);
+      toast.error(error.message);
+      break;
+  }
+};

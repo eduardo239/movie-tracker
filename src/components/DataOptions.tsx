@@ -11,8 +11,14 @@ import { useEffect, useState } from "react";
 import { DocumentData, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../config/firebase";
-import { COLLECTION_LIST } from "../abstract/constants";
+import {
+  COLLECTION_LIST,
+  ERR_DOCUMENT_NOT_FOUND,
+  ERR_USER_NOT_FOUND,
+} from "../abstract/constants";
 import { containsItemWithId } from "../helper";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 type TDataOptions = {
   data: IMovieDetails | ITvDetails;
@@ -31,6 +37,7 @@ type TOptions = {
 const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
   const { user } = useAuth();
   const { handleGetUserLists } = useMovie();
+  const navigate = useNavigate();
 
   const [options, setOptions] = useState<DocumentData[]>([]);
 
@@ -48,7 +55,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
       _doc = { id: docSnap.id, ...docSnap.data() };
     } else {
       // docSnap.data() will be undefined in this case
-      alert("[addOrRemoveFromList] - No such document!");
+      toast.error(ERR_DOCUMENT_NOT_FOUND);
     }
 
     if (_doc) {
@@ -84,7 +91,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
       }
       fetchUserList();
     } else {
-      alert("[addOrRemoveFromList] - DOC not found");
+      toast.error(ERR_DOCUMENT_NOT_FOUND);
     }
   };
 
@@ -96,33 +103,45 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
       const response = await handleGetUserLists(_data);
 
       if (!response) {
-        alert("[fetchUserList] - response not found.");
+        toast.error(ERR_DOCUMENT_NOT_FOUND);
       }
 
       const _array = checkUserList(response.userLists);
       setOptions(_array);
     } else {
-      alert("[fetchUserList] - User not found");
+      toast.error(ERR_USER_NOT_FOUND);
     }
   };
 
   const checkUserList = (array: DocumentData[]) => {
     const _options: TOptions[] = [];
 
-    array.forEach((item, index) => {
-      if (item.list) {
-        const isItOnTheList = containsItemWithId(item.list, data.id);
-        const _option = {
-          key: "list " + index,
-          icon: isItOnTheList ? "check" : "list",
-          text: item.name,
-          value: item.name,
-          onClick: () => toggleItemFromList(item),
-        };
-        _options.push(_option);
-      }
-    });
-    return _options;
+    if (array.length > 0) {
+      array.forEach((item, index) => {
+        if (item.list) {
+          const isItOnTheList = containsItemWithId(item.list, data.id);
+          const _option = {
+            key: "list " + index,
+            icon: isItOnTheList ? "check" : "list",
+            text: item.name,
+            value: item.name,
+            onClick: () => toggleItemFromList(item),
+          };
+          _options.push(_option);
+        }
+      });
+      return _options;
+    } else {
+      const _option = {
+        key: "add_new_list ",
+        icon: "plus",
+        text: "Criar uma Lista",
+        value: "create",
+        onClick: () => navigate("/lists"),
+      };
+      _options.push(_option);
+      return _options;
+    }
   };
 
   useEffect(() => {

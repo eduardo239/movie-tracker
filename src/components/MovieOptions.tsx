@@ -12,6 +12,8 @@ import { Button, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import DataOptions from "./DataOptions";
 import { getUserWatchList } from "../fetch/firebase";
+import { toast } from "react-toastify";
+import { ERR_RESPONSE_NOT_FOUND } from "../abstract/constants";
 
 type TMovieOptions = { movie: IMovieDetails | null };
 
@@ -38,7 +40,7 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
     if (response) {
       setTracker(response.movieList[0]);
     } else {
-      alert("[handleClick] - response not found");
+      toast.error(ERR_RESPONSE_NOT_FOUND);
     }
   };
 

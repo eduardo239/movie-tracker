@@ -25,6 +25,7 @@ const TrackerPage = () => {
 
   const fetchUserWatchList = async () => {
     if (user) {
+      console.log(mediaType);
       const payload: IGetUserMovieList = {
         fullList: true,
         userId: user.uid,
@@ -47,6 +48,7 @@ const TrackerPage = () => {
   };
 
   const handleFilter = (listType: TListType | null) => {
+    setFilterType(listType);
     if (listType !== null) {
       setFilteredList(userTrackerList.filter((x) => x.listType === listType));
     } else {
@@ -57,7 +59,7 @@ const TrackerPage = () => {
   useEffect(() => {
     if (user) fetchUserWatchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, params]);
+  }, [user, params, mediaType]);
 
   return (
     <div>

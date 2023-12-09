@@ -10,7 +10,7 @@ const TitleInfo = ({
   center?: boolean;
 }) => {
   return (
-    <Header as={as} inverted textAlign={center ? "center" : "left"}>
+    <Header inverted as={as} textAlign={center ? "center" : "left"}>
       {title}
     </Header>
   );

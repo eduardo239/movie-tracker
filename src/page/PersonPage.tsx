@@ -12,7 +12,8 @@ import TitleInfo from "../components/TitleInfo";
 const PersonPage = () => {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
-  const posterDefault = import.meta.env.VITE_TMDB_POSTER_URL;
+  const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
+  const profileDefaultUrl = import.meta.env.VITE_FIREBASE_PROFILE_DEFAULT_URL;
 
   const { id } = useParams();
   const personUrl = `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&language=pt-BR&append_to_response=combined_credits`;
@@ -69,8 +70,13 @@ const PersonPage = () => {
       <>
         <Grid>
           <Grid.Column mobile={16} tablet={4} computer={4}>
+            {/* profileDefaultUrl */}
             <img
-              src={`${posterDefault}${data.profile_path}`}
+              src={`${
+                data.profile_path
+                  ? tmdbPosterUrl + data.profile_path
+                  : profileDefaultUrl
+              }`}
               alt={data.name}
               className="poster-lg"
             />
@@ -78,15 +84,28 @@ const PersonPage = () => {
           <Grid.Column mobile={16} tablet={12} computer={12}>
             <TitleInfo as="h1" title={data.name} />
 
-            <p>Data de nascimento: {data.birthday}</p>
-            <p>Local de nascimento: {data.place_of_birth}</p>
+            <p>
+              Data de nascimento:{" "}
+              {data.birthday ? data.biography : "Informação não encontrada."}
+            </p>
+            <p>
+              Local de nascimento:{" "}
+              {data.place_of_birth
+                ? data.place_of_birth
+                : "Informação não encontrada."}
+            </p>
             <p>Popularidade: {data.popularity}</p>
             <Divider />
-            {data.biography && (
+            {data.biography ? (
               <div>
                 <TitleInfo title="Biografia" />
 
                 <p style={{ fontSize: "1.15rem" }}>{data.biography}</p>
+                <Divider />
+              </div>
+            ) : (
+              <div>
+                <p style={{ fontSize: "1.15rem" }}>Biografia não encontrada.</p>
                 <Divider />
               </div>
             )}

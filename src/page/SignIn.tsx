@@ -38,9 +38,10 @@ const SignIn = () => {
       <Grid.Column mobile={16} tablet={10} computer={5}>
         <Segment padded>
           <Form onSubmit={handleSubmit}>
-            <TitleInfo title="Entrar" />
+            <h3 style={{ color: "#232323" }}>Entrar</h3>
 
-            <Divider />
+            <Divider inverted />
+
             <FormField
               type="email"
               label="Email"
@@ -56,7 +57,7 @@ const SignIn = () => {
               id="sign-in-password"
             />
             <Button color="green" type="submit" fluid>
-              Sign In
+              Entrar
             </Button>
           </Form>
 

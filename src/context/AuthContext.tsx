@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import React, {
+import {
   createContext,
   useContext,
   ReactNode,
@@ -17,6 +17,9 @@ import { IUserAuth } from "../abstract/interfaces";
 import { app } from "../config/firebase";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FirebaseError } from "firebase/app";
+import { handleError } from "../helper";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -26,7 +29,6 @@ interface AuthContextType {
   getUser: () => void;
 
   user: null | User;
-  authMessage: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,15 +42,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<null | User>(null);
-  const [authMessage, setAuthMessage] = useState("");
   const [, setLocal] = useLocalStorage("user", "");
-
-  const handleMessage = (message: string) => {
-    setAuthMessage(message);
-    setTimeout(() => {
-      setAuthMessage("");
-    }, 2000);
-  };
 
   const register = async (user: IUserAuth) => {
     const auth = getAuth();
@@ -63,14 +57,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setLocal(JSON.stringify(user));
         setIsAuthenticated(true);
         navigate("/");
+        toast("Usuário registrado com sucesso.");
       });
     } catch (error) {
-      if (error instanceof Error) {
-        handleMessage(error.message);
+      if (error instanceof FirebaseError) {
+        handleError(error);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
-        // navigate("/");
       }
     }
   };
@@ -88,12 +82,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
       );
     } catch (error) {
-      if (error instanceof Error) {
-        handleMessage(error.message);
+      if (error instanceof FirebaseError) {
+        handleError(error);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
-        // navigate("/");
       }
     }
   };
@@ -102,14 +95,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        handleMessage("Sign-out successful");
         setIsAuthenticated(false);
         setUser(null);
         setLocal("");
         navigate("/");
+        toast.success("Usuário saiu com sucesso.");
       })
       .catch((error) => {
-        handleMessage(error.message);
+        handleError(error);
         setLocal("");
         setUser(null);
         setIsAuthenticated(false);
@@ -147,7 +140,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logout,
         getUser,
         user,
-        authMessage,
       }}
     >
       {children}
