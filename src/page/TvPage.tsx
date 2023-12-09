@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { useMovie } from "../context/MovieContext";
-import Pagination_ from "../components/Pagination_";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import MessageNotFound from "../components/MessageNotFound";
