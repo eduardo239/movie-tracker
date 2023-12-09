@@ -6,7 +6,6 @@ import {
   IUserList,
   IGetUserWatchList,
   ISaveItemToWatchList,
-  TMediaType,
 } from "../abstract/interfaces";
 import {
   DocumentData,
@@ -37,7 +36,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
   if (payload.user) {
     //
     if (payload.data) {
-      // valida se é do tipo filme
+      // validar se é do tipo filme
 
       if ("title" in payload.data) {
         const content: IAddMovieToList = {
@@ -59,7 +58,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
         const response = await getUserWatchList(_data);
         return response;
 
-        // valida se é do tipo série
+        // validar se é do tipo série
       } else if ("name" in payload.data) {
         const content: IAddMovieToList = {
           mediaType: "tv",
@@ -90,7 +89,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
 
 // - - - - - - - - - - - SET WATCH LIST FB - - - - - - - - - - - - - - - - - - //
 /**
- *
+ * Adiciona uma watch list ou atualiza a existente
  * @param content recebe mediaType, listType, movieId, userId, poster e title
  */
 const saveItemToWatchListFB = async (content: IAddMovieToList) => {
@@ -260,8 +259,8 @@ export const saveNewListFB = async (payload: IList) => {
 
 // - - - - - - - - - - - GET LISTS - - - - - - - - - - - - - - - - - - - - - - - //
 /**
- *
- * @param content busca as listas do usuário no FB
+ * Busca as listas do usuário no FB
+ * @param content fullList, userId, id
  * @returns um objeto userLists, com a lista
  */
 export const getUserListsFB = async (
@@ -282,21 +281,24 @@ export const getUserListsFB = async (
   return { userLists };
 };
 
-//
+/**
+ * Busca o item da watch list do usuário
+ * @param content mediaType, data, user
+ * @returns um único item
+ * { userWatchList: response.movieList[0] }
+ * ou { userWatchList: response.tvList[0] }
+ */
 export const getUserWatchListsFB = async (
   content: IGetUserWatchList
 ): Promise<DocumentData | null> => {
-  //
-
   if (content.user) {
-    //
     if (content.data) {
-      //
       const _data: IGetUserWatchList = {
         data: content.data,
         mediaType: content.mediaType,
         user: content.user,
       };
+
       const response = await getUserWatchList(_data);
       if (!response) {
         alert("[handleGetUserWatchList] - response not found");
@@ -318,6 +320,10 @@ export const getUserWatchListsFB = async (
   return null;
 };
 
+/**
+ * Remove o documento pelo id
+ * @param id id do filme/série
+ */
 export const deleteListByIdFB = async (id: string) => {
   await deleteDoc(doc(db, COLLECTION_LIST, id));
 };

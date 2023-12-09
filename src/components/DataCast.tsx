@@ -28,8 +28,14 @@ const DataCast = ({ data }: TDataCast) => {
         </GridContainer>
 
         <div className="p-3">
-          <Button onClick={() => handleChangeLength(-5)}>Ver Menos</Button>
-          <Button onClick={() => handleChangeLength(5)}>Ver Mais</Button>
+          <Button.Group>
+            <Button size="tiny" onClick={() => handleChangeLength(-5)}>
+              Ver Menos
+            </Button>
+            <Button size="tiny" onClick={() => handleChangeLength(5)}>
+              Ver Mais
+            </Button>
+          </Button.Group>
         </div>
       </>
     );

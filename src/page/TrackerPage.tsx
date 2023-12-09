@@ -3,7 +3,11 @@ import { Button, Table } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { DocumentData } from "firebase/firestore";
-import { IGetUserMovieList } from "../abstract/interfaces";
+import {
+  IGetUserMovieList,
+  TListType,
+  TMediaType,
+} from "../abstract/interfaces";
 import { getUserWatchListFB } from "../fetch/firebase";
 import TrackerBody from "../components/List/Tracker/TrackerBody";
 
@@ -16,13 +20,15 @@ const TrackerPage = () => {
 
   const [userTrackerList, setUserTrackerList] = useState<DocumentData[]>([]);
   const [filteredList, setFilteredList] = useState<DocumentData[]>([]);
+  const [mediaType, setMediaType] = useState<TMediaType>("movie");
+  const [filterType, setFilterType] = useState<TListType | null>(null);
 
   const fetchUserWatchList = async () => {
     if (user) {
       const payload: IGetUserMovieList = {
         fullList: true,
         userId: user.uid,
-        mediaType: "movie",
+        mediaType: mediaType ? mediaType : "movie",
       };
       const response = await getUserWatchListFB(payload);
       if (!response) {
@@ -40,33 +46,37 @@ const TrackerPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (user) fetchUserWatchList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, params]);
-
-  const handleFilter = (listType: string) => {
-    if (listType !== "") {
+  const handleFilter = (listType: TListType | null) => {
+    if (listType !== null) {
       setFilteredList(userTrackerList.filter((x) => x.listType === listType));
     } else {
       setFilteredList([]);
     }
   };
 
+  useEffect(() => {
+    if (user) fetchUserWatchList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, params]);
+
   return (
     <div>
       <Button.Group labeled icon compact color="orange">
-        <Button icon="check" content="Todos" onClick={() => handleFilter("")} />
-
         <Button
-          icon="eye"
-          content="Já Vi"
-          onClick={() => handleFilter("see")}
+          icon="check"
+          content="Todos"
+          onClick={() => handleFilter(null)}
         />
+
         <Button
           icon="list"
           content="Vou Ver"
           onClick={() => handleFilter("saw")}
+        />
+        <Button
+          icon="eye"
+          content="Já Vi"
+          onClick={() => handleFilter("see")}
         />
         <Button
           icon="close"
@@ -92,11 +102,12 @@ const TrackerPage = () => {
           <Table.Row>
             <Table.HeaderCell />
             <Table.HeaderCell>Nome</Table.HeaderCell>
-            <Table.HeaderCell width={2} textAlign="center">
-              Já Vi
-            </Table.HeaderCell>
+
             <Table.HeaderCell width={2} textAlign="center">
               Vou Ver
+            </Table.HeaderCell>
+            <Table.HeaderCell width={2} textAlign="center">
+              Já Vi
             </Table.HeaderCell>
             <Table.HeaderCell width={2} textAlign="center">
               Bloqueado

@@ -21,7 +21,7 @@ const DataSimilar = ({ id }: TDataSimilar) => {
 
   const { data, loading, error } = useFetch<IMovieResults | null>(similarUrl);
 
-  const [length, setLength] = useState(10);
+  const [length, setLength] = useState(5);
 
   const handleChangeLength = (_length: number) => {
     if (length + _length <= 4) {
@@ -29,7 +29,7 @@ const DataSimilar = ({ id }: TDataSimilar) => {
     }
     setLength(length + _length);
   };
-  console.log(data?.results);
+
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
 
@@ -41,12 +41,14 @@ const DataSimilar = ({ id }: TDataSimilar) => {
           <DataGroup data={data ? data.results.slice(0, length) : []} />
         </GridContainer>
         <div className="p-3">
-          <Button size="tiny" onClick={() => handleChangeLength(-5)}>
-            Ver Menos
-          </Button>
-          <Button size="tiny" onClick={() => handleChangeLength(5)}>
-            Ver Mais
-          </Button>
+          <Button.Group>
+            <Button size="tiny" onClick={() => handleChangeLength(-5)}>
+              Ver Menos
+            </Button>
+            <Button size="tiny" onClick={() => handleChangeLength(5)}>
+              Ver Mais
+            </Button>
+          </Button.Group>
         </div>
       </>
     );

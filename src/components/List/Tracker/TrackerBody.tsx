@@ -14,6 +14,7 @@ const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
 const TrackerBody = ({ list }: { list: DocumentData[] }) => {
   const navigate = useNavigate();
+
   return (
     <>
       {list.map((item) => (
@@ -44,17 +45,17 @@ const TrackerBody = ({ list }: { list: DocumentData[] }) => {
 
           <Table.Cell
             textAlign="center"
-            positive={item.listType === "see"}
-            negative={item.listType !== "see"}
-          >
-            <Icon name={item.listType === "see" ? "check" : "minus"} />
-          </Table.Cell>
-          <Table.Cell
-            textAlign="center"
             positive={item.listType === "saw"}
             negative={item.listType !== "saw"}
           >
             <Icon name={item.listType === "saw" ? "check" : "minus"} />
+          </Table.Cell>
+          <Table.Cell
+            textAlign="center"
+            positive={item.listType === "see"}
+            negative={item.listType !== "see"}
+          >
+            <Icon name={item.listType === "see" ? "check" : "minus"} />
           </Table.Cell>
           <Table.Cell
             textAlign="center"

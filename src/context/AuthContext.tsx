@@ -66,7 +66,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         handleMessage(error.message);
         setLocal("");
         setUser(null);
@@ -90,7 +89,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       );
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         handleMessage(error.message);
         setLocal("");
         setUser(null);

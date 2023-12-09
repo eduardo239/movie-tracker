@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
 import { useMovie } from "../context/MovieContext";
-import Pagination_ from "../components/Pagination_";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import MessageNotFound from "../components/MessageNotFound";
@@ -11,8 +10,6 @@ import PaginationBar from "../components/PaginationBar";
 const MoviePage = () => {
   const { data, loading, error, page, mediaType, setMediaType, setPage } =
     useMovie();
-
-  console.log(data);
 
   useEffect(() => {
     setMediaType("movie");
