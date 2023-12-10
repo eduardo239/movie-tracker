@@ -8,14 +8,20 @@ import { useEffect, useState } from "react";
 import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import TitleInfo from "../components/TitleInfo";
+import { useMovie } from "../context/MovieContext";
+import { useAuth } from "../context/AuthContext";
+
+const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
+const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
+const profileDefaultUrl = import.meta.env.VITE_FIREBASE_PROFILE_DEFAULT_URL;
 
 const PersonPage = () => {
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-  const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
-  const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
-  const profileDefaultUrl = import.meta.env.VITE_FIREBASE_PROFILE_DEFAULT_URL;
-
   const { id } = useParams();
+
+  const { userTrackerList, handleGetUserWatchListAndReturn } = useMovie();
+  const { user } = useAuth();
+
   const personUrl = `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&language=pt-BR&append_to_response=combined_credits`;
 
   const { data, loading, error } = useFetch<IPerson | null>(personUrl);
@@ -29,7 +35,10 @@ const PersonPage = () => {
       render: () => (
         <Tab.Pane attached={false} inverted>
           <GridContainer centered gap="gap-sm">
-            <DataGroup data={data ? movies : []} />
+            <DataGroup
+              data={data ? movies : []}
+              userTrackerList={userTrackerList}
+            />
           </GridContainer>
         </Tab.Pane>
       ),
@@ -39,7 +48,10 @@ const PersonPage = () => {
       render: () => (
         <Tab.Pane attached={false} inverted>
           <GridContainer centered gap="gap-sm">
-            <DataGroup data={data ? tvs : []} />
+            <DataGroup
+              data={data ? tvs : []}
+              userTrackerList={userTrackerList}
+            />
           </GridContainer>
         </Tab.Pane>
       ),
@@ -61,6 +73,14 @@ const PersonPage = () => {
 
     return () => {};
   }, [data]);
+
+  useEffect(() => {
+    if (user) {
+      handleGetUserWatchListAndReturn();
+    }
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;

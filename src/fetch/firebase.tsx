@@ -25,6 +25,9 @@ import {
   ERROR_F_AD_TV_LS,
   ERR_CREATED_LIST,
   ERR_EXISTS_CREATED_LIST,
+  ERR_MOVIE_OR_TV_NOT_FOUND,
+  ERR_RESPONSE_NOT_FOUND,
+  ERR_USER_NOT_FOUND,
   MEDIA_TV,
   SUC_CREATED_LIST,
   SUC_LIST_REMOVED,
@@ -33,7 +36,9 @@ import {
 import { FirebaseError } from "firebase/app";
 import { toast } from "react-toastify";
 
-// - - - - - - - - - - - SET WATCH LIST - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - TRACKER - - - - - - -  - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - -  - ADD TRACKER - - - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param payload listType, data, mediaType, user
@@ -41,10 +46,8 @@ import { toast } from "react-toastify";
  */
 export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
   if (payload.user) {
-    //
     if (payload.data) {
       // validar se é do tipo filme
-
       if ("title" in payload.data) {
         const content: IAddMovieToList = {
           mediaType: "movie",
@@ -101,7 +104,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
   }
 };
 
-// - - - - - - - - - - - SET WATCH LIST FB - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - ADD TRACKER FB - - - - - - - - - - - - - - - - - - //
 /**
  * Adiciona uma watch list ou atualiza a existente
  * @param content recebe mediaType, listType, movieId, userId, poster e title
@@ -134,11 +137,11 @@ const saveItemToWatchListFB = async (content: IAddMovieToList) => {
   }
 };
 
-// - - - - - - - - - - - GET WATCH LIST - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - GET TRACKER - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param payload movie, mediaType, user
- * @returns retorna a lista do usuário
+ * @returns retorna a lista do usuário no formato { movieList: DocumentData[];tvList: DocumentData[]; }
  */
 export const getUserWatchList = async (payload: IGetUserWatchList) => {
   if (payload.user) {
@@ -153,14 +156,52 @@ export const getUserWatchList = async (payload: IGetUserWatchList) => {
 
       return response;
     } else {
-      alert("get user watch list, error, data");
+      toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
     }
   } else {
-    alert("get user watch list, error, user");
+    toast.error(ERR_USER_NOT_FOUND);
   }
 };
+// - - - - - - - - - - - GET TRACKER - - - - - - - - - - - - - - - - - - - - - - - //
+/**
+ * Busca o item da watch list do usuário
+ * @param content mediaType, data, user
+ * @returns um único item
+ * { userWatchList: response.movieList[0] }
+ * ou { userWatchList: response.tvList[0] }
+ */
+export const getUserWatchListsFB = async (
+  content: IGetUserWatchList
+): Promise<DocumentData | null> => {
+  if (content.user) {
+    if (content.data) {
+      const _data: IGetUserWatchList = {
+        data: content.data,
+        mediaType: content.mediaType,
+        user: content.user,
+      };
 
-// - - - - - - - - - - - GET WATCH LIST FB - - - - - - - - - - - - - - - - - - //
+      const response = await getUserWatchList(_data);
+      if (!response) {
+        toast.error(ERR_RESPONSE_NOT_FOUND);
+        return null;
+      }
+      if (content.mediaType === "movie" && response.movieList.length > 0) {
+        return { userWatchList: response.movieList[0] };
+      }
+      if (content.mediaType === "tv" && response.tvList.length > 0) {
+        return { userWatchList: response.tvList[0] };
+      }
+    } else {
+      toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
+    }
+  } else {
+    toast.error(ERR_USER_NOT_FOUND);
+  }
+
+  return null;
+};
+// - - - - - - - - - - - GET TRACKER FB - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param content user, data, mediaType
@@ -201,6 +242,11 @@ export const getUserWatchListFB = async (
   return { movieList, tvList };
 };
 
+// - - - - - - - - - - - DEL TRACKER - - - - - - - - - - - - - - - - - - - - - //
+/**
+ * Remove um tracker pelo id
+ * @param id ID do tracker
+ */
 export const deleteTrackerByIdFB = async (id: string) => {
   try {
     await deleteDoc(doc(db, COLLECTION_TRACKER, id));
@@ -211,8 +257,24 @@ export const deleteTrackerByIdFB = async (id: string) => {
     }
   }
 };
+// - - - - - - - - - - - DEL TRACKER ITEMS BY ID - -- - - - - - - - - - - - - - - //
+/**
+ * Remove várias trackers em sequência
+ * @param trackerList DocumentData[]
+ */
+export const deleteTrackersByIdFB = async (trackerList: DocumentData[]) => {
+  for (let i = 0; i < trackerList.length; i++) {
+    try {
+      await deleteDoc(doc(db, COLLECTION_TRACKER, trackerList[i].id));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast.error(error.message);
+      }
+    }
+  }
+};
 
-// - - - - - - - - - - - SET TV SEASON - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - ADD TV SEASON TO TRACKER - - - - - - - - - - - - - - - //
 /**
  *
  * @param content mediaType, listType, movieId, userId, poster, title, seasons[]
@@ -248,7 +310,9 @@ export const saveTvSeasonFB = async (content: IAddTvToList) => {
   }
 };
 
-// - - - - - - - - - - - SET LISTS - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - - LISTS - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
+// - - - - - - - - - - - - - - ADD LISTS - - - - - - - - - - - - - - - - - - - - //
 /**
  *
  * @param payload name, description, isPublic, list[], userId
@@ -308,45 +372,7 @@ export const getUserListsFB = async (
   return { userLists };
 };
 
-/**
- * Busca o item da watch list do usuário
- * @param content mediaType, data, user
- * @returns um único item
- * { userWatchList: response.movieList[0] }
- * ou { userWatchList: response.tvList[0] }
- */
-export const getUserWatchListsFB = async (
-  content: IGetUserWatchList
-): Promise<DocumentData | null> => {
-  if (content.user) {
-    if (content.data) {
-      const _data: IGetUserWatchList = {
-        data: content.data,
-        mediaType: content.mediaType,
-        user: content.user,
-      };
-
-      const response = await getUserWatchList(_data);
-      if (!response) {
-        alert("[handleGetUserWatchList] - response not found");
-        return null;
-      }
-      if (content.mediaType === "movie" && response.movieList.length > 0) {
-        return { userWatchList: response.movieList[0] };
-      }
-      if (content.mediaType === "tv" && response.tvList.length > 0) {
-        return { userWatchList: response.tvList[0] };
-      }
-    } else {
-      alert("[getMovieList] - movie not found");
-    }
-  } else {
-    alert("[getMovieList] - user not found");
-  }
-
-  return null;
-};
-
+// - - - - - - - - - - - DEL LIST BY ID - - - - - - - - - - - - - - - - - - - - //
 /**
  * Remove o documento pelo id
  * @param id id do filme/série
@@ -358,22 +384,6 @@ export const deleteListByIdFB = async (id: string) => {
   } catch (error) {
     if (error instanceof FirebaseError) {
       toast.error(error.message);
-    }
-  }
-};
-
-/**
- * Remove várias trackers em sequência
- * @param trackerList DocumentData[]
- */
-export const deleteTrackersByIdFB = async (trackerList: DocumentData[]) => {
-  for (let i = 0; i < trackerList.length; i++) {
-    try {
-      await deleteDoc(doc(db, COLLECTION_TRACKER, trackerList[i].id));
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        toast.error(error.message);
-      }
     }
   }
 };

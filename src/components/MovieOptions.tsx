@@ -43,16 +43,20 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
     }
   };
 
+  const handleGetUserTrackerItem = async () => {
+    const payload: IGetUserWatchList = {
+      data: movie,
+      mediaType: "movie",
+      user,
+    };
+    const response = await handleGetUserWatchList(payload);
+
+    if (response) setTracker(response.userWatchList);
+  };
+
   useEffect(() => {
     if (user && movie) {
-      (async () => {
-        const response: DocumentData | null = await handleGetUserWatchList({
-          data: movie,
-          mediaType: "movie",
-          user,
-        });
-        if (response) setTracker(response.userWatchList);
-      })();
+      handleGetUserTrackerItem();
     }
 
     return () => {};

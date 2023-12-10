@@ -12,14 +12,16 @@ import { useEffect, useState } from "react";
 import TitleInfo from "../components/TitleInfo";
 import PaginationBar from "../components/PaginationBar";
 import { GENRES } from "../abstract/genres";
+import { useAuth } from "../context/AuthContext";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
 const MovieByGenre = () => {
   const { id } = useParams();
 
-  const { mediaType } = useMovie();
-
+  const { mediaType, userTrackerList, handleGetUserWatchListAndReturn } =
+    useMovie();
+  const { user } = useAuth();
   const [page, setPage] = useState(1);
   const [genreName, setGenreName] = useState<string | null>(null);
 
@@ -32,6 +34,14 @@ const MovieByGenre = () => {
       if (_genreName) setGenreName(_genreName.name);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (user) {
+      handleGetUserWatchListAndReturn();
+    }
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
@@ -47,7 +57,10 @@ const MovieByGenre = () => {
       />
 
       <GridContainer centered gap="gap-sm">
-        <DataGroup data={data ? data.results : []} />
+        <DataGroup
+          data={data ? data.results : []}
+          userTrackerList={userTrackerList}
+        />
       </GridContainer>
 
       <PaginationBar

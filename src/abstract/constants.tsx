@@ -39,6 +39,7 @@ export const ERR_NOT_FOUND = "Não encontrado.";
 export const ERR_USER_NOT_FOUND = "Usuário não encontrado.";
 export const ERR_TV_NOT_FOUND = "Série não encontrado.";
 export const ERR_MOVIE_NOT_FOUND = "Filme não encontrado.";
+export const ERR_MOVIE_OR_TV_NOT_FOUND = "Filme/Séries não encontrado.";
 export const ERR_DOCUMENT_NOT_FOUND = "Documento não encontrado.";
 export const ERR_RESPONSE_NOT_FOUND = "Resposta não encontrada.";
 

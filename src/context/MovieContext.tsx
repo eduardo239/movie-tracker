@@ -111,13 +111,12 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     return () => {};
   }, [baseUrl, searchUrl, isSearching, term]);
 
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  // REMINDER: removido por causa do novo pagination, gerava bug
+  // FIXME: bug ao mudar de pagina
   // useEffect(() => {
   //   const _page = params.get("page");
   //   if (_page) setPage(+_page);
   //   return () => {};
-  // }, [params, setPage]);
+  // }, [params]);
 
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   // search url
@@ -126,16 +125,18 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   // base url properties : adult, mode, lang, mediaType, page
   // search url properties : term, isSearching, lang, mediaType, page
 
-  // save data to tracker list
-  // remove data from tracker list
-  // update data from tracker list
-  // get data tracker list
+  // watch-list
+  // handleSaveToWatchList save item to watch list
+  // handleAddSeasonToTvList add season to watch list
+  // handleGetUserWatchList get user watch list, return single item
+  // handleGetUserWatchListAndReturn get user watch list and update setUserTrackerList
+  // handleDeleteTrackerList delete many watch list items by id
+  // handleDeleteTracker delete watch list item by id
 
-  // save new list
-  // update list
-  // remove list
-  // get user list by user id
-
+  // list
+  // handleCreateNewList create a new list
+  // handleGetUserLists get user lists
+  // handleDeleteList delete user list by id
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleSaveToWatchList = async (payload: ISaveItemToWatchList) => {
     const response = await saveItemToWatchList(payload);
@@ -150,7 +151,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     const response = await getUserWatchListsFB(payload);
     return response;
   };
-
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleGetUserWatchListAndReturn = async () => {
     if (user) {
       const payload: IGetUserMovieList = {
@@ -169,12 +170,12 @@ export function MovieProvider({ children }: TMovieProviderProps) {
       } else {
         setUserTrackerList(response.movieList);
       }
+
+      return response;
     } else {
       toast.error(ERR_USER_NOT_FOUND);
     }
   };
-
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleCreateNewList = async (payload: IList) => {
     await saveNewListFB(payload);

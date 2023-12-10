@@ -1,11 +1,56 @@
-## tracker
+## Tracker
 
-- save data to tracker ( saw, see, block )
-- get data tracker () : saw, see, block
-- update data tracker ( saw, see, block )
+### Doc # tracker
 
-## list
+      {
+        listType: "see" | "saw" | "block";
+        mediaType: "movie" | "tv";
+        movieId: number;
+        poster: string;
+        seasons: [number];
+        title: string;
+        userId: string;
+      }
 
-- save list ( data[] )
-- get user lists () : data[]
-- get user list () : data
+## List
+
+### Doc # list
+
+      {
+        description: string;
+        isPublic: boolean;
+        list: [
+          {
+            id: number;
+            media_type: "movie" | "tv";
+            name: string;
+            poster_path: string;
+          }
+        ]
+      }
+
+## Firebase
+
+### Collection # tracker
+
+- handleSaveToWatchList
+  > Salva um item na lista
+- handleAddSeasonToTvList
+  > Adiciona uma temporada no tracker
+- handleGetUserWatchList
+  > Busca o tracker e retorna um item
+- handleGetUserWatchListAndReturn
+  > Busca o tracker e atualiza o setUserTrackerList
+- handleDeleteTrackerList
+  > Remove vários itens de uma vez, do tracker
+- handleDeleteTracker
+  > Remove um item do tracker pelo id
+
+### Collection # list
+
+- handleCreateNewList
+  > Cria uma nova lista
+- handleGetUserLists
+  > Busca as listas do usuário
+- handleDeleteList
+  > Remove uma lista pelo id
