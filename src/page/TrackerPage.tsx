@@ -27,8 +27,6 @@ const TrackerPage = () => {
   const [checkedList, setCheckedList] = useState<DocumentData[]>([]);
   console.log(checkedList);
 
-  //handleDeleteTrackerList
-
   const fetchUserWatchList = async () => {
     if (user) {
       const payload: IGetUserMovieList = {
@@ -141,6 +139,7 @@ const TrackerPage = () => {
               list={userTrackerList}
               checkedList={checkedList}
               setCheckedList={setCheckedList}
+              fetchUserWatchList={fetchUserWatchList}
             />
           )}
           {filteredList.length > 0 && (
@@ -148,6 +147,7 @@ const TrackerPage = () => {
               list={filteredList}
               checkedList={checkedList}
               setCheckedList={setCheckedList}
+              fetchUserWatchList={fetchUserWatchList}
             />
           )}
         </Table.Body>

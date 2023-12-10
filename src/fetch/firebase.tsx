@@ -28,6 +28,7 @@ import {
   MEDIA_TV,
   SUC_CREATED_LIST,
   SUC_LIST_REMOVED,
+  SUC_TRACKER_REMOVED,
 } from "../abstract/constants";
 import { FirebaseError } from "firebase/app";
 import { toast } from "react-toastify";
@@ -198,6 +199,17 @@ export const getUserWatchListFB = async (
   });
 
   return { movieList, tvList };
+};
+
+export const deleteTrackerByIdFB = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, COLLECTION_TRACKER, id));
+    toast.success(SUC_TRACKER_REMOVED);
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      toast.error(error.message);
+    }
+  }
 };
 
 // - - - - - - - - - - - SET TV SEASON - - - - - - - - - - - - - - - - - - - - - //
