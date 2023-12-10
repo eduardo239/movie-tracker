@@ -2,17 +2,8 @@ import { useEffect, useState } from "react";
 import FormField from "../components/FormField";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import {
-  Button,
-  Divider,
-  Form,
-  Grid,
-  Header,
-  Segment,
-} from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Segment } from "semantic-ui-react";
 import LoadingInfo from "../components/LoadingInfo";
-import TitleInfo from "../components/TitleInfo";
-import { toast } from "react-toastify";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -66,7 +57,7 @@ const SignIn = () => {
               setState={setPassword}
               id="sign-up-password"
             />
-            <Button color="green" type="submit">
+            <Button color="green" type="submit" fluid>
               Registrar
             </Button>
           </Form>

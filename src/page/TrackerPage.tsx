@@ -11,21 +11,28 @@ import {
 import { getUserWatchListFB } from "../fetch/firebase";
 import TrackerBody from "../components/List/Tracker/TrackerBody";
 import { useMovie } from "../context/MovieContext";
+import { toast } from "react-toastify";
+import {
+  ERR_RESPONSE_NOT_FOUND,
+  ERR_USER_NOT_FOUND,
+} from "../abstract/constants";
 
 const TrackerPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  const { handleDeleteTrackerList } = useMovie();
+  const { userTrackerList, setUserTrackerList, handleDeleteTrackerList } =
+    useMovie();
 
   const [params, _] = useSearchParams();
 
-  const [userTrackerList, setUserTrackerList] = useState<DocumentData[]>([]);
+  // const [userTrackerList, setUserTrackerList] = useState<DocumentData[]>([]);
   const [filteredList, setFilteredList] = useState<DocumentData[]>([]);
   const [mediaType, setMediaType] = useState<TMediaType>("movie");
   const [filterType, setFilterType] = useState<TListType | null>(null);
   const [checkedList, setCheckedList] = useState<DocumentData[]>([]);
-  console.log(checkedList);
+
+  // FIXME: atualizar itens no filtro, ao mudar o media type
 
   const fetchUserWatchList = async () => {
     if (user) {
@@ -36,7 +43,7 @@ const TrackerPage = () => {
       };
       const response = await getUserWatchListFB(payload);
       if (!response) {
-        alert("[fetchUserWatchList] - response not found");
+        toast.error(ERR_RESPONSE_NOT_FOUND);
         return;
       }
       const _type = params.get("type");
@@ -46,7 +53,7 @@ const TrackerPage = () => {
         setUserTrackerList(response.movieList);
       }
     } else {
-      alert("[fetchUserWatchList] - user not found");
+      toast.error(ERR_USER_NOT_FOUND);
     }
   };
 
@@ -70,7 +77,7 @@ const TrackerPage = () => {
   }, [user, params, mediaType]);
 
   return (
-    <div>
+    <>
       <Button.Group labeled icon compact color="orange">
         <Button
           icon="check"
@@ -152,7 +159,7 @@ const TrackerPage = () => {
           )}
         </Table.Body>
       </Table>
-    </div>
+    </>
   );
 };
 

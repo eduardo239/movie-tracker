@@ -66,8 +66,11 @@ export const handleError = (error) => {
     case "auth/weak-password":
       toast.error("Erro: A senha é fraca, deve ter no mínimo 6 caracteres.");
       break;
+    case "auth/invalid-login-credentials":
+      toast.error("Erro: A Senha ou o email estão incorretos.");
+      break;
     default:
-      console.log(error.code);
+      console.info(error.code);
       toast.error(error.message);
       break;
   }

@@ -109,6 +109,9 @@ button {
 .center {
   text-align: center;
 }
+.relative {
+  position: relative;
+}
 /*  */
 .m-0 {
   margin: 0;
@@ -241,4 +244,35 @@ iframe {
 .app-dark {
   color: var(--color-light) !important;
   background-color: var(--color-dark) !important;
+}
+
+/*  */
+.see-checked {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.saw-checked {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: var(--color-secondary);
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.block-checked {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: var(--color-tertiary);
+  position: absolute;
+  top: 0;
+  right: 0;
 }
