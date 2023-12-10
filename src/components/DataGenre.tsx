@@ -8,7 +8,7 @@ type TDataGenre = { genres: IGenre[] };
 const DataGenre = ({ genres }: TDataGenre) => {
   if (genres)
     return (
-      <div className="p-4 app-dark-mode">
+      <div className="p-4 app-dark-theme">
         <div className="flex gap-sm ">
           {genres.map((genre) => (
             <Link to={`/genre/${genre.id}`} key={genre.id}>

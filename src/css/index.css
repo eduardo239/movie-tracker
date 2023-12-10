@@ -71,7 +71,6 @@ button {
   background-color: var(--color-light);
   color: var(--color-dark);
   border-radius: var(--border-radius-sm);
-
   line-height: 1.15;
 }
 
@@ -158,10 +157,13 @@ button {
   font-size: 1.2rem;
   font-weight: 400;
 }
-
-.app-dark-mode {
+/*  */
+.app-dark-theme {
   background-color: var(--color-darker);
   color: var(--color-light);
+}
+.app-dark-text {
+  color: var(--color-darker);
 }
 
 /*  */

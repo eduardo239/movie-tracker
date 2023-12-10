@@ -2,10 +2,9 @@ import { useNavigate } from "react-router-dom";
 import {
   Button,
   Checkbox,
-  Confirm,
   Header,
-  Icon,
   Image,
+  Modal,
   Table,
 } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
@@ -78,15 +77,22 @@ const ListsPage = () => {
   }, [user]);
 
   return (
-    <div>
-      <Confirm
-        open={open}
-        content="Tem certeza que deseja remover?"
-        cancelButton="Não"
-        confirmButton="Sim"
-        onCancel={() => setOpen(false)}
-        onConfirm={() => handleRemoveItem()}
-      />
+    <>
+      <Modal size="tiny" open={open} onClose={() => setOpen(false)}>
+        <Modal.Header>Remover Lista</Modal.Header>
+        <Modal.Content>
+          <p className="app-dark-text">Tem certeza que deseja remover?</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button negative onClick={() => setOpen(false)}>
+            No
+          </Button>
+          <Button positive onClick={() => handleRemoveItem()}>
+            Yes
+          </Button>
+        </Modal.Actions>
+      </Modal>
+
       <Button.Group labeled icon compact color="orange">
         <Button icon="trash" content="Play" />
         <Button icon="close" content="Pause" />
@@ -158,7 +164,7 @@ const ListsPage = () => {
           ))}
         </Table.Body>
       </Table>
-    </div>
+    </>
   );
 };
 

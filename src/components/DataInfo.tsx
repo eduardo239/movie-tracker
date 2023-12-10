@@ -1,4 +1,3 @@
-import { Header, Segment } from "semantic-ui-react";
 import { formatDate } from "../helper";
 import TitleInfo from "./TitleInfo";
 
@@ -8,7 +7,7 @@ type TDataInfo = {
 
 const DataInfo = ({ data }: TDataInfo) => {
   return (
-    <div className="p-4 app-dark-mode">
+    <div className="p-4 app-dark-theme">
       <TitleInfo center title="Informações" />
       {data.release_date && (
         <p>Data de Lançamento: {formatDate(data.release_date)}</p>

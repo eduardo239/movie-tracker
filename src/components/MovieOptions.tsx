@@ -25,7 +25,6 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
 
   const [params, _] = useSearchParams();
   const [id, setId] = useState<string>(params.get("id") + "");
-
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
   const handleClick = async (listType: TListType) => {

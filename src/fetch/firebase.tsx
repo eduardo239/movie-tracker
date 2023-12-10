@@ -23,8 +23,14 @@ import {
   COLLECTION_LIST,
   COLLECTION_TRACKER,
   ERROR_F_AD_TV_LS,
+  ERR_CREATED_LIST,
+  ERR_EXISTS_CREATED_LIST,
   MEDIA_TV,
+  SUC_CREATED_LIST,
+  SUC_LIST_REMOVED,
 } from "../abstract/constants";
+import { FirebaseError } from "firebase/app";
+import { toast } from "react-toastify";
 
 // - - - - - - - - - - - SET WATCH LIST - - - - - - - - - - - - - - - - - - //
 /**
@@ -47,16 +53,23 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
           poster: payload.data.poster_path,
           title: payload.data.title,
         };
-        await saveItemToWatchListFB(content);
 
-        const _data: IGetUserWatchList = {
-          data: payload.data,
-          mediaType: payload.mediaType,
-          user: payload.user,
-        };
+        try {
+          await saveItemToWatchListFB(content);
 
-        const response = await getUserWatchList(_data);
-        return response;
+          const _data: IGetUserWatchList = {
+            data: payload.data,
+            mediaType: payload.mediaType,
+            user: payload.user,
+          };
+
+          const response = await getUserWatchList(_data);
+          return response;
+        } catch (error) {
+          if (error instanceof FirebaseError) {
+            toast.error(error.message);
+          }
+        }
 
         // validar se é do tipo série
       } else if ("name" in payload.data) {
@@ -80,10 +93,10 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
         return response;
       }
     } else {
-      alert("movie required");
+      toast.error("Filme não encontrado.");
     }
   } else {
-    alert("login required");
+    toast.error("É necessário entrar na conta.");
   }
 };
 
@@ -244,16 +257,18 @@ export const saveNewListFB = async (payload: IList) => {
 
   if (!_exists) {
     // add new list
-    const docRef = await addDoc(collection(db, COLLECTION_LIST), payload);
+    try {
+      await addDoc(collection(db, COLLECTION_LIST), payload);
+      toast.success(SUC_CREATED_LIST);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        return error.message;
+      }
+    }
   } else if (_exists && _docId) {
-    // update list
-    alert("[saveNewListFB] - Esta lista já foi criada.");
-    // const docRef = doc(db, COLLECTION_LIST, _docId);
-    // await updateDoc(docRef, {
-    //   list: [{ movieId: 347181, poster: "5UaMtHDN4OnALvm19KCO0kPMYwm.jpg" }],
-    // });
+    toast.error(ERR_EXISTS_CREATED_LIST);
   } else {
-    alert("ERROR_F_AD_MV_LS");
+    toast.error(ERR_CREATED_LIST);
   }
 };
 
@@ -325,5 +340,12 @@ export const getUserWatchListsFB = async (
  * @param id id do filme/série
  */
 export const deleteListByIdFB = async (id: string) => {
-  await deleteDoc(doc(db, COLLECTION_LIST, id));
+  try {
+    await deleteDoc(doc(db, COLLECTION_LIST, id));
+    toast.success(SUC_LIST_REMOVED);
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      toast.error(error.message);
+    }
+  }
 };

@@ -15,6 +15,9 @@ import {
   COLLECTION_LIST,
   ERR_DOCUMENT_NOT_FOUND,
   ERR_USER_NOT_FOUND,
+  SUC_TRACKER_ADD,
+  SUC_TRACKER_REMOVED,
+  SUC_TRACKER_UPDATE,
 } from "../abstract/constants";
 import { containsItemWithId } from "../helper";
 import { toast } from "react-toastify";
@@ -51,6 +54,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
     const docSnap = await getDoc(docRef);
 
     let _doc: DocumentData | null = null;
+
     if (docSnap.exists()) {
       _doc = { id: docSnap.id, ...docSnap.data() };
     } else {
@@ -72,6 +76,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
         await updateDoc(docRef, {
           list: _newList,
         });
+        toast.info(SUC_TRACKER_REMOVED);
       } else {
         // add item to list
         const _data: TListItemData = {
@@ -88,6 +93,7 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
         await updateDoc(docRef, {
           list: _newList,
         });
+        toast.success(SUC_TRACKER_ADD);
       }
       fetchUserList();
     } else {

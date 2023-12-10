@@ -22,7 +22,7 @@ const DataRating = ({
 
   if (data)
     return (
-      <div className="p-4 app-dark-mode">
+      <div className="p-4 app-dark-theme">
         <Statistic horizontal inverted>
           <Statistic.Group size="tiny">
             <Statistic>

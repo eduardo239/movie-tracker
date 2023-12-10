@@ -6,7 +6,7 @@ import DataTrailer from "../components/DataTrailer";
 import useFetch from "../hooks/useFetch";
 import LoadingInfo from "../components/LoadingInfo";
 import MessageInfo from "../components/Message";
-import { Divider, Grid, Segment } from "semantic-ui-react";
+import { Divider, Grid } from "semantic-ui-react";
 import DataDetails from "../components/DataDetails";
 import DataRating from "../components/DataRating";
 import DataCast from "../components/DataCast";

@@ -12,7 +12,7 @@ type TDataDetails = {
 
 const DataDetails = ({ data }: TDataDetails) => {
   return (
-    <div className="p-4 app-dark-mode">
+    <div className="p-4 app-dark-theme">
       <TitleInfo
         as="h1"
         title={`${data.title} (${data.release_date?.split("-")[0]})`}

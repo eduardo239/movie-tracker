@@ -50,7 +50,7 @@ const ModalCreateList = ({
 
     await handleCreateNewList(payload);
     await fetchUserLists();
-    // setOpen(false);
+    setOpen(false);
   };
 
   return (
