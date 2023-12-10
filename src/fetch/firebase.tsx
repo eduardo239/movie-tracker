@@ -349,3 +349,19 @@ export const deleteListByIdFB = async (id: string) => {
     }
   }
 };
+
+/**
+ * Remove várias trackers em sequência
+ * @param trackerList DocumentData[]
+ */
+export const deleteTrackersByIdFB = async (trackerList: DocumentData[]) => {
+  for (let i = 0; i < trackerList.length; i++) {
+    try {
+      await deleteDoc(doc(db, COLLECTION_TRACKER, trackerList[i].id));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast.error(error.message);
+      }
+    }
+  }
+};

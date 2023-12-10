@@ -22,6 +22,7 @@ import { ERROR_UM_AP } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
 import {
   deleteListByIdFB,
+  deleteTrackersByIdFB,
   getUserListsFB,
   getUserWatchListsFB,
   saveItemToWatchList,
@@ -54,6 +55,7 @@ interface MovieContextType {
   ) => Promise<{ userLists: DocumentData[] }>;
 
   handleDeleteList: (id: string) => void;
+  handleDeleteTrackerList: (trackerList: DocumentData[]) => Promise<void>;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -143,10 +145,14 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     return response;
   };
 
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleDeleteList = async (id: string) => {
     await deleteListByIdFB(id);
   };
-
+  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  const handleDeleteTrackerList = async (trackerList: DocumentData[]) => {
+    await deleteTrackersByIdFB(trackerList);
+  };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   return (
     <MovieContext.Provider
@@ -167,6 +173,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
         handleGetUserLists,
         handleGetUserWatchList,
         handleDeleteList,
+        handleDeleteTrackerList,
       }}
     >
       {children}

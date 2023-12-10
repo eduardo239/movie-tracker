@@ -1,4 +1,3 @@
-import { FirebaseError } from "firebase/app";
 import { toast } from "react-toastify";
 
 export function isEmptyObject(obj) {

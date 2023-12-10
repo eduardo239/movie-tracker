@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button, Form, Header, Icon, Modal, Radio } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useMovie } from "../context/MovieContext";
+import { toast } from "react-toastify";
+import { ERR_USER_NOT_FOUND } from "../abstract/constants";
 
 const options = [
   { key: "m", text: "Male", value: "male" },
@@ -9,11 +11,11 @@ const options = [
   { key: "o", text: "Other", value: "other" },
 ];
 
-const ModalCreateList = ({
-  fetchUserLists,
-}: {
+type TFetchUserLists = {
   fetchUserLists: () => void;
-}) => {
+};
+
+const ModalCreateList = ({ fetchUserLists }: TFetchUserLists) => {
   const { user } = useAuth();
   const { handleCreateNewList } = useMovie();
 
@@ -30,12 +32,12 @@ const ModalCreateList = ({
 
   const handleSubmit = async () => {
     if (!form.name) {
-      alert("[handleSubmit] - Name is required");
+      toast.error("O Nome da lista é obrigatório.");
       return;
     }
 
     if (!user) {
-      alert("[handleSubmit] - user is required");
+      toast.error(ERR_USER_NOT_FOUND);
 
       return;
     }

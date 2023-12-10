@@ -1,4 +1,5 @@
 import { DocumentData } from "firebase/firestore";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -8,19 +9,38 @@ import {
   Image,
   Table,
 } from "semantic-ui-react";
+import { containsItemWithId } from "../../../helper";
 
 const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
-const TrackerBody = ({ list }: { list: DocumentData[] }) => {
+const TrackerBody = ({
+  list,
+  checkedList,
+  setCheckedList,
+}: {
+  list: DocumentData[];
+  checkedList: DocumentData[];
+  setCheckedList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
+}) => {
   const navigate = useNavigate();
+
+  const handleCheckedItem = (item: DocumentData) => {
+    const exists = containsItemWithId(checkedList, item.id);
+    if (exists) {
+      const newArray = checkedList.filter((x) => x.id !== item.id);
+      setCheckedList(newArray);
+    } else {
+      setCheckedList([...checkedList, item]);
+    }
+  };
 
   return (
     <>
       {list.map((item) => (
         <Table.Row key={item.id}>
           <Table.Cell collapsing>
-            <Checkbox onClick={(e, d) => console.log(d.checked)} />
+            <Checkbox onClick={() => handleCheckedItem(item)} />
           </Table.Cell>
           <Table.Cell
             style={{ cursor: "pointer" }}

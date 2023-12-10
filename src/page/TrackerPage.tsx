@@ -10,11 +10,13 @@ import {
 } from "../abstract/interfaces";
 import { getUserWatchListFB } from "../fetch/firebase";
 import TrackerBody from "../components/List/Tracker/TrackerBody";
+import { useMovie } from "../context/MovieContext";
 
 const TrackerPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
+  const { handleDeleteTrackerList } = useMovie();
 
   const [params, _] = useSearchParams();
 
@@ -22,10 +24,13 @@ const TrackerPage = () => {
   const [filteredList, setFilteredList] = useState<DocumentData[]>([]);
   const [mediaType, setMediaType] = useState<TMediaType>("movie");
   const [filterType, setFilterType] = useState<TListType | null>(null);
+  const [checkedList, setCheckedList] = useState<DocumentData[]>([]);
+  console.log(checkedList);
+
+  //handleDeleteTrackerList
 
   const fetchUserWatchList = async () => {
     if (user) {
-      console.log(mediaType);
       const payload: IGetUserMovieList = {
         fullList: true,
         userId: user.uid,
@@ -54,6 +59,11 @@ const TrackerPage = () => {
     } else {
       setFilteredList([]);
     }
+  };
+
+  const handleMultipleRemovals = async () => {
+    await handleDeleteTrackerList(checkedList);
+    await fetchUserWatchList();
   };
 
   useEffect(() => {
@@ -97,6 +107,13 @@ const TrackerPage = () => {
           content="Filmes"
           onClick={() => navigate(`/tracker?type=movie`)}
         />
+      </Button.Group>{" "}
+      <Button.Group labeled icon compact color="grey">
+        <Button
+          icon="trash"
+          content="Remover"
+          onClick={() => handleMultipleRemovals()}
+        />
       </Button.Group>
       {/*  */}
       <Table celled color="orange" size="small">
@@ -119,8 +136,20 @@ const TrackerPage = () => {
         </Table.Header>
 
         <Table.Body>
-          {filteredList.length === 0 && <TrackerBody list={userTrackerList} />}
-          {filteredList.length > 0 && <TrackerBody list={filteredList} />}
+          {filteredList.length === 0 && (
+            <TrackerBody
+              list={userTrackerList}
+              checkedList={checkedList}
+              setCheckedList={setCheckedList}
+            />
+          )}
+          {filteredList.length > 0 && (
+            <TrackerBody
+              list={filteredList}
+              checkedList={checkedList}
+              setCheckedList={setCheckedList}
+            />
+          )}
         </Table.Body>
       </Table>
     </div>
