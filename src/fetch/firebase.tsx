@@ -243,20 +243,7 @@ export const getUserWatchListFB = async (
 };
 
 // - - - - - - - - - - - DEL TRACKER - - - - - - - - - - - - - - - - - - - - - //
-/**
- * Remove um tracker pelo id
- * @param id ID do tracker
- */
-export const deleteTrackerByIdFB = async (id: string) => {
-  try {
-    await deleteDoc(doc(db, COLLECTION_TRACKER, id));
-    toast.success(SUC_TRACKER_REMOVED);
-  } catch (error) {
-    if (error instanceof FirebaseError) {
-      toast.error(error.message);
-    }
-  }
-};
+
 // - - - - - - - - - - - DEL TRACKER ITEMS BY ID - -- - - - - - - - - - - - - - - //
 /**
  * Remove várias trackers em sequência
@@ -384,6 +371,58 @@ export const deleteListByIdFB = async (id: string) => {
   } catch (error) {
     if (error instanceof FirebaseError) {
       toast.error(error.message);
+    }
+  }
+};
+
+export const deleteMultipleItemsListByIdFB = async (
+  trackerList: DocumentData[]
+) => {
+  for (let i = 0; i < trackerList.length; i++) {
+    try {
+      await deleteDoc(doc(db, COLLECTION_LIST, trackerList[i].id));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast.error(error.message);
+      }
+    }
+  }
+};
+
+/**
+ * Remove um item do firebase, pelo Id
+ * @param id Id do firebase
+ * @param collection "list" | "tracker"
+ */
+export const deleteItemByIdFB = async (
+  id: string,
+  collection: "list" | "tracker"
+) => {
+  try {
+    await deleteDoc(doc(db, collection, id));
+    toast.success(SUC_LIST_REMOVED);
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      toast.error(error.message);
+    }
+  }
+};
+/**
+ * Remove vários itens do Firebase, pelo Id
+ * @param list Lista de items com Id do firebase
+ * @param collection "list" | "tracker"
+ */
+export const deleteMultipleItemsByIdFB = async (
+  list: DocumentData[],
+  collection: "list" | "tracker"
+) => {
+  for (let i = 0; i < list.length; i++) {
+    try {
+      await deleteDoc(doc(db, collection, list[i].id));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast.error(error.message);
+      }
     }
   }
 };

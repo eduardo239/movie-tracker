@@ -7,10 +7,11 @@ import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import { getUserListsFB } from "../fetch/firebase";
 import TitleInfo from "../components/TitleInfo";
+import { useMovie } from "../context/MovieContext";
 
 const ListPage = () => {
   const { user } = useAuth();
-  // const { handleGetUserLists } = useMovie();
+  const { userTrackerList } = useMovie();
 
   const [userList, setUserList] = useState<DocumentData | null>(null);
   const [params, _] = useSearchParams();
@@ -44,7 +45,10 @@ const ListPage = () => {
           {userList && userList.list.length > 0 && (
             <div>
               <GridContainer centered gap="gap-sm">
-                <DataGroup data={userList ? userList.list.reverse() : []} />
+                <DataGroup
+                  data={userList ? userList.list.reverse() : []}
+                  userTrackerList={userTrackerList}
+                />
                 {/* TODO: alternar entre mediaType */}
               </GridContainer>
             </div>

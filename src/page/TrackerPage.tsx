@@ -21,20 +21,20 @@ const TrackerPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  const { userTrackerList, setUserTrackerList, handleDeleteTrackerList } =
-    useMovie();
+  const {
+    mediaType,
+    userTrackerList,
+    setUserTrackerList,
+    handleDeleteMultiplyItemsById,
+  } = useMovie();
 
   const [params, _] = useSearchParams();
-
-  // const [userTrackerList, setUserTrackerList] = useState<DocumentData[]>([]);
   const [filteredList, setFilteredList] = useState<DocumentData[]>([]);
-  const [mediaType, setMediaType] = useState<TMediaType>("movie");
-  const [filterType, setFilterType] = useState<TListType | null>(null);
   const [checkedList, setCheckedList] = useState<DocumentData[]>([]);
 
-  // FIXME: atualizar itens no filtro, ao mudar o media type
-
   const fetchUserWatchList = async () => {
+    setFilteredList([]);
+
     if (user) {
       const payload: IGetUserMovieList = {
         fullList: true,
@@ -42,6 +42,7 @@ const TrackerPage = () => {
         mediaType: mediaType ? mediaType : "movie",
       };
       const response = await getUserWatchListFB(payload);
+
       if (!response) {
         toast.error(ERR_RESPONSE_NOT_FOUND);
         return;
@@ -58,7 +59,6 @@ const TrackerPage = () => {
   };
 
   const handleFilter = (listType: TListType | null) => {
-    setFilterType(listType);
     if (listType !== null) {
       setFilteredList(userTrackerList.filter((x) => x.listType === listType));
     } else {
@@ -67,7 +67,7 @@ const TrackerPage = () => {
   };
 
   const handleMultipleRemovals = async () => {
-    await handleDeleteTrackerList(checkedList);
+    await handleDeleteMultiplyItemsById(checkedList, "tracker");
     await fetchUserWatchList();
   };
 
@@ -113,8 +113,9 @@ const TrackerPage = () => {
           onClick={() => navigate(`/tracker?type=movie`)}
         />
       </Button.Group>{" "}
-      <Button.Group labeled icon compact color="grey">
+      <Button.Group labeled icon compact color="red">
         <Button
+          disabled={checkedList.length === 0}
           icon="trash"
           content="Remover"
           onClick={() => handleMultipleRemovals()}

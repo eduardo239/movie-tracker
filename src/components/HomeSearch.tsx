@@ -53,7 +53,9 @@ const HomeSearch = () => {
           options={options}
           defaultValue={mediaType ? mediaType : "movie"}
         />
-        <Button type="submit">Search</Button>
+        <Button type="submit" color={query.length > 0 ? "green" : "grey"}>
+          Search
+        </Button>
         <Button onClick={resetSearch}>Reset</Button>
       </Input>
     </Form>

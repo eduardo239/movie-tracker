@@ -23,8 +23,6 @@ const MovieOptions = ({ movie }: TMovieOptions) => {
   const { handleSaveToWatchList, handleGetUserWatchList } = useMovie();
   const { isAuthenticated, user } = useAuth();
 
-  const [params, _] = useSearchParams();
-  const [id, setId] = useState<string>(params.get("id") + "");
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
   const handleClick = async (listType: TListType) => {

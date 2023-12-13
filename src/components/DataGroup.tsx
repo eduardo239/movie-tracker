@@ -1,8 +1,7 @@
 import { DocumentData } from "firebase/firestore";
 import { IMovieDetails } from "../abstract/interfaces";
 import { getRandomNumberInRange } from "../helper";
-import PosterLink from "./PosterLink";
-import { Image, Label, Segment } from "semantic-ui-react";
+import { Image, Segment } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 type TDataGroup = {

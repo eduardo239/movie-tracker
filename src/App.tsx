@@ -14,8 +14,21 @@ import MovieByGenre from "./page/MovieByGenre";
 import TrackerPage from "./page/TrackerPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+import { useMovie } from "./context/MovieContext";
 
 function App() {
+  const { handleGetUserWatchListAndReturn } = useMovie();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      handleGetUserWatchListAndReturn();
+    }
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   return (
     <div className="container">
       <ToastContainer />

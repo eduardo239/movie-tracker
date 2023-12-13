@@ -26,9 +26,8 @@ import {
 } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
 import {
-  deleteListByIdFB,
-  deleteTrackerByIdFB,
-  deleteTrackersByIdFB,
+  deleteItemByIdFB,
+  deleteMultipleItemsByIdFB,
   getUserListsFB,
   getUserWatchListFB,
   getUserWatchListsFB,
@@ -65,11 +64,16 @@ interface MovieContextType {
     payload: IUserList
   ) => Promise<{ userLists: DocumentData[] }>;
 
-  handleDeleteList: (id: string) => void;
-  handleDeleteTrackerList: (trackerList: DocumentData[]) => Promise<void>;
-  handleDeleteTracker: (id: string) => Promise<void>;
-
   handleGetUserWatchListAndReturn: () => void;
+  ///////
+  handleDeleteMultiplyItemsById: (
+    list: DocumentData[],
+    collection: "list" | "tracker"
+  ) => Promise<void>;
+  handleDeleteItemById: (
+    id: string,
+    collection: "list" | "tracker"
+  ) => Promise<void>;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -186,19 +190,20 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     return response;
   };
 
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const handleDeleteList = async (id: string) => {
-    await deleteListByIdFB(id);
+  // - / - / - / - / - / - / - / - /- / - / - / - /- / - / - / - /- / - / - / - /
+  const handleDeleteItemById = async (
+    id: string,
+    collection: "list" | "tracker"
+  ) => {
+    await deleteItemByIdFB(id, collection);
   };
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const handleDeleteTrackerList = async (trackerList: DocumentData[]) => {
-    await deleteTrackersByIdFB(trackerList);
+  const handleDeleteMultiplyItemsById = async (
+    list: DocumentData[],
+    collection: "list" | "tracker"
+  ) => {
+    await deleteMultipleItemsByIdFB(list, collection);
   };
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-
-  const handleDeleteTracker = async (id: string) => {
-    await deleteTrackerByIdFB(id);
-  };
+  // - / - / - / - / - / - / - / - /- / - / - / - /- / - / - / - /- / - / - / - /
 
   return (
     <MovieContext.Provider
@@ -218,12 +223,12 @@ export function MovieProvider({ children }: TMovieProviderProps) {
         handleCreateNewList,
         handleGetUserLists,
         handleGetUserWatchList,
-        handleDeleteList,
-        handleDeleteTrackerList,
-        handleDeleteTracker,
+
         userTrackerList,
         setUserTrackerList,
         handleGetUserWatchListAndReturn,
+        handleDeleteMultiplyItemsById,
+        handleDeleteItemById,
       }}
     >
       {children}

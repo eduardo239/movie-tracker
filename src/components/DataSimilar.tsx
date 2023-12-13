@@ -15,7 +15,7 @@ const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const DataSimilar = ({ id }: TDataSimilar) => {
-  const { mediaType } = useMovie();
+  const { mediaType, userTrackerList } = useMovie();
 
   const similarUrl = `${tmdbBaseUrl}/${mediaType}/${id}/similar?api_key=${apiKey}&language=pt-BR&include_adult=${false}&page=${1}`;
 
@@ -38,7 +38,10 @@ const DataSimilar = ({ id }: TDataSimilar) => {
       <>
         <TitleInfo center title="Mais Filmes/Séries" />
         <GridContainer centered gap="gap-sm">
-          <DataGroup data={data ? data.results.slice(0, length) : []} />
+          <DataGroup
+            data={data ? data.results.slice(0, length) : []}
+            userTrackerList={userTrackerList}
+          />
         </GridContainer>
         <div className="p-3">
           <Button.Group>

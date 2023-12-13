@@ -16,23 +16,25 @@ import { useMovie } from "../../../context/MovieContext";
 const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 
+type TTrackerBody = {
+  list: DocumentData[];
+  checkedList: DocumentData[];
+  setCheckedList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
+  fetchUserWatchList: () => Promise<void>;
+};
+
 const TrackerBody = ({
   list,
   checkedList,
   setCheckedList,
   fetchUserWatchList,
-}: {
-  list: DocumentData[];
-  checkedList: DocumentData[];
-  setCheckedList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
-  fetchUserWatchList: () => Promise<void>;
-}) => {
-  const { handleDeleteTracker } = useMovie();
+}: TTrackerBody) => {
+  const { handleDeleteItemById } = useMovie();
 
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [idToRemove, setIdToRemove] = useState<string | null>(null);
+  const [id, setId] = useState<string | null>(null);
 
   const handleCheckedItem = (item: DocumentData) => {
     const exists = containsItemWithId(checkedList, item.id);
@@ -46,14 +48,14 @@ const TrackerBody = ({
 
   const handleOpenModal = (item: DocumentData) => {
     setOpen(true);
-    setIdToRemove(item.id);
+    setId(item.id);
   };
 
-  const handleRemoveItem = () => {
-    if (idToRemove) {
-      handleDeleteTracker(idToRemove);
+  const handleRemoveItem = async () => {
+    if (id) {
+      await handleDeleteItemById(id, "tracker");
+      fetchUserWatchList();
     }
-    fetchUserWatchList();
     setOpen(false);
   };
 

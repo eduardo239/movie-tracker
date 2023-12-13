@@ -15,6 +15,11 @@ import { IUserList } from "../abstract/interfaces";
 import ModalCreateList from "../components/ModalCreateList";
 import { containsItemWithId } from "../helper";
 import IconWithLabel from "../components/IconWithLabel";
+import { toast } from "react-toastify";
+import {
+  ERR_RESPONSE_NOT_FOUND,
+  SUC_ITEMS_DELETED,
+} from "../abstract/constants";
 
 const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -22,13 +27,17 @@ const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 const ListsPage = () => {
   const navigate = useNavigate();
 
-  const { handleGetUserLists, handleDeleteList } = useMovie();
+  const {
+    handleGetUserLists,
+    handleDeleteItemById,
+    handleDeleteMultiplyItemsById,
+  } = useMovie();
   const { user } = useAuth();
 
+  const [open, setOpen] = useState(false);
   const [userLists, setUserLists] = useState<DocumentData[]>([]);
   const [selectedItems, setSelectedItems] = useState<DocumentData[]>([]);
-  const [open, setOpen] = useState(false);
-  const [idToRemove, setIdToRemove] = useState<string | null>(null);
+  const [id, setId] = useState<string | null>(null);
 
   const fetchUserLists = async () => {
     if (user) {
@@ -39,13 +48,12 @@ const ListsPage = () => {
 
       const response = await handleGetUserLists(payload);
       if (!response) {
-        alert("[fetchUserLists] - response not found");
+        toast.error(ERR_RESPONSE_NOT_FOUND);
         return;
       }
       setUserLists(response.userLists);
     }
   };
-
   const handleCheckedItems = (item: DocumentData) => {
     const _contains = containsItemWithId(selectedItems, item.id);
     if (_contains) {
@@ -58,18 +66,22 @@ const ListsPage = () => {
 
   const handleOpenModal = (item: DocumentData) => {
     setOpen(true);
-    setIdToRemove(item.id);
+    setId(item.id);
   };
 
   const handleRemoveItem = () => {
-    if (idToRemove) {
-      handleDeleteList(idToRemove);
+    if (id) {
+      handleDeleteItemById(id, "list");
+      fetchUserLists();
     }
-    fetchUserLists();
     setOpen(false);
   };
 
-  // https://firebase.google.com/docs/firestore/manage-data/delete-data?hl=pt#node.js_2
+  const handleMultipleRemovals = async () => {
+    await handleDeleteMultiplyItemsById(selectedItems, "list");
+    await fetchUserLists();
+    toast.success(SUC_ITEMS_DELETED);
+  };
 
   useEffect(() => {
     if (user) fetchUserLists();
@@ -93,14 +105,24 @@ const ListsPage = () => {
         </Modal.Actions>
       </Modal>
 
-      <Button.Group labeled icon compact color="orange">
+      {/* <Button.Group labeled icon compact color="orange">
         <Button icon="trash" content="Play" />
         <Button icon="close" content="Pause" />
         <Button icon="shuffle" content="Shuffle" />
-      </Button.Group>
+      </Button.Group> */}
       {"  "}
       <Button.Group labeled icon compact color="orange">
         <ModalCreateList fetchUserLists={fetchUserLists} />
+      </Button.Group>
+      {"  "}
+
+      <Button.Group labeled icon compact color="red">
+        <Button
+          disabled={selectedItems.length === 0}
+          icon="trash"
+          content="Remover"
+          onClick={() => handleMultipleRemovals()}
+        />
       </Button.Group>
       {/*  */}
       <Table celled color="orange" size="small">

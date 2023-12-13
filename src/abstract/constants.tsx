@@ -46,8 +46,10 @@ export const ERR_RESPONSE_NOT_FOUND = "Resposta não encontrada.";
 export const SUC_LIST_REMOVED = "Lista removida com sucesso.";
 export const SUC_CREATED_LIST = "A lista foi criada com sucesso.";
 export const ERR_CREATED_LIST = "Erro ao criar uma lista.";
-export const ERR_EXISTS_CREATED_LIST = "Esta lista já foi criada.";
+export const ERR_EXISTS_CREATED_LIST = "A lista já existe.";
 
 export const SUC_TRACKER_UPDATE = "Item atualizada com sucesso.";
 export const SUC_TRACKER_REMOVED = "Item removido com sucesso.";
 export const SUC_TRACKER_ADD = "Item adicionado com sucesso.";
+
+export const SUC_ITEMS_DELETED = "Itens removidos com sucesso.";

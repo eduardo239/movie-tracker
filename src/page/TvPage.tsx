@@ -6,10 +6,8 @@ import GridContainer from "../components/GridContainer";
 import DataGroup from "../components/DataGroup";
 import MessageNotFound from "../components/MessageNotFound";
 import PaginationBar from "../components/PaginationBar";
-import { useAuth } from "../context/AuthContext";
 
 const MoviePage = () => {
-  const { user } = useAuth();
   const {
     data,
     loading,
@@ -19,22 +17,14 @@ const MoviePage = () => {
     setMediaType,
     setPage,
     userTrackerList,
-    handleGetUserWatchListAndReturn,
   } = useMovie();
 
   useEffect(() => {
     setMediaType("tv");
     if (page && page !== 1) setPage(page);
-
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-
-  useEffect(() => {
-    handleGetUserWatchListAndReturn();
-
-    return () => {};
-  }, [user]);
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;
