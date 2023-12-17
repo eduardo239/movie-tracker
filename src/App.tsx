@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div className="container">
-      <ToastContainer />
+      <ToastContainer autoClose={1500} />
 
       <Navigation />
 

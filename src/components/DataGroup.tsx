@@ -77,16 +77,8 @@ const DataGroup = ({ data, userTrackerList }: TDataGroup) => {
                     ? tmdbPosterUrl + x.poster_path
                     : fbPosterDefault
                 }
-                // src={`${tmdbPosterUrl}${x.poster_path}`}
               />
             </Link>
-            {/* <PosterLink
-              id={x.id}
-              poster={x.poster_path}
-              mediaType={
-                x.media_type ? x.media_type : "title" in x ? "movie" : "tv"
-              }
-            /> */}
           </Segment>
         </div>
       );

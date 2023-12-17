@@ -54,7 +54,7 @@ const TrackerBody = ({
   const handleRemoveItem = async () => {
     if (id) {
       await handleDeleteItemById(id, "tracker");
-      fetchUserWatchList();
+      await fetchUserWatchList();
     }
     setOpen(false);
   };

@@ -83,7 +83,7 @@ const MovieByIdPage = () => {
           {/* -------------- options --------------   */}
           <Grid.Column width={16} textAlign="center">
             <Divider />
-            <MovieOptions movie={data} />
+            <MovieOptions data={data} />
             <Divider />
           </Grid.Column>
 

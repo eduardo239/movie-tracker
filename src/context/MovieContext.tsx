@@ -7,10 +7,12 @@ import {
   useEffect,
 } from "react";
 import {
+  IAddMovieToList,
   IAddTvToList,
   IGetUserMovieList,
   IGetUserWatchList,
   IList,
+  IListFB,
   IMovieResults,
   ISaveItemToWatchList,
   IUserList,
@@ -28,10 +30,13 @@ import { useAuth } from "./AuthContext";
 import {
   deleteItemByIdFB,
   deleteMultipleItemsByIdFB,
+  getListFB,
+  getTrackerFB,
   getUserListsFB,
   getUserWatchListFB,
-  getUserWatchListsFB,
   saveItemToWatchList,
+  saveItemToWatchListFB,
+  saveItemToWatchListFB2,
   saveNewListFB,
   saveTvSeasonFB,
 } from "../fetch/firebase";
@@ -56,13 +61,9 @@ interface MovieContextType {
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
   //
   handleAddSeasonToTvList: (payload: IAddTvToList) => void;
-  handleSaveToWatchList: (payload: ISaveItemToWatchList) => DocumentData | null;
-  handleGetUserWatchList: (payload: IGetUserWatchList) => DocumentData | null;
+  // handleGetUserWatchList: (payload: IGetUserWatchList) => DocumentData | null;
 
   handleCreateNewList: (payload: IList) => void;
-  handleGetUserLists: (
-    payload: IUserList
-  ) => Promise<{ userLists: DocumentData[] }>;
 
   handleGetUserWatchListAndReturn: () => void;
   ///////
@@ -74,6 +75,10 @@ interface MovieContextType {
     id: string,
     collection: "list" | "tracker"
   ) => Promise<void>;
+  handleGetList: () => Promise<{ list: DocumentData[] }>;
+  handleGetTracker: (payload: IGetUserWatchList) => Promise<DocumentData>;
+  handleSetTracker: (payload: ISaveItemToWatchList) => Promise<void>;
+  getTracker: (payload: IGetUserWatchList) => Promise<DocumentData | null>;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -107,55 +112,18 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   const { data, loading, error } = useFetch<IMovieResults | null>(
     url ? url : baseUrl
   );
-
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
+  // --------------------------------------------------------------------------------- //
+  // --------------------------------------------------------------------------------- //
   useEffect(() => {
     if (isSearching) setUrl(searchUrl);
     else setUrl(baseUrl);
     return () => {};
   }, [baseUrl, searchUrl, isSearching, term]);
-
-  // FIXME: bug ao mudar de pagina
-  // useEffect(() => {
-  //   const _page = params.get("page");
-  //   if (_page) setPage(+_page);
-  //   return () => {};
-  // }, [params]);
-
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  // search url
-  // base url
-
-  // base url properties : adult, mode, lang, mediaType, page
-  // search url properties : term, isSearching, lang, mediaType, page
-
-  // watch-list
-  // handleSaveToWatchList save item to watch list
-  // handleAddSeasonToTvList add season to watch list
-  // handleGetUserWatchList get user watch list, return single item
-  // handleGetUserWatchListAndReturn get user watch list and update setUserTrackerList
-  // handleDeleteTrackerList delete many watch list items by id
-  // handleDeleteTracker delete watch list item by id
-
-  // list
-  // handleCreateNewList create a new list
-  // handleGetUserLists get user lists
-  // handleDeleteList delete user list by id
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const handleSaveToWatchList = async (payload: ISaveItemToWatchList) => {
-    const response = await saveItemToWatchList(payload);
-    return response;
-  };
   // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleAddSeasonToTvList = async (payload: IAddTvToList) => {
     const response = await saveTvSeasonFB(payload);
     return response;
   };
-  const handleGetUserWatchList = async (payload: IGetUserWatchList) => {
-    const response = await getUserWatchListsFB(payload);
-    return response;
-  };
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleGetUserWatchListAndReturn = async () => {
     if (user) {
       const payload: IGetUserMovieList = {
@@ -180,17 +148,40 @@ export function MovieProvider({ children }: TMovieProviderProps) {
       toast.error(ERR_USER_NOT_FOUND);
     }
   };
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
   const handleCreateNewList = async (payload: IList) => {
     await saveNewListFB(payload);
   };
-  // - - - - - - - - - - - - - - - -- - - - - - - -- - - - - - - -- - - - - - - -
-  const handleGetUserLists = async (payload: IUserList) => {
-    const response = await getUserListsFB(payload);
-    return response;
+  // --------------------------------------------------------------------------------- //
+  // --------------------------------------------------------------------------------- //
+  const handleGetTracker = async (payload: IGetUserWatchList) => {
+    if (user) {
+      const response = await getTrackerFB({ ...payload, userId: user.uid });
+
+      if (!response) {
+        toast.error(ERR_RESPONSE_NOT_FOUND);
+        return { list: [] };
+      }
+
+      return response;
+    } else {
+      toast.error(ERR_USER_NOT_FOUND);
+      return { list: [] };
+    }
   };
 
-  // - / - / - / - / - / - / - / - /- / - / - / - /- / - / - / - /- / - / - / - /
+  const handleGetList = async () => {
+    if (user) {
+      const response = await getListFB({ userId: user.uid });
+      if (!response) {
+        toast.error(ERR_RESPONSE_NOT_FOUND);
+        return { list: [] };
+      }
+      return response;
+    } else {
+      toast.error(ERR_USER_NOT_FOUND);
+      return { list: [] };
+    }
+  };
   const handleDeleteItemById = async (
     id: string,
     collection: "list" | "tracker"
@@ -203,7 +194,51 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   ) => {
     await deleteMultipleItemsByIdFB(list, collection);
   };
-  // - / - / - / - / - / - / - / - /- / - / - / - /- / - / - / - /- / - / - / - /
+  // --------------------------------------------------------------------------------- //
+  // --------------------------------------------------------------------------------- //
+  // --------------------------------------------------------------------------------- //
+
+  const getTracker = async (
+    payload: IGetUserWatchList
+  ): Promise<DocumentData | null> => {
+    if (user) {
+      const response = await getTrackerFB({ ...payload, userId: user.uid });
+      if (!response) {
+        return response;
+      }
+
+      return response;
+    } else {
+      toast.error(ERR_USER_NOT_FOUND);
+      return null;
+    }
+  };
+  const handleSetTracker = async (payload: ISaveItemToWatchList) => {
+    // ---------- | ---------- //
+
+    if (payload.data && user) {
+      const content: IAddMovieToList = {
+        mediaType: payload.mediaType,
+        listType: payload.listType,
+        movieId: payload.data.id,
+        userId: user.uid,
+        poster: payload.data.poster_path,
+      };
+      if ("title" in payload.data) {
+        await saveItemToWatchListFB2({
+          ...content,
+          title: payload.data.title,
+        });
+      } else if ("name" in payload.data) {
+        await saveItemToWatchListFB2({
+          ...content,
+          title: payload.data.name,
+        });
+      }
+    } else {
+      toast.error(ERR_USER_NOT_FOUND);
+    }
+  };
 
   return (
     <MovieContext.Provider
@@ -219,16 +254,18 @@ export function MovieProvider({ children }: TMovieProviderProps) {
         mediaType,
         setMediaType,
         handleAddSeasonToTvList,
-        handleSaveToWatchList,
+        handleSetTracker,
         handleCreateNewList,
-        handleGetUserLists,
-        handleGetUserWatchList,
 
+        handleGetTracker,
         userTrackerList,
         setUserTrackerList,
         handleGetUserWatchListAndReturn,
         handleDeleteMultiplyItemsById,
         handleDeleteItemById,
+        handleGetList,
+
+        getTracker,
       }}
     >
       {children}

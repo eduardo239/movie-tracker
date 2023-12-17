@@ -6,6 +6,7 @@ import {
   IUserList,
   IGetUserWatchList,
   ISaveItemToWatchList,
+  IListFB,
 } from "../abstract/interfaces";
 import {
   DocumentData,
@@ -64,7 +65,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
           const _data: IGetUserWatchList = {
             data: payload.data,
             mediaType: payload.mediaType,
-            user: payload.user,
+            userId: payload.user.uid,
           };
 
           const response = await getUserWatchList(_data);
@@ -89,7 +90,7 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
         const _data: IGetUserWatchList = {
           data: payload.data,
           mediaType: payload.mediaType,
-          user: payload.user,
+          userId: payload.user.uid,
         };
 
         await saveItemToWatchListFB(content);
@@ -104,39 +105,6 @@ export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
   }
 };
 
-// - - - - - - - - - - - ADD TRACKER FB - - - - - - - - - - - - - - - - - - //
-/**
- * Adiciona uma watch list ou atualiza a existente
- * @param content recebe mediaType, listType, movieId, userId, poster e title
- */
-const saveItemToWatchListFB = async (content: IAddMovieToList) => {
-  let exists_ = false;
-  let docId_ = null;
-
-  const q = query(
-    collection(db, COLLECTION_TRACKER),
-    where("userId", "==", content.userId),
-    where("movieId", "==", content.movieId)
-  );
-  const querySnapshot = await getDocs(q);
-
-  querySnapshot.forEach((doc) => {
-    exists_ = doc.exists();
-    docId_ = doc.id;
-  });
-
-  if (!exists_) {
-    const docRef = await addDoc(collection(db, COLLECTION_TRACKER), content);
-    // update list
-  } else if (exists_ && docId_) {
-    // update list
-    const docRef = doc(db, COLLECTION_TRACKER, docId_);
-    await updateDoc(docRef, {
-      listType: content.listType,
-    });
-  }
-};
-
 // - - - - - - - - - - - GET TRACKER - - - - - - - - - - - - - - - - - - //
 /**
  *
@@ -144,84 +112,43 @@ const saveItemToWatchListFB = async (content: IAddMovieToList) => {
  * @returns retorna a lista do usuário no formato { movieList: DocumentData[];tvList: DocumentData[]; }
  */
 export const getUserWatchList = async (payload: IGetUserWatchList) => {
-  if (payload.user) {
-    //
-    if (payload.data) {
-      const response = await getUserWatchListFB({
-        userId: payload.user.uid,
-        movieId: payload.data.id,
-        fullList: false,
-        mediaType: payload.mediaType,
-      });
+  if (payload.data) {
+    const response = await getUserWatchListFB({
+      userId: payload.userId,
+      movieId: payload.data.id,
+      fullList: false,
+      mediaType: payload.mediaType,
+    });
 
-      return response;
-    } else {
-      toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
-    }
+    return response;
   } else {
-    toast.error(ERR_USER_NOT_FOUND);
+    toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
   }
 };
 // - - - - - - - - - - - GET TRACKER - - - - - - - - - - - - - - - - - - - - - - - //
-/**
- * Busca o item da watch list do usuário
- * @param content mediaType, data, user
- * @returns um único item
- * { userWatchList: response.movieList[0] }
- * ou { userWatchList: response.tvList[0] }
- */
-export const getUserWatchListsFB = async (
-  content: IGetUserWatchList
-): Promise<DocumentData | null> => {
-  if (content.user) {
-    if (content.data) {
-      const _data: IGetUserWatchList = {
-        data: content.data,
-        mediaType: content.mediaType,
-        user: content.user,
-      };
 
-      const response = await getUserWatchList(_data);
-      if (!response) {
-        toast.error(ERR_RESPONSE_NOT_FOUND);
-        return null;
-      }
-      if (content.mediaType === "movie" && response.movieList.length > 0) {
-        return { userWatchList: response.movieList[0] };
-      }
-      if (content.mediaType === "tv" && response.tvList.length > 0) {
-        return { userWatchList: response.tvList[0] };
-      }
-    } else {
-      toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
-    }
-  } else {
-    toast.error(ERR_USER_NOT_FOUND);
-  }
-
-  return null;
-};
 // - - - - - - - - - - - GET TRACKER FB - - - - - - - - - - - - - - - - - - //
 /**
  *
- * @param content user, data, mediaType
+ * @param payload user, data, mediaType
  * @returns a watch list do usuário
  */
 export const getUserWatchListFB = async (
-  content: IGetUserMovieList
+  payload: IGetUserMovieList
 ): Promise<{ movieList: DocumentData[]; tvList: DocumentData[] }> => {
   let _query;
-  if (content.fullList) {
+
+  if (payload.fullList) {
     _query = query(
       collection(db, COLLECTION_TRACKER),
-      where("userId", "==", content.userId)
+      where("userId", "==", payload.userId)
     );
   } else {
     // get only one document
     _query = query(
       collection(db, COLLECTION_TRACKER),
-      where("userId", "==", content.userId),
-      where("movieId", "==", content.movieId)
+      where("userId", "==", payload.userId),
+      where("movieId", "==", payload.movieId)
       // movieId for movies and tvs
     );
   }
@@ -238,7 +165,6 @@ export const getUserWatchListFB = async (
       movieList.push({ id: doc.id, ...doc.data() });
     }
   });
-
   return { movieList, tvList };
 };
 
@@ -425,4 +351,138 @@ export const deleteMultipleItemsByIdFB = async (
       }
     }
   }
+};
+
+export const getListFB = async (
+  payload: IListFB
+): Promise<{ list: DocumentData[] }> => {
+  const _query = query(
+    collection(db, COLLECTION_LIST),
+    where("userId", "==", payload.userId)
+  );
+
+  const querySnapshot = await getDocs(_query);
+  const list: DocumentData[] = [];
+
+  querySnapshot.forEach((doc) => {
+    list.push({ id: doc.id, ...doc.data() });
+  });
+
+  return { list };
+};
+
+// - - - - - - - - - - - ADD TRACKER FB - - - - - - - - - - - - - - - - - - //
+/**
+ * Adiciona uma watch list ou atualiza a existente
+ * @param payload recebe mediaType, listType, movieId, userId, poster e title
+ */
+export const saveItemToWatchListFB = async (payload: IAddMovieToList) => {
+  let exists_ = false;
+  let docId_ = null;
+
+  const q = query(
+    collection(db, COLLECTION_TRACKER),
+    where("userId", "==", payload.userId),
+    where("movieId", "==", payload.movieId)
+  );
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    exists_ = doc.exists();
+    docId_ = doc.id;
+  });
+
+  if (!exists_) {
+    const docRef = await addDoc(collection(db, COLLECTION_TRACKER), payload);
+    // update list
+  } else if (exists_ && docId_) {
+    // update list
+    const docRef = doc(db, COLLECTION_TRACKER, docId_);
+    await updateDoc(docRef, {
+      listType: payload.listType,
+    });
+  }
+};
+
+/**
+ *
+ * @param payload
+ */
+export const saveItemToWatchListFB2 = async (payload: IAddMovieToList) => {
+  let exists_ = false;
+  let docId_ = null;
+
+  const q = query(
+    collection(db, COLLECTION_TRACKER),
+    where("userId", "==", payload.userId),
+    where("movieId", "==", payload.movieId)
+  );
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    exists_ = doc.exists();
+    docId_ = doc.id;
+  });
+
+  if (!exists_) {
+    const docRef = await addDoc(collection(db, COLLECTION_TRACKER), payload);
+    // update list
+  } else if (exists_ && docId_) {
+    // update list
+    const docRef = doc(db, COLLECTION_TRACKER, docId_);
+    await updateDoc(docRef, {
+      listType: payload.listType,
+    });
+  }
+};
+/**
+ * Busca o item da watch list do usuário
+ * @param payload mediaType, data, user
+ * @returns um único item
+ * { list: response.movieList[0] }
+ * ou { list: response.tvList[0] }
+ */
+export const getTrackerFB = async (
+  payload: IGetUserWatchList
+): Promise<DocumentData | null> => {
+  if (payload.data) {
+    // const response = await getUserWatchListFB({
+    //   fullList: false,
+    //   userId: payload.userId,
+    //   mediaType: payload.mediaType,
+    //   movieId: payload.data.id,
+    // });
+
+    const _query = query(
+      collection(db, COLLECTION_TRACKER),
+      where("userId", "==", payload.userId),
+      where("movieId", "==", payload.data.id)
+      // movieId for movies and tvs
+    );
+
+    const querySnapshot = await getDocs(_query);
+    const movieList: DocumentData[] = [];
+    const tvList: DocumentData[] = [];
+
+    querySnapshot.forEach((doc) => {
+      const _mediaType = doc.data().mediaType;
+      console.log(doc.data());
+      console.log(_mediaType);
+      if (_mediaType === MEDIA_TV) {
+        tvList.push({ id: doc.id, ...doc.data() });
+      } else {
+        movieList.push({ id: doc.id, ...doc.data() });
+      }
+    });
+    return { movieList, tvList };
+
+    // if (!response) {
+    //   toast.error(ERR_RESPONSE_NOT_FOUND);
+    //   return null;
+    // }
+    // return response;
+  } else {
+    toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
+  }
+  return null;
 };

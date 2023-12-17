@@ -27,11 +27,8 @@ const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 const ListsPage = () => {
   const navigate = useNavigate();
 
-  const {
-    handleGetUserLists,
-    handleDeleteItemById,
-    handleDeleteMultiplyItemsById,
-  } = useMovie();
+  const { handleDeleteItemById, handleDeleteMultiplyItemsById, handleGetList } =
+    useMovie();
   const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
@@ -40,20 +37,10 @@ const ListsPage = () => {
   const [id, setId] = useState<string | null>(null);
 
   const fetchUserLists = async () => {
-    if (user) {
-      const payload: IUserList = {
-        userId: user.uid,
-        fullList: true,
-      };
-
-      const response = await handleGetUserLists(payload);
-      if (!response) {
-        toast.error(ERR_RESPONSE_NOT_FOUND);
-        return;
-      }
-      setUserLists(response.userLists);
-    }
+    const response = await handleGetList();
+    setUserLists(response.list);
   };
+
   const handleCheckedItems = (item: DocumentData) => {
     const _contains = containsItemWithId(selectedItems, item.id);
     if (_contains) {
@@ -69,10 +56,10 @@ const ListsPage = () => {
     setId(item.id);
   };
 
-  const handleRemoveItem = () => {
+  const handleRemoveItem = async () => {
     if (id) {
-      handleDeleteItemById(id, "list");
-      fetchUserLists();
+      await handleDeleteItemById(id, "list");
+      await fetchUserLists();
     }
     setOpen(false);
   };

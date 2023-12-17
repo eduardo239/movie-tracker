@@ -221,7 +221,7 @@ export interface IAddMovieToList {
   movieId: number;
   userId: string;
   poster: string;
-  title: string;
+  title?: string;
 }
 // - - - - - - - - - - payload add tv - - - - - - - - - -
 export interface IAddTvToList {
@@ -298,10 +298,13 @@ export interface ISaveItemToWatchList {
 export interface IGetUserWatchList {
   mediaType: TMediaType;
   data: IMovieDetails | ITvDetails | null;
-  user: null | User;
+  userId: string;
 }
 export interface ISaveListType {
   listType: TListType;
   data: IMovieDetails | ITvDetails | null;
   mediaType: TMediaType;
+}
+export interface IListFB {
+  userId: string;
 }

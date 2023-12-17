@@ -4,6 +4,7 @@ import {
   ITvDetails,
   TListType,
   ISaveItemToWatchList,
+  IGetUserWatchList,
 } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
 import { Button, Icon } from "semantic-ui-react";
@@ -19,46 +20,25 @@ const TvOptions = ({ data }: TTvOptions) => {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useAuth();
-  const {
-    handleAddSeasonToTvList,
-    handleSaveToWatchList,
-    handleGetUserWatchList,
-  } = useMovie();
+  const { handleAddSeasonToTvList, handleSetTracker, getTracker } = useMovie();
 
   const [seasons, setSeasons] = useState<number[] | null>(null);
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);
   const [tracker, setTracker] = useState<DocumentData | null>(null);
 
-  // busca as temporadas do usuário
-  const getSeasons = async () => {
-    if (user) {
-      //
-      if (data) {
-        await fetchUserWatchList();
-      } else {
-        alert("[getSeasons] - TV not found");
-      }
-    } else {
-      alert("[getSeasons] - User not found");
-    }
-  };
   // salva na watch list
   const handleClick = async (listType: TListType) => {
-    const _data: ISaveItemToWatchList = {
+    const _payload: ISaveItemToWatchList = {
       listType,
       data: data,
       mediaType: "tv",
       user,
     };
 
-    const response = await handleSaveToWatchList(_data);
-
-    if (response) {
-      setTracker(response.tvList[0]);
-    } else {
-      alert("[handleClick] - response not found");
-    }
+    await handleSetTracker(_payload);
+    await handleGetUserTrackerItem();
   };
+
   // salva a temporada na watch list do usuário
   const handleSaveSeason = async (season: number) => {
     if (user) {
@@ -66,7 +46,7 @@ const TvOptions = ({ data }: TTvOptions) => {
       if (data) {
         //
         if (tracker) {
-          // check if exists, filter else add
+          // check if exists
           const _alreadySaved = savedSeasons.some((x) => season === x);
 
           if (_alreadySaved) {
@@ -84,7 +64,7 @@ const TvOptions = ({ data }: TTvOptions) => {
               seasons: _updatedList,
             };
             await handleAddSeasonToTvList(content);
-            await fetchUserWatchList();
+            await handleGetUserTrackerItem();
           } else {
             // save
 
@@ -98,10 +78,10 @@ const TvOptions = ({ data }: TTvOptions) => {
               seasons: [...savedSeasons, season],
             };
             await handleAddSeasonToTvList(content);
-            await fetchUserWatchList();
+            await handleGetUserTrackerItem();
           }
 
-          await getSeasons();
+          // await getSeasons();
         } else {
           alert("[handleSaveSeason] - tracker type not selected");
         }
@@ -113,18 +93,22 @@ const TvOptions = ({ data }: TTvOptions) => {
     }
   };
   // busca a watch list do usuário e carrega os valores
-  const fetchUserWatchList = async () => {
-    const response: DocumentData | null = await handleGetUserWatchList({
-      data: data,
-      mediaType: "tv",
-      user,
-    });
+  const handleGetUserTrackerItem = async () => {
+    if (user) {
+      const payload: IGetUserWatchList = {
+        data: data,
+        mediaType: "tv",
+        userId: user.uid,
+      };
 
-    if (response) {
-      if (response.userWatchList.seasons) {
-        setSavedSeasons(response.userWatchList.seasons);
-      } else {
-        setTracker(response.userWatchList);
+      const response = await getTracker(payload);
+
+      if (response) {
+        setTracker(response.tvList[0]);
+        console.log(response.tvList[0].seasons);
+
+        if (response.tvList[0].seasons.length > 0)
+          setSavedSeasons(response.tvList[0].seasons);
       }
     }
   };
@@ -142,8 +126,8 @@ const TvOptions = ({ data }: TTvOptions) => {
   }, [data]);
 
   useEffect(() => {
-    if (user && data) fetchUserWatchList();
-    if (user) getSeasons();
+    if (user && data) handleGetUserTrackerItem();
+    // if (user) getSeasons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, data]);
 
@@ -162,7 +146,7 @@ const TvOptions = ({ data }: TTvOptions) => {
           </Button>
         )}
 
-        <TitleInfo title="Temporadas" />
+        <TitleInfo center title="Temporadas" />
 
         {seasons &&
           seasons.map((season, i) => {

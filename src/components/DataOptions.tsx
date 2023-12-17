@@ -17,7 +17,6 @@ import {
   ERR_USER_NOT_FOUND,
   SUC_TRACKER_ADD,
   SUC_TRACKER_REMOVED,
-  SUC_TRACKER_UPDATE,
 } from "../abstract/constants";
 import { containsItemWithId } from "../helper";
 import { toast } from "react-toastify";
@@ -39,15 +38,10 @@ type TOptions = {
 
 const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
   const { user } = useAuth();
-  const { handleGetUserLists } = useMovie();
+  const { handleGetList } = useMovie();
   const navigate = useNavigate();
-
   const [options, setOptions] = useState<DocumentData[]>([]);
 
-  /**
-   * Ao clicar na temporada, alterna entre assistido e não assistido
-   * @param item documentData
-   */
   const toggleItemFromList = async (item: DocumentData) => {
     // get user list
     const docRef = doc(db, COLLECTION_LIST, item.id);
@@ -103,16 +97,12 @@ const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
 
   const fetchUserList = async () => {
     if (user) {
-      const _data: IUserList = {
-        userId: user.uid,
-      };
-      const response = await handleGetUserLists(_data);
-
+      const response = await handleGetList();
       if (!response) {
         toast.error(ERR_DOCUMENT_NOT_FOUND);
       }
 
-      const _array = checkUserList(response.userLists);
+      const _array = checkUserList(response.list);
       setOptions(_array);
     } else {
       toast.error(ERR_USER_NOT_FOUND);
