@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ITvDetails } from "../abstract/interfaces";
 import { Button, Segment } from "semantic-ui-react";
 import { createArrayOfArrays } from "../helper";
-import TitleInfo from "./TitleInfo";
+import TitleInfo from "./Elements/TitleInfo";
 
 /*
 season starts with 0

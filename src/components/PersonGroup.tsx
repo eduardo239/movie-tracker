@@ -1,6 +1,6 @@
 import { ICast } from "../abstract/interfaces";
 import CastProfile from "./CastProfile";
-import MessageNotFound from "./MessageNotFound";
+import MessageNotFound from "./Info/MessageNotFound";
 
 type TPersonGroup = { data: { credits: { cast: ICast[] } }; length?: number };
 

@@ -1,49 +1,50 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useMovie } from "../context/MovieContext";
-import {
-  IMovieDetails,
-  IGetUserWatchList,
-  TListType,
-  ISaveItemToWatchList,
-} from "../abstract/interfaces";
+import { IMovieDetails, TListType } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
 import { Button, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import DataOptions from "./DataOptions";
-import { toast } from "react-toastify";
-import { ERR_RESPONSE_NOT_FOUND } from "../abstract/constants";
+import { useData } from "../context/DataContext";
+import { IGetUserTracker, ISetUserTracker } from "../abstract/interfaces2";
 
 type TMovieOptions = { data: IMovieDetails | null };
 
 const MovieOptions = ({ data }: TMovieOptions) => {
   const navigate = useNavigate();
-  const { handleSetTracker, getTracker } = useMovie();
+  // const { handleSetTracker, getTracker } = useMovie(); REMOVED
+  const { setUserTracker } = useData();
   const { isAuthenticated, user } = useAuth();
   const [tracker, setTracker] = useState<DocumentData | null>(null);
+  //
+  const { getUserTracker } = useData();
 
   const handleClick = async (listType: TListType) => {
-    const _payload: ISaveItemToWatchList = {
-      listType,
-      data: data,
-      mediaType: "movie",
-      user,
-    };
-    await handleSetTracker(_payload);
-    await handleGetUserTrackerItem();
+    if (user) {
+      if (data) {
+        const _payload: ISetUserTracker = {
+          listType,
+          data: data,
+          mediaType: "movie",
+          user,
+        };
+        await setUserTracker(_payload);
+        const response = await getUserTracker(_payload);
+        if (response) setTracker(response);
+      }
+    }
   };
 
   const handleGetUserTrackerItem = async () => {
     if (user) {
-      const payload: IGetUserWatchList = {
-        data: data,
-        mediaType: "movie",
-        userId: user.uid,
-      };
-      const response = await getTracker(payload);
-      if (response) {
-        console.log(response.movieList);
-        setTracker(response.movieList[0]);
+      if (data) {
+        const payload: IGetUserTracker = {
+          data: data,
+          mediaType: "movie",
+          user: user,
+        };
+        const response = await getUserTracker(payload);
+        if (response) setTracker(response);
       }
     }
   };

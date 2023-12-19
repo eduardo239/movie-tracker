@@ -12,9 +12,9 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { DocumentData } from "firebase/firestore";
 import { IUserList } from "../abstract/interfaces";
-import ModalCreateList from "../components/ModalCreateList";
+import ModalCreateList from "../components/Modal/ModalCreateList";
 import { containsItemWithId } from "../helper";
-import IconWithLabel from "../components/IconWithLabel";
+import IconWithLabel from "../components/Elements/IconWithLabel";
 import { toast } from "react-toastify";
 import {
   ERR_RESPONSE_NOT_FOUND,

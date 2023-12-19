@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { Menu } from "semantic-ui-react";
 import { useState } from "react";
 
@@ -75,6 +75,11 @@ const Navigation = () => {
           disabled={!user}
         >
           Sair
+        </Menu.Item>
+      )}
+      {user && (
+        <Menu.Item name="user-email" disabled={true}>
+          {user.email}
         </Menu.Item>
       )}
     </Menu>

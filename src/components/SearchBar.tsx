@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Form, Input, Select } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 
-const HomeSearch = () => {
+const SearchBar = () => {
   const { setMediaType, setPage, setTerm, mediaType, setIsSearching } =
     useMovie();
 
@@ -62,4 +62,4 @@ const HomeSearch = () => {
   );
 };
 
-export default HomeSearch;
+export default SearchBar;

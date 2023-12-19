@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
-import LoadingInfo from "../components/LoadingInfo";
-import MessageInfo from "../components/Message";
+import LoadingInfo from "../components/Elements/LoadingInfo";
+import MessageInfo from "../components/Info/Message";
 import { IMovieDetailsSimple, IPerson } from "../abstract/interfaces";
 import { Divider, Grid, Header, Tab } from "semantic-ui-react";
 import { useEffect, useState } from "react";
-import GridContainer from "../components/GridContainer";
+import GridContainer from "../components/Layout/GridContainer";
 import DataGroup from "../components/DataGroup";
-import TitleInfo from "../components/TitleInfo";
+import TitleInfo from "../components/Elements/TitleInfo";
 import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
 

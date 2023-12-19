@@ -1,5 +1,5 @@
 import { Form } from "semantic-ui-react";
-import { IUserAuthForm } from "../abstract/interfaces";
+import { IUserAuthForm } from "../../abstract/interfaces";
 
 const FormField = ({
   label,

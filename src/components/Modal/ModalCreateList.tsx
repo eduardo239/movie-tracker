@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button, Form, Header, Icon, Modal, Radio } from "semantic-ui-react";
-import { useAuth } from "../context/AuthContext";
-import { useMovie } from "../context/MovieContext";
+import { useAuth } from "../../context/AuthContext";
+import { useMovie } from "../../context/MovieContext";
 import { toast } from "react-toastify";
-import { ERR_USER_NOT_FOUND } from "../abstract/constants";
+import { ERR_USER_NOT_FOUND } from "../../abstract/constants";
 
 const options = [
   { key: "m", text: "Male", value: "male" },

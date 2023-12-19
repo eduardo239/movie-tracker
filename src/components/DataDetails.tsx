@@ -1,5 +1,5 @@
 import { Header, Segment } from "semantic-ui-react";
-import TitleInfo from "./TitleInfo";
+import TitleInfo from "./Elements/TitleInfo";
 
 type TDataDetails = {
   data: {

@@ -1,7 +1,7 @@
 import { Label, Segment } from "semantic-ui-react";
 import { IGenre } from "../abstract/interfaces";
 import { Link } from "react-router-dom";
-import MessageNotFound from "./MessageNotFound";
+import MessageNotFound from "./Info/MessageNotFound";
 
 type TDataGenre = { genres: IGenre[] };
 

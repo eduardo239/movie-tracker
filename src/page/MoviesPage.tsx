@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import LoadingInfo from "../components/LoadingInfo";
-import MessageInfo from "../components/Message";
+import LoadingInfo from "../components/Elements/LoadingInfo";
+import MessageInfo from "../components/Info/Message";
 import { useMovie } from "../context/MovieContext";
-import GridContainer from "../components/GridContainer";
+import GridContainer from "../components/Layout/GridContainer";
 import DataGroup from "../components/DataGroup";
-import MessageNotFound from "../components/MessageNotFound";
+import MessageNotFound from "../components/Info/MessageNotFound";
 import PaginationBar from "../components/PaginationBar";
 
 const MoviePage = () => {

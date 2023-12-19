@@ -168,7 +168,6 @@ export function MovieProvider({ children }: TMovieProviderProps) {
       return { list: [] };
     }
   };
-
   const handleGetList = async () => {
     if (user) {
       const response = await getListFB({ userId: user.uid });

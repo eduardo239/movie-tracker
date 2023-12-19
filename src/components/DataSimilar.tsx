@@ -2,11 +2,11 @@ import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
 import { Button, Divider, Header } from "semantic-ui-react";
 import { IMovieResults } from "../abstract/interfaces";
-import LoadingInfo from "./LoadingInfo";
-import MessageInfo from "./Message";
-import GridContainer from "./GridContainer";
+import LoadingInfo from "./Elements/LoadingInfo";
+import MessageInfo from "./Info/Message";
+import GridContainer from "./Layout/GridContainer";
 import DataGroup from "./DataGroup";
-import TitleInfo from "./TitleInfo";
+import TitleInfo from "./Elements/TitleInfo";
 import { useState } from "react";
 
 type TDataSimilar = { id: number };

@@ -404,10 +404,6 @@ export const saveItemToWatchListFB = async (payload: IAddMovieToList) => {
   }
 };
 
-/**
- *
- * @param payload
- */
 export const saveItemToWatchListFB2 = async (payload: IAddMovieToList) => {
   let exists_ = false;
   let docId_ = null;
@@ -435,24 +431,10 @@ export const saveItemToWatchListFB2 = async (payload: IAddMovieToList) => {
     });
   }
 };
-/**
- * Busca o item da watch list do usuário
- * @param payload mediaType, data, user
- * @returns um único item
- * { list: response.movieList[0] }
- * ou { list: response.tvList[0] }
- */
 export const getTrackerFB = async (
   payload: IGetUserWatchList
 ): Promise<DocumentData | null> => {
   if (payload.data) {
-    // const response = await getUserWatchListFB({
-    //   fullList: false,
-    //   userId: payload.userId,
-    //   mediaType: payload.mediaType,
-    //   movieId: payload.data.id,
-    // });
-
     const _query = query(
       collection(db, COLLECTION_TRACKER),
       where("userId", "==", payload.userId),
@@ -466,8 +448,6 @@ export const getTrackerFB = async (
 
     querySnapshot.forEach((doc) => {
       const _mediaType = doc.data().mediaType;
-      console.log(doc.data());
-      console.log(_mediaType);
       if (_mediaType === MEDIA_TV) {
         tvList.push({ id: doc.id, ...doc.data() });
       } else {
@@ -475,12 +455,6 @@ export const getTrackerFB = async (
       }
     });
     return { movieList, tvList };
-
-    // if (!response) {
-    //   toast.error(ERR_RESPONSE_NOT_FOUND);
-    //   return null;
-    // }
-    // return response;
   } else {
     toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
   }

@@ -1,9 +1,9 @@
 import { ITrailers } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import LoadingInfo from "./LoadingInfo";
+import LoadingInfo from "./Elements/LoadingInfo";
 import useFetch from "../hooks/useFetch";
-import MessageInfo from "./Message";
-import MessageNotFound from "./MessageNotFound";
+import MessageInfo from "./Info/Message";
+import MessageNotFound from "./Info/MessageNotFound";
 
 type TDataTrailer = {
   id: string;

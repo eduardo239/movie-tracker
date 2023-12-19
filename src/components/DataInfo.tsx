@@ -1,5 +1,5 @@
 import { formatDate } from "../helper";
-import TitleInfo from "./TitleInfo";
+import TitleInfo from "./Elements/TitleInfo";
 
 type TDataInfo = {
   data: { release_date: string; status: string; original_language?: string };

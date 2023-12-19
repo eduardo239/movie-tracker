@@ -1,8 +1,8 @@
 import { Button, Icon } from "semantic-ui-react";
 import { ICast } from "../abstract/interfaces";
-import GridContainer from "./GridContainer";
+import GridContainer from "./Layout/GridContainer";
 import PersonGroup from "./PersonGroup";
-import TitleInfo from "./TitleInfo";
+import TitleInfo from "./Elements/TitleInfo";
 import { useState } from "react";
 
 type TDataCast = {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import FormField from "../components/FormField";
+import FormField from "../components/Elements/FormField";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button, Divider, Form, Grid, Segment } from "semantic-ui-react";
-import LoadingInfo from "../components/LoadingInfo";
+import LoadingInfo from "../components/Elements/LoadingInfo";
 
 const SignIn = () => {
   const navigate = useNavigate();

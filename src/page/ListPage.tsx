@@ -3,10 +3,10 @@ import { useAuth } from "../context/AuthContext";
 import { IUserList } from "../abstract/interfaces";
 import { DocumentData } from "firebase/firestore";
 import { useSearchParams } from "react-router-dom";
-import GridContainer from "../components/GridContainer";
+import GridContainer from "../components/Layout/GridContainer";
 import DataGroup from "../components/DataGroup";
 import { getUserListsFB } from "../fetch/firebase";
-import TitleInfo from "../components/TitleInfo";
+import TitleInfo from "../components/Elements/TitleInfo";
 import { useMovie } from "../context/MovieContext";
 
 const ListPage = () => {
