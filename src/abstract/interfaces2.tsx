@@ -30,5 +30,5 @@ export interface ISetUserList {
   description: string;
   isPublic: boolean;
   list?: ISetUserListItem[];
-  user: User;
+  userId: string;
 }

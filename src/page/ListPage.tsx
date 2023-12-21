@@ -1,37 +1,34 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { IUserList } from "../abstract/interfaces";
 import { DocumentData } from "firebase/firestore";
 import { useSearchParams } from "react-router-dom";
 import GridContainer from "../components/Layout/GridContainer";
 import DataGroup from "../components/DataGroup";
-import { getUserListsFB } from "../fetch/firebase";
 import TitleInfo from "../components/Elements/TitleInfo";
 import { useMovie } from "../context/MovieContext";
+import { useData } from "../context/DataContext";
 
 const ListPage = () => {
   const { user } = useAuth();
+  const { getUserList } = useData();
   const { userTrackerList } = useMovie();
 
   const [userList, setUserList] = useState<DocumentData | null>(null);
   const [params, _] = useSearchParams();
   const [id, setId] = useState<string>(params.get("id") + "");
 
-  useEffect(() => {
-    if (id) {
-      if (user) {
-        const payload: IUserList = {
-          userId: user.uid,
-          id: id,
-        };
+  const getListById = useCallback(async () => {
+    const response = await getUserList(params.get("id") + "");
+    setUserList(response);
+  }, [getUserList, params]);
 
-        (async () => {
-          const response = await getUserListsFB(payload);
-          setUserList(response.userLists.filter((x) => x.id === id)[0]);
-        })();
-      }
-    }
-  }, [user, id]);
+  useEffect(() => {
+    getListById();
+    return () => {
+      // Cleanup code, if any
+    };
+  }, [params, getListById]);
 
   if (userList)
     return (

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button, Form, Header, Icon, Modal, Radio } from "semantic-ui-react";
 import { useAuth } from "../../context/AuthContext";
-import { useMovie } from "../../context/MovieContext";
 import { toast } from "react-toastify";
 import { ERR_USER_NOT_FOUND } from "../../abstract/constants";
+import { useData } from "../../context/DataContext";
 
 const options = [
   { key: "m", text: "Male", value: "male" },
@@ -17,7 +17,7 @@ type TFetchUserLists = {
 
 const ModalCreateList = ({ fetchUserLists }: TFetchUserLists) => {
   const { user } = useAuth();
-  const { handleCreateNewList } = useMovie();
+  const { setUserList } = useData();
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -38,7 +38,6 @@ const ModalCreateList = ({ fetchUserLists }: TFetchUserLists) => {
 
     if (!user) {
       toast.error(ERR_USER_NOT_FOUND);
-
       return;
     }
 
@@ -50,7 +49,7 @@ const ModalCreateList = ({ fetchUserLists }: TFetchUserLists) => {
       userId: user.uid,
     };
 
-    await handleCreateNewList(payload);
+    await setUserList(payload);
     await fetchUserLists();
     setOpen(false);
   };

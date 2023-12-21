@@ -5,6 +5,8 @@ import { useAuth } from "./AuthContext";
 import { DocumentData } from "firebase/firestore";
 import {
   delUserTrackerFB,
+  getUserListFB,
+  getUserListsFB,
   getUserTrackerFB,
   getUserTrackersFB,
   setUserListFB,
@@ -20,11 +22,11 @@ import {
 interface DataContextType {
   // lists
   setUserList: (payload: ISetUserList) => Promise<void>;
+  getUserLists: () => Promise<DocumentData[] | undefined>;
+  getUserList: (listId: string) => Promise<DocumentData | null>;
 
   // trackers
-  getUserTracker: (
-    payload: IGetUserTracker
-  ) => Promise<DocumentData | undefined>;
+  getUserTracker: (payload: IGetUserTracker) => Promise<DocumentData | null>;
   getUserTrackers: (
     payload: IGetUserTracker
   ) => Promise<
@@ -53,10 +55,11 @@ export function DataProvider({ children }: TDataProviderProps) {
     if (user) {
       const _payload = { ...payload, user };
       const response = await getUserTrackerFB(_payload);
-      return response;
+      if (response) return response;
     }
+    return null;
   };
-  // busca a lista de trackers tv e filmes
+  // busca os trackers tv e filmes
   const getUserTrackers = async (payload: IGetUserTracker) => {
     if (user) {
       const _payload = { ...payload, user };
@@ -84,15 +87,27 @@ export function DataProvider({ children }: TDataProviderProps) {
       await delUserTrackerFB(payload);
     }
   };
-  //
-  // NEXT:
+  // cria uma nova lista
   const setUserList = async (payload: ISetUserList) => {
     if (user) {
-      const _payload = { ...payload, user };
-      await setUserListFB(_payload);
+      await setUserListFB(payload);
     }
   };
-  //
+  // busca as listas do usuário
+  const getUserLists = async () => {
+    if (user) {
+      const response = await getUserListsFB(user.uid);
+      return response;
+    }
+  };
+  // busca uma única lista
+  const getUserList = async (listId: string) => {
+    if (user) {
+      const response = await getUserListFB(listId);
+      if (response) return response;
+    }
+    return null;
+  };
   return (
     <DataContext.Provider
       value={{
@@ -102,6 +117,8 @@ export function DataProvider({ children }: TDataProviderProps) {
         setUserTrackerSeason,
         delUserTracker,
         setUserList,
+        getUserLists,
+        getUserList,
       }}
     >
       {children}

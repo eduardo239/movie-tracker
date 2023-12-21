@@ -83,7 +83,7 @@ const TrackerBody = ({
           </Table.Cell>
           <Table.Cell
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/${item.mediaType}?id=${item.movieId}`)}
+            onClick={() => navigate(`/${item.mediaType}?id=${item.dataId}`)}
           >
             <Header as="h4" image>
               <Image
@@ -96,7 +96,7 @@ const TrackerBody = ({
               <Header.Content>
                 {item.title}
                 <Header.Subheader>
-                  <small>ID: {item.movieId}</small>
+                  <small>ID: {item.dataId}</small>
                 </Header.Subheader>
               </Header.Content>
             </Header>

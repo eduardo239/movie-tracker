@@ -300,7 +300,6 @@ export const deleteListByIdFB = async (id: string) => {
     }
   }
 };
-
 export const deleteMultipleItemsListByIdFB = async (
   trackerList: DocumentData[]
 ) => {
@@ -352,7 +351,6 @@ export const deleteMultipleItemsByIdFB = async (
     }
   }
 };
-
 export const getListFB = async (
   payload: IListFB
 ): Promise<{ list: DocumentData[] }> => {
