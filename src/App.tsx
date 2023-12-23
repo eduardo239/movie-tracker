@@ -3,7 +3,6 @@ import { useAuth } from "./context/AuthContext";
 import HomePage from "./page/HomePage";
 import SignIn from "./page/SignIn";
 import SignUp from "./page/SignUp";
-import Message from "./components/Info/Message";
 import ListsPage from "./page/ListsPage";
 import ListPage from "./page/ListPage";
 import Navigation from "./components/Layout/Navigation";
@@ -15,16 +14,17 @@ import TrackerPage from "./page/TrackerPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
+import { useData } from "./context/DataContext";
 import { useMovie } from "./context/MovieContext";
 
 function App() {
-  const { handleGetUserWatchListAndReturn } = useMovie();
   const { user } = useAuth();
+  // const { getUserTrackers } = useData();
+  const { handleGetUserTrackerList } = useMovie();
 
   useEffect(() => {
-    if (user) {
-      handleGetUserWatchListAndReturn();
-    }
+    if (user) handleGetUserTrackerList();
+
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);

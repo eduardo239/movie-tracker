@@ -7,19 +7,15 @@ import {
   Modal,
   Table,
 } from "semantic-ui-react";
-import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { DocumentData } from "firebase/firestore";
-import { IUserList } from "../abstract/interfaces";
 import ModalCreateList from "../components/Modal/ModalCreateList";
 import { containsItemWithId } from "../helper";
 import IconWithLabel from "../components/Elements/IconWithLabel";
 import { toast } from "react-toastify";
-import {
-  ERR_RESPONSE_NOT_FOUND,
-  SUC_ITEMS_DELETED,
-} from "../abstract/constants";
+import { SUC_ITEMS_DELETED } from "../abstract/constants";
+import { useData } from "../context/DataContext";
 
 const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -27,9 +23,8 @@ const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
 const ListsPage = () => {
   const navigate = useNavigate();
 
-  const { handleDeleteItemById, handleDeleteMultiplyItemsById, handleGetList } =
-    useMovie();
   const { user } = useAuth();
+  const { getUserLists, delMultipleItems, delItemById } = useData();
 
   const [open, setOpen] = useState(false);
   const [userLists, setUserLists] = useState<DocumentData[]>([]);
@@ -37,8 +32,9 @@ const ListsPage = () => {
   const [id, setId] = useState<string | null>(null);
 
   const fetchUserLists = async () => {
-    const response = await handleGetList();
-    setUserLists(response.list);
+    const response = await getUserLists();
+    if (response) setUserLists(response);
+    else return setUserLists([]);
   };
 
   const handleCheckedItems = (item: DocumentData) => {
@@ -58,14 +54,14 @@ const ListsPage = () => {
 
   const handleRemoveItem = async () => {
     if (id) {
-      await handleDeleteItemById(id, "list");
+      await delItemById({ id, collection: "list" });
       await fetchUserLists();
     }
     setOpen(false);
   };
 
   const handleMultipleRemovals = async () => {
-    await handleDeleteMultiplyItemsById(selectedItems, "list");
+    await delMultipleItems({ list: selectedItems, collection: "list" });
     await fetchUserLists();
     toast.success(SUC_ITEMS_DELETED);
   };
@@ -92,11 +88,6 @@ const ListsPage = () => {
         </Modal.Actions>
       </Modal>
 
-      {/* <Button.Group labeled icon compact color="orange">
-        <Button icon="trash" content="Play" />
-        <Button icon="close" content="Pause" />
-        <Button icon="shuffle" content="Shuffle" />
-      </Button.Group> */}
       {"  "}
       <Button.Group labeled icon compact color="orange">
         <ModalCreateList fetchUserLists={fetchUserLists} />

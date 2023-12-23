@@ -17,7 +17,6 @@ const TvOptions = ({ data }: TTvOptions) => {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useAuth();
-  // const { handleAddSeasonToTvList, handleSetTracker, getTracker } = useMovie(); REMOVER
 
   const [seasons, setSeasons] = useState<number[] | null>(null);
   const [savedSeasons, setSavedSeasons] = useState<number[]>([]);

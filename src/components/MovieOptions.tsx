@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { IMovieDetails, TListType } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
@@ -12,40 +12,36 @@ type TMovieOptions = { data: IMovieDetails | null };
 
 const MovieOptions = ({ data }: TMovieOptions) => {
   const navigate = useNavigate();
-  // const { handleSetTracker, getTracker } = useMovie(); REMOVED
-  const { setUserTracker } = useData();
+
+  const { setUserTracker, getUserTracker } = useData();
   const { isAuthenticated, user } = useAuth();
   const [tracker, setTracker] = useState<DocumentData | null>(null);
-  //
-  const { getUserTracker } = useData();
+  const [params, _] = useSearchParams();
 
   const handleClick = async (listType: TListType) => {
-    if (user) {
-      if (data) {
-        const _payload: ISetUserTracker = {
-          listType,
-          data: data,
-          mediaType: "movie",
-          user,
-        };
-        await setUserTracker(_payload);
-        const response = await getUserTracker(_payload);
-        if (response) setTracker(response);
-      }
+    if (user && data) {
+      const _payload: ISetUserTracker = {
+        listType,
+        data,
+        mediaType: "movie",
+        user,
+      };
+      await setUserTracker(_payload);
+      const response = await getUserTracker(_payload);
+      if (response) setTracker(response);
+      else setTracker(null);
     }
   };
 
   const handleGetUserTrackerItem = async () => {
-    if (user) {
-      if (data) {
-        const payload: IGetUserTracker = {
-          data: data,
-          mediaType: "movie",
-          user: user,
-        };
-        const response = await getUserTracker(payload);
-        if (response) setTracker(response);
-      }
+    if (user && data) {
+      const payload: IGetUserTracker = {
+        data,
+        mediaType: "movie",
+        user,
+      };
+      const response = await getUserTracker(payload);
+      if (response) setTracker(response);
     }
   };
 
@@ -55,7 +51,7 @@ const MovieOptions = ({ data }: TMovieOptions) => {
     }
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, data]);
+  }, [user, data, params.get("id")]);
 
   if (data)
     return (

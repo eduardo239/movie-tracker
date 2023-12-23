@@ -3,60 +3,28 @@ import { Button, Table } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { DocumentData } from "firebase/firestore";
-import {
-  IGetUserMovieList,
-  TListType,
-  TMediaType,
-} from "../abstract/interfaces";
-import { getUserWatchListFB } from "../fetch/firebase";
+import { TListType } from "../abstract/interfaces";
 import TrackerBody from "../components/List/Tracker/TrackerBody";
 import { useMovie } from "../context/MovieContext";
 import { toast } from "react-toastify";
 import {
+  ERR_DOCUMENT_NOT_FOUND,
   ERR_RESPONSE_NOT_FOUND,
   ERR_USER_NOT_FOUND,
 } from "../abstract/constants";
+import { IGetUserTrackers } from "../abstract/interfaces2";
+import { useData } from "../context/DataContext";
 
 const TrackerPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  const {
-    mediaType,
-    userTrackerList,
-    setUserTrackerList,
-    handleDeleteMultiplyItemsById,
-  } = useMovie();
+  const { mediaType, userTrackerList, setUserTrackerList } = useMovie();
+  const { getUserTrackers, delMultipleItems } = useData();
 
   const [params, _] = useSearchParams();
   const [filteredList, setFilteredList] = useState<DocumentData[]>([]);
   const [checkedList, setCheckedList] = useState<DocumentData[]>([]);
-
-  const fetchUserWatchList = async () => {
-    setFilteredList([]);
-
-    if (user) {
-      const payload: IGetUserMovieList = {
-        fullList: true,
-        userId: user.uid,
-        mediaType: mediaType ? mediaType : "movie",
-      };
-      const response = await getUserWatchListFB(payload);
-
-      if (!response) {
-        toast.error(ERR_RESPONSE_NOT_FOUND);
-        return;
-      }
-      const _type = params.get("type");
-      if (_type == "tv") {
-        setUserTrackerList(response.tvList);
-      } else {
-        setUserTrackerList(response.movieList);
-      }
-    } else {
-      toast.error(ERR_USER_NOT_FOUND);
-    }
-  };
 
   const handleFilter = (listType: TListType | null) => {
     if (listType !== null) {
@@ -67,12 +35,32 @@ const TrackerPage = () => {
   };
 
   const handleMultipleRemovals = async () => {
-    await handleDeleteMultiplyItemsById(checkedList, "tracker");
-    await fetchUserWatchList();
+    await delMultipleItems({ list: checkedList, collection: "tracker" });
+    await handleGetUserTracker();
+  };
+
+  const handleGetUserTracker = async () => {
+    if (user) {
+      const payload: IGetUserTrackers = {
+        user,
+        mediaType: mediaType ? mediaType : "movie",
+      };
+      const response = await getUserTrackers(payload);
+      if (response) {
+        const type = params.get("type");
+        if (type == "tv") {
+          setUserTrackerList(response.tvList);
+        } else {
+          setUserTrackerList(response.movieList);
+        }
+      } else {
+        toast.error(ERR_DOCUMENT_NOT_FOUND);
+      }
+    }
   };
 
   useEffect(() => {
-    if (user) fetchUserWatchList();
+    if (user) handleGetUserTracker();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, params, mediaType]);
 
@@ -147,7 +135,7 @@ const TrackerPage = () => {
               list={userTrackerList}
               checkedList={checkedList}
               setCheckedList={setCheckedList}
-              fetchUserWatchList={fetchUserWatchList}
+              handleFetchUserTracker={handleGetUserTracker}
             />
           )}
           {filteredList.length > 0 && (
@@ -155,7 +143,7 @@ const TrackerPage = () => {
               list={filteredList}
               checkedList={checkedList}
               setCheckedList={setCheckedList}
-              fetchUserWatchList={fetchUserWatchList}
+              handleFetchUserTracker={handleGetUserTracker}
             />
           )}
         </Table.Body>

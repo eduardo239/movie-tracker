@@ -53,3 +53,4 @@ export const SUC_TRACKER_REMOVED = "Item removido com sucesso.";
 export const SUC_TRACKER_ADD = "Item adicionado com sucesso.";
 
 export const SUC_ITEMS_DELETED = "Itens removidos com sucesso.";
+export const SUC_LIST_UPDATED = "Lista atualizada com sucesso.";

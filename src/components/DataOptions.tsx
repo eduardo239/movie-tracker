@@ -1,26 +1,17 @@
 import { Dropdown, Icon } from "semantic-ui-react";
-import {
-  IMovieDetails,
-  ITvDetails,
-  TListItemData,
-  TListType,
-} from "../abstract/interfaces";
-import { useMovie } from "../context/MovieContext";
+import { IMovieDetails, ITvDetails, TListType } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import { DocumentData, doc, getDoc, updateDoc } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
-import { db } from "../config/firebase";
 import {
-  COLLECTION_LIST,
   ERR_DOCUMENT_NOT_FOUND,
   ERR_USER_NOT_FOUND,
-  SUC_TRACKER_ADD,
-  SUC_TRACKER_REMOVED,
 } from "../abstract/constants";
 import { containsItemWithId } from "../helper";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useData } from "../context/DataContext";
+import { IUpdUserList } from "../abstract/interfaces2";
 
 type TDataOptions = {
   data: IMovieDetails | ITvDetails;
@@ -38,108 +29,43 @@ type TOptions = {
 
 const DataOptions = ({ data, listType, handleClick }: TDataOptions) => {
   const { user } = useAuth();
-  // const { handleGetList } = useMovie();
-  const { getUserLists, getUserList } = useData();
+  const { getUserLists, getUserList, updUserList } = useData();
   const navigate = useNavigate();
   const [options, setOptions] = useState<DocumentData[]>([]);
 
   const toggleItemFromList = async (item: DocumentData) => {
     const response = await getUserList(item.id);
-    console.log(response);
 
     if (response) {
       const isItOnTheList = containsItemWithId(response.list, data.id);
       if (isItOnTheList) {
-        console.log(1);
-        // remove item from list
-        const _newList = response.list.filter(
-          (x: TListItemData) => x.id !== data.id
+        // remover o item da lista
+        const _list1 = response.list.filter(
+          (x: IUpdUserList) => x.id !== data.id
         );
-        // atualiza
-
-        const docRef = doc(db, COLLECTION_LIST, item.id);
-        await updateDoc(docRef, {
-          list: _newList,
-        });
-        toast.info(SUC_TRACKER_REMOVED);
+        await updUserList(_list1, item.id);
       } else {
-        console.log(2);
-        const _data: TListItemData = {
+        // se contém title é filme, senão tv
+        const _data: IUpdUserList = {
           id: data.id,
           name: "title" in data ? data.title : data.name,
           poster_path: data.poster_path,
           media_type: "title" in data ? "movie" : "tv",
         };
-        // if has title is movie, else tv
-        const _newList = item.list;
-        _newList.push(_data);
 
-        const docRef = doc(db, COLLECTION_LIST, item.id);
-        await updateDoc(docRef, {
-          list: _newList,
-        });
-        toast.success(SUC_TRACKER_ADD);
+        const _list2 = item.list;
+        _list2.push(_data);
+
+        await updUserList(_list2, item.id);
       }
     } else {
       toast.error(ERR_DOCUMENT_NOT_FOUND);
     }
     fetchUserList();
-    /////
-    // get user list
-    // const docRef = doc(db, COLLECTION_LIST, item.id);
-    // const docSnap = await getDoc(docRef);
-
-    // let _doc: DocumentData | null = null;
-
-    // if (docSnap.exists()) {
-    //   _doc = { id: docSnap.id, ...docSnap.data() };
-    // } else {
-    //   // docSnap.data() will be undefined in this case
-    //   toast.error(ERR_DOCUMENT_NOT_FOUND);
-    // }
-
-    // if (_doc) {
-    //   // check if the list contains the movie
-
-    //   const _existsInList = containsItemWithId(_doc.list, data.id);
-    //   if (_existsInList) {
-    //     // remove item from list
-    //     const _newList = _doc.list.filter(
-    //       (x: TListItemData) => x.id !== data.id
-    //     );
-
-    //     const docRef = doc(db, COLLECTION_LIST, _doc.id);
-    //     await updateDoc(docRef, {
-    //       list: _newList,
-    //     });
-    //     toast.info(SUC_TRACKER_REMOVED);
-    //   } else {
-    //     // add item to list
-    //     const _data: TListItemData = {
-    //       id: data.id,
-    //       name: "title" in data ? data.title : data.name,
-    //       poster_path: data.poster_path,
-    //       media_type: "title" in data ? "movie" : "tv",
-    //     };
-    //     // if has title is movie, else tv
-    //     const _newList = _doc.list;
-    //     _newList.push(_data);
-
-    //     const docRef = doc(db, COLLECTION_LIST, _doc.id);
-    //     await updateDoc(docRef, {
-    //       list: _newList,
-    //     });
-    //     toast.success(SUC_TRACKER_ADD);
-    //   }
-    //   fetchUserList();
-    // } else {
-    //   toast.error(ERR_DOCUMENT_NOT_FOUND);
-    // }
   };
 
   const fetchUserList = async () => {
     if (user) {
-      // const response = await handleGetList();
       const response = await getUserLists();
       if (!response) {
         toast.error(ERR_DOCUMENT_NOT_FOUND);

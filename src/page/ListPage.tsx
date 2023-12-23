@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { IUserList } from "../abstract/interfaces";
 import { DocumentData } from "firebase/firestore";
 import { useSearchParams } from "react-router-dom";
 import GridContainer from "../components/Layout/GridContainer";
@@ -10,13 +8,11 @@ import { useMovie } from "../context/MovieContext";
 import { useData } from "../context/DataContext";
 
 const ListPage = () => {
-  const { user } = useAuth();
   const { getUserList } = useData();
   const { userTrackerList } = useMovie();
 
   const [userList, setUserList] = useState<DocumentData | null>(null);
   const [params, _] = useSearchParams();
-  const [id, setId] = useState<string>(params.get("id") + "");
 
   const getListById = useCallback(async () => {
     const response = await getUserList(params.get("id") + "");

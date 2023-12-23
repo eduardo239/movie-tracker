@@ -11,7 +11,7 @@ import {
   Table,
 } from "semantic-ui-react";
 import { containsItemWithId } from "../../../helper";
-import { useMovie } from "../../../context/MovieContext";
+import { useData } from "../../../context/DataContext";
 
 const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -20,16 +20,16 @@ type TTrackerBody = {
   list: DocumentData[];
   checkedList: DocumentData[];
   setCheckedList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
-  fetchUserWatchList: () => Promise<void>;
+  handleFetchUserTracker: () => Promise<void>;
 };
 
 const TrackerBody = ({
   list,
   checkedList,
   setCheckedList,
-  fetchUserWatchList,
+  handleFetchUserTracker,
 }: TTrackerBody) => {
-  const { handleDeleteItemById } = useMovie();
+  const { delUserTracker } = useData();
 
   const navigate = useNavigate();
 
@@ -51,10 +51,10 @@ const TrackerBody = ({
     setId(item.id);
   };
 
-  const handleRemoveItem = async () => {
+  const handleDeleteItem = async () => {
     if (id) {
-      await handleDeleteItemById(id, "tracker");
-      await fetchUserWatchList();
+      await delUserTracker(id);
+      await handleFetchUserTracker();
     }
     setOpen(false);
   };
@@ -70,7 +70,7 @@ const TrackerBody = ({
           <Button negative onClick={() => setOpen(false)}>
             No
           </Button>
-          <Button positive onClick={() => handleRemoveItem()}>
+          <Button positive onClick={() => handleDeleteItem()}>
             Yes
           </Button>
         </Modal.Actions>

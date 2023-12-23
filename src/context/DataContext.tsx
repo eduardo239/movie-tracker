@@ -1,9 +1,11 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useState } from "react";
 
-import { ERROR_UM_AP } from "../abstract/constants";
+import { ERROR_UM_AP, ERR_USER_NOT_FOUND } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
 import { DocumentData } from "firebase/firestore";
 import {
+  delItemByIdFB,
+  delMultipleItemsFB,
   delUserTrackerFB,
   getUserListFB,
   getUserListsFB,
@@ -12,30 +14,43 @@ import {
   setUserListFB,
   setUserTrackerFB,
   setUserTrackerSeasonFB,
+  updUserListFB,
 } from "../fetch/firebase2";
 import {
+  IDelItemById,
+  IDelMultipleItems,
   IGetUserTracker,
+  IGetUserTrackers,
   ISetUserList,
   ISetUserTracker,
+  IUpdUserList,
 } from "../abstract/interfaces2";
+import { toast } from "react-toastify";
+import { useMovie } from "./MovieContext";
+
+type TMTList = { movieList: DocumentData[]; tvList: DocumentData[] };
 
 interface DataContextType {
+  //
   // lists
+  //
   setUserList: (payload: ISetUserList) => Promise<void>;
   getUserLists: () => Promise<DocumentData[] | undefined>;
   getUserList: (listId: string) => Promise<DocumentData | null>;
-
+  updUserList: (list: IUpdUserList[], listId: string) => Promise<void>;
+  //
   // trackers
+  //
   getUserTracker: (payload: IGetUserTracker) => Promise<DocumentData | null>;
-  getUserTrackers: (
-    payload: IGetUserTracker
-  ) => Promise<
-    { movieList: DocumentData[]; tvList: DocumentData[] } | undefined
-  >;
+  getUserTrackers: (payload?: IGetUserTrackers) => Promise<TMTList | null>;
   setUserTracker: (payload: ISetUserTracker) => Promise<void>;
   setUserTrackerSeason: (payload: ISetUserTracker) => Promise<void>;
   delUserTracker: (id: string) => Promise<void>;
-  // delUserTrackers: (list: DocumentData[]) => Promise<void>;
+  //
+  // multiple
+  //
+  delMultipleItems: (payload: IDelMultipleItems) => Promise<void>;
+  delItemById: (payload: IDelItemById) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -50,28 +65,28 @@ const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 export function DataProvider({ children }: TDataProviderProps) {
   const { user } = useAuth();
 
+  const [userTrackerList, setUserTrackerList] = useState<TMTList | null>(null);
+
   // busca o tracker
   const getUserTracker = async (payload: IGetUserTracker) => {
-    if (user) {
-      const _payload = { ...payload, user };
-      const response = await getUserTrackerFB(_payload);
-      if (response) return response;
-    }
+    const response = await getUserTrackerFB(payload);
+    if (response) return response;
     return null;
   };
   // busca os trackers tv e filmes
-  const getUserTrackers = async (payload: IGetUserTracker) => {
-    if (user) {
-      const _payload = { ...payload, user };
-      const response = await getUserTrackersFB(_payload);
+  const getUserTrackers = async (payload?: IGetUserTrackers) => {
+    if (user && payload) {
+      const response = await getUserTrackersFB(payload);
       return response;
     }
+    return null;
   };
   // salva o tracker do usuário
   const setUserTracker = async (payload: ISetUserTracker) => {
     if (user) {
-      const _payload = { ...payload, user };
-      await setUserTrackerFB(_payload);
+      await setUserTrackerFB(payload);
+    } else {
+      toast.info(ERR_USER_NOT_FOUND);
     }
   };
   // salvar a temporada da série
@@ -87,6 +102,12 @@ export function DataProvider({ children }: TDataProviderProps) {
       await delUserTrackerFB(payload);
     }
   };
+
+  //
+  //
+  //
+  //
+
   // cria uma nova lista
   const setUserList = async (payload: ISetUserList) => {
     if (user) {
@@ -108,6 +129,26 @@ export function DataProvider({ children }: TDataProviderProps) {
     }
     return null;
   };
+  // atualiza a lista do usuário
+  const updUserList = async (list: IUpdUserList[], listId: string) => {
+    if (user) {
+      await updUserListFB(list, listId);
+    }
+  };
+
+  //
+  //
+  //
+
+  // remover item pelo id
+  const delItemById = async (payload: IDelItemById) => {
+    await delItemByIdFB(payload);
+  };
+  // remover vários itens pelo id
+  const delMultipleItems = async (payload: IDelMultipleItems) => {
+    await delMultipleItemsFB(payload);
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -119,6 +160,9 @@ export function DataProvider({ children }: TDataProviderProps) {
         setUserList,
         getUserLists,
         getUserList,
+        updUserList,
+        delMultipleItems,
+        delItemById,
       }}
     >
       {children}

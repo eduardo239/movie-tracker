@@ -18,11 +18,10 @@ const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
 const MovieByGenre = () => {
   const { id } = useParams();
-
-  const { mediaType, userTrackerList, handleGetUserWatchListAndReturn } =
-    useMovie();
+  const { mediaType, userTrackerList } = useMovie();
   const { user } = useAuth();
   const [page, setPage] = useState(1);
+
   const [genreName, setGenreName] = useState<string | null>(null);
 
   const genreUrl = `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${apiKey}&with_genres=${id}&page=${page}`;
@@ -30,18 +29,10 @@ const MovieByGenre = () => {
 
   useEffect(() => {
     if (id) {
-      const _genreName = GENRES.filter((x) => x.id === +id)[0];
-      if (_genreName) setGenreName(_genreName.name);
+      const genreName = GENRES.filter((x) => x.id === +id)[0];
+      if (genreName) setGenreName(genreName.name);
     }
   }, [id]);
-
-  useEffect(() => {
-    if (user) {
-      handleGetUserWatchListAndReturn();
-    }
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;

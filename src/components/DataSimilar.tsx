@@ -8,6 +8,7 @@ import GridContainer from "./Layout/GridContainer";
 import DataGroup from "./DataGroup";
 import TitleInfo from "./Elements/TitleInfo";
 import { useState } from "react";
+import { useData } from "../context/DataContext";
 
 type TDataSimilar = { id: number };
 
@@ -16,6 +17,7 @@ const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const DataSimilar = ({ id }: TDataSimilar) => {
   const { mediaType, userTrackerList } = useMovie();
+  // const { userTrackerList } = useData();
 
   const similarUrl = `${tmdbBaseUrl}/${mediaType}/${id}/similar?api_key=${apiKey}&language=pt-BR&include_adult=${false}&page=${1}`;
 

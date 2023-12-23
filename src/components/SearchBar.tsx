@@ -43,7 +43,7 @@ const SearchBar = () => {
         onChange={(e) => setQuery(e.target.value)}
         fluid
         type="text"
-        placeholder="Search..."
+        placeholder="Buscar ..."
         action
       >
         <input value={query} />
@@ -54,9 +54,9 @@ const SearchBar = () => {
           defaultValue={mediaType ? mediaType : "movie"}
         />
         <Button type="submit" color={query.length > 0 ? "green" : "grey"}>
-          Search
+          Buscar
         </Button>
-        <Button onClick={resetSearch}>Reset</Button>
+        <Button onClick={resetSearch}>Redefinir</Button>
       </Input>
     </Form>
   );

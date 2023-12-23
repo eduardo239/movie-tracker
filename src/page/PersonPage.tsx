@@ -10,6 +10,7 @@ import DataGroup from "../components/DataGroup";
 import TitleInfo from "../components/Elements/TitleInfo";
 import { useMovie } from "../context/MovieContext";
 import { useAuth } from "../context/AuthContext";
+import { useData } from "../context/DataContext";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
@@ -19,7 +20,8 @@ const profileDefaultUrl = import.meta.env.VITE_FIREBASE_PROFILE_DEFAULT_URL;
 const PersonPage = () => {
   const { id } = useParams();
 
-  const { userTrackerList, handleGetUserWatchListAndReturn } = useMovie();
+  const { userTrackerList, setUserTrackerList } = useMovie();
+  const { getUserLists } = useData();
   const { user } = useAuth();
 
   const personUrl = `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&language=pt-BR&append_to_response=combined_credits`;
@@ -74,13 +76,20 @@ const PersonPage = () => {
     return () => {};
   }, [data]);
 
+  const handleGetPersonList = async () => {
+    const response = await getUserLists();
+    if (response) setUserTrackerList(response);
+    else setUserTrackerList([]);
+  };
+
   useEffect(() => {
     if (user) {
-      handleGetUserWatchListAndReturn();
+      // handleGetUserWatchListAndReturn();
+      handleGetPersonList();
     }
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, id]);
 
   if (loading) return <LoadingInfo />;
   if (error) return <MessageInfo message={error.message} />;

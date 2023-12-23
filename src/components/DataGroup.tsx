@@ -18,19 +18,19 @@ const DataGroup = ({ data, userTrackerList }: TDataGroup) => {
     data.map((x) => {
       const seeChecked = userTrackerList?.some((u) => {
         const _see = u.listType === "see";
-        const _checked = x.id === u.movieId;
+        const _checked = x.id === u.dataId;
         return _see && _checked;
       });
 
       const sawChecked = userTrackerList?.some((u) => {
         const _saw = u.listType === "saw";
-        const _checked = x.id === u.movieId;
+        const _checked = x.id === u.dataId;
         return _saw && _checked;
       });
 
       const blockChecked = userTrackerList?.some((u) => {
         const _block = u.listType === "block";
-        const _checked = x.id === u.movieId;
+        const _checked = x.id === u.dataId;
         return _block && _checked;
       });
 
