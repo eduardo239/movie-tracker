@@ -82,9 +82,7 @@ const MovieByIdPage = () => {
           </Grid.Column>
           {/* -------------- options --------------   */}
           <Grid.Column width={16} textAlign="center">
-            <Divider />
             <MovieOptions data={data} />
-            <Divider />
           </Grid.Column>
 
           <Grid.Column width={16} textAlign="center">
@@ -102,7 +100,7 @@ const MovieByIdPage = () => {
             {/* -------------- similar --------------   */}
 
             <Divider />
-            <DataSimilar id={data.id} />
+            <DataSimilar id={data.id} mediaType="movie" />
           </Grid.Column>
         </Grid.Row>
       </Grid>

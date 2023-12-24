@@ -20,10 +20,10 @@ import { useMovie } from "./context/MovieContext";
 function App() {
   const { user } = useAuth();
   // const { getUserTrackers } = useData();
-  const { handleGetUserTrackerList } = useMovie();
+  const { handleGetUserTrackers } = useMovie();
 
   useEffect(() => {
-    if (user) handleGetUserTrackerList();
+    if (user) handleGetUserTrackers();
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,6 +37,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        {/*  */}
         <Route path="/search" element={<HomePage />} />
         <Route path="/tvs" element={<HomePage />} />
         <Route path="/movies" element={<HomePage />} />
@@ -45,7 +46,6 @@ function App() {
         <Route path="/movie" element={<MovieByIdPage />} />
         {/*  */}
         <Route path="/person/:id" element={<PersonPage />} />
-
         {/*  */}
         <Route path="/genre/:id" element={<MovieByGenre />} />
         {/*  */}
@@ -53,7 +53,6 @@ function App() {
         <Route path="/list" element={<ListPage />} />
         {/*  */}
         <Route path="/tracker" element={<TrackerPage />} />
-
         {/*  */}
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />

@@ -1,27 +1,33 @@
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useMovie } from "../context/MovieContext";
+import DataGroup from "../components/DataGroup";
 import LoadingInfo from "../components/Elements/LoadingInfo";
 import MessageInfo from "../components/Info/Message";
-import { useMovie } from "../context/MovieContext";
-import GridContainer from "../components/Layout/GridContainer";
-import DataGroup from "../components/DataGroup";
-import MessageNotFound from "../components/Info/MessageNotFound";
 import PaginationBar from "../components/PaginationBar";
+import GridContainer from "../components/Layout/GridContainer";
+import MessageNotFound from "../components/Info/MessageNotFound";
 
 const MoviePage = () => {
   const {
     data,
     loading,
     error,
+
     page,
+    setPage,
+
     mediaType,
     setMediaType,
-    setPage,
-    userTrackerList,
+
+    userTrackerTv,
+    userTrackerMovie,
   } = useMovie();
+
+  const [params, _] = useSearchParams();
 
   useEffect(() => {
     setMediaType("movie");
-    if (page && page !== 1) setPage(page);
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
@@ -40,7 +46,9 @@ const MoviePage = () => {
       <GridContainer centered gap="gap-sm">
         <DataGroup
           data={data ? data.results : []}
-          userTrackerList={userTrackerList}
+          userTrackerList={
+            mediaType === "movie" ? userTrackerMovie : userTrackerTv
+          }
         />
         {data?.results.length === 0 && (
           <MessageNotFound message="Filme não encontrado" />

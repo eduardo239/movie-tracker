@@ -2,7 +2,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { IMovieDetails, TListType } from "../abstract/interfaces";
 import { useEffect, useState } from "react";
-import { Button, Icon } from "semantic-ui-react";
+import { Button, Divider, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import DataOptions from "./DataOptions";
 import { useData } from "../context/DataContext";
@@ -56,6 +56,7 @@ const MovieOptions = ({ data }: TMovieOptions) => {
   if (data)
     return (
       <>
+        <Divider />
         {isAuthenticated ? (
           <DataOptions
             listType={tracker?.listType}
@@ -67,6 +68,7 @@ const MovieOptions = ({ data }: TMovieOptions) => {
             <Icon name="sign in" /> Entrar
           </Button>
         )}
+        <Divider />
       </>
     );
   else return null;

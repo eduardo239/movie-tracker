@@ -1,7 +1,7 @@
-import { Button, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { ICast } from "../abstract/interfaces";
 import GridContainer from "./Layout/GridContainer";
-import PersonGroup from "./PersonGroup";
+import PersonGroup from "./Person/PersonGroup";
 import TitleInfo from "./Elements/TitleInfo";
 import { useState } from "react";
 

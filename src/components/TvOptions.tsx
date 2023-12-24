@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ITvDetails, TListType } from "../abstract/interfaces";
 import { useAuth } from "../context/AuthContext";
-import { Button, Icon } from "semantic-ui-react";
+import { Button, Divider, Icon } from "semantic-ui-react";
 import { DocumentData } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import DataOptions from "./DataOptions";
@@ -140,6 +140,7 @@ const TvOptions = ({ data }: TTvOptions) => {
   if (data)
     return (
       <>
+        <Divider />
         {isAuthenticated ? (
           <DataOptions
             data={data}
@@ -151,7 +152,7 @@ const TvOptions = ({ data }: TTvOptions) => {
             <Icon name="sign in" /> Sign In
           </Button>
         )}
-
+        <Divider />
         <TitleInfo center title="Temporadas" />
 
         {seasons &&

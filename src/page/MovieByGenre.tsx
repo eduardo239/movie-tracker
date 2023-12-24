@@ -18,8 +18,8 @@ const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
 const MovieByGenre = () => {
   const { id } = useParams();
-  const { mediaType, userTrackerList } = useMovie();
   const { user } = useAuth();
+  const { mediaType, userTrackerTv, userTrackerMovie } = useMovie();
   const [page, setPage] = useState(1);
 
   const [genreName, setGenreName] = useState<string | null>(null);
@@ -50,7 +50,7 @@ const MovieByGenre = () => {
       <GridContainer centered gap="gap-sm">
         <DataGroup
           data={data ? data.results : []}
-          userTrackerList={userTrackerList}
+          userTrackerList={userTrackerTv.concat(userTrackerMovie)}
         />
       </GridContainer>
 

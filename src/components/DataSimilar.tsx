@@ -1,6 +1,6 @@
 import useFetch from "../hooks/useFetch";
 import { useMovie } from "../context/MovieContext";
-import { Button, Divider, Header } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { IMovieResults } from "../abstract/interfaces";
 import LoadingInfo from "./Elements/LoadingInfo";
 import MessageInfo from "./Info/Message";
@@ -9,15 +9,18 @@ import DataGroup from "./DataGroup";
 import TitleInfo from "./Elements/TitleInfo";
 import { useState } from "react";
 import { useData } from "../context/DataContext";
-
-type TDataSimilar = { id: number };
+import { useLocation } from "react-router-dom";
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
-const DataSimilar = ({ id }: TDataSimilar) => {
-  const { mediaType, userTrackerList } = useMovie();
-  // const { userTrackerList } = useData();
+type TDataSimilar = {
+  id: number;
+  mediaType: "movie" | "tv";
+};
+
+const DataSimilar = ({ id, mediaType }: TDataSimilar) => {
+  const { userTrackerTv, userTrackerMovie } = useMovie();
 
   const similarUrl = `${tmdbBaseUrl}/${mediaType}/${id}/similar?api_key=${apiKey}&language=pt-BR&include_adult=${false}&page=${1}`;
 
@@ -41,8 +44,10 @@ const DataSimilar = ({ id }: TDataSimilar) => {
         <TitleInfo center title="Mais Filmes/Séries" />
         <GridContainer centered gap="gap-sm">
           <DataGroup
-            data={data ? data.results.slice(0, length) : []}
-            userTrackerList={userTrackerList}
+            data={data.results.slice(0, length)}
+            userTrackerList={
+              mediaType === "movie" ? userTrackerMovie : userTrackerTv
+            }
           />
         </GridContainer>
         <div className="p-3">

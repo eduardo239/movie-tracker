@@ -1,34 +1,38 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Table } from "semantic-ui-react";
 import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DocumentData } from "firebase/firestore";
 import { TListType } from "../abstract/interfaces";
 import TrackerBody from "../components/List/Tracker/TrackerBody";
 import { useMovie } from "../context/MovieContext";
-import { toast } from "react-toastify";
-import {
-  ERR_DOCUMENT_NOT_FOUND,
-  ERR_RESPONSE_NOT_FOUND,
-  ERR_USER_NOT_FOUND,
-} from "../abstract/constants";
-import { IGetUserTrackers } from "../abstract/interfaces2";
 import { useData } from "../context/DataContext";
 
 const TrackerPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  const { mediaType, userTrackerList, setUserTrackerList } = useMovie();
+  const { userTrackerTv, userTrackerMovie } = useMovie();
   const { getUserTrackers, delMultipleItems } = useData();
+  const { handleGetUserTrackers } = useMovie();
 
-  const [params, _] = useSearchParams();
   const [filteredList, setFilteredList] = useState<DocumentData[]>([]);
   const [checkedList, setCheckedList] = useState<DocumentData[]>([]);
+  const [selectedMedia, setSelectedMedia] = useState<"movie" | "tv">("movie");
+  const [listType, setListType] = useState<TListType | null>(null);
 
-  const handleFilter = (listType: TListType | null) => {
-    if (listType !== null) {
-      setFilteredList(userTrackerList.filter((x) => x.listType === listType));
+  const handleFilter = (_listType: TListType | null) => {
+    setListType(_listType);
+    if (_listType !== null) {
+      if (selectedMedia === "movie") {
+        const fil1 = userTrackerMovie.filter((x) => x.listType === _listType);
+        if (fil1.length > 0) setFilteredList(fil1);
+        else setFilteredList([]);
+      } else {
+        const fil2 = userTrackerTv.filter((x) => x.listType === _listType);
+        if (fil2.length > 0) setFilteredList(fil2);
+        else setFilteredList([]);
+      }
     } else {
       setFilteredList([]);
     }
@@ -36,33 +40,15 @@ const TrackerPage = () => {
 
   const handleMultipleRemovals = async () => {
     await delMultipleItems({ list: checkedList, collection: "tracker" });
-    await handleGetUserTracker();
+    handleGetUserTrackers();
   };
 
-  const handleGetUserTracker = async () => {
-    if (user) {
-      const payload: IGetUserTrackers = {
-        user,
-        mediaType: mediaType ? mediaType : "movie",
-      };
-      const response = await getUserTrackers(payload);
-      if (response) {
-        const type = params.get("type");
-        if (type == "tv") {
-          setUserTrackerList(response.tvList);
-        } else {
-          setUserTrackerList(response.movieList);
-        }
-      } else {
-        toast.error(ERR_DOCUMENT_NOT_FOUND);
-      }
-    }
+  const handleSelectMediaType = (media: "tv" | "movie") => {
+    setListType(null);
+    setSelectedMedia(media);
+    navigate(`/tracker?type=${media}`);
+    setFilteredList([]);
   };
-
-  useEffect(() => {
-    if (user) handleGetUserTracker();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, params, mediaType]);
 
   return (
     <>
@@ -91,14 +77,14 @@ const TrackerPage = () => {
       </Button.Group>{" "}
       <Button.Group labeled icon compact color="orange">
         <Button
-          icon="tv"
-          content="Séries"
-          onClick={() => navigate(`/tracker?type=tv`)}
-        />
-        <Button
           icon="film"
           content="Filmes"
-          onClick={() => navigate(`/tracker?type=movie`)}
+          onClick={() => handleSelectMediaType("movie")}
+        />
+        <Button
+          icon="tv"
+          content="Séries"
+          onClick={() => handleSelectMediaType("tv")}
         />
       </Button.Group>{" "}
       <Button.Group labeled icon compact color="red">
@@ -130,20 +116,20 @@ const TrackerPage = () => {
         </Table.Header>
 
         <Table.Body>
-          {filteredList.length === 0 && (
+          {filteredList.length === 0 && listType === null && (
             <TrackerBody
-              list={userTrackerList}
+              list={
+                selectedMedia === "movie" ? userTrackerMovie : userTrackerTv
+              }
               checkedList={checkedList}
               setCheckedList={setCheckedList}
-              handleFetchUserTracker={handleGetUserTracker}
             />
           )}
-          {filteredList.length > 0 && (
+          {(filteredList.length > 0 || listType !== null) && (
             <TrackerBody
               list={filteredList}
               checkedList={checkedList}
               setCheckedList={setCheckedList}
-              handleFetchUserTracker={handleGetUserTracker}
             />
           )}
         </Table.Body>

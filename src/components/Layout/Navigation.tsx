@@ -68,6 +68,11 @@ const Navigation = () => {
       )}
 
       {user && (
+        <Menu.Item position="right" name="user-email" disabled={true}>
+          {user.email?.slice(0, 10) + "..."}
+        </Menu.Item>
+      )}
+      {user && (
         <Menu.Item
           name="logout"
           active={activeItem === "logout"}
@@ -75,11 +80,6 @@ const Navigation = () => {
           disabled={!user}
         >
           Sair
-        </Menu.Item>
-      )}
-      {user && (
-        <Menu.Item name="user-email" disabled={true}>
-          {user.email}
         </Menu.Item>
       )}
     </Menu>

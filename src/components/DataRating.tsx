@@ -1,15 +1,13 @@
-import { Segment, Statistic } from "semantic-ui-react";
+import { Statistic } from "semantic-ui-react";
 
-const DataRating = ({
-  data,
-}: {
-  data: {
-    runtime?: number;
-    vote_average: number;
-    episodes?: number;
-    seasons?: number;
-  };
-}) => {
+type TDataRating = {
+  runtime?: number;
+  vote_average: number;
+  episodes?: number;
+  seasons?: number;
+};
+
+const DataRating = ({ data }: { data: TDataRating }) => {
   const checkRating = (rating: number) => {
     if (rating > 8) {
       return "label-success";
@@ -22,7 +20,7 @@ const DataRating = ({
 
   if (data)
     return (
-      <div className="p-4 app-dark-theme">
+      <div className="p-4 my-2 app-dark-theme">
         <Statistic horizontal inverted>
           <Statistic.Group size="tiny">
             <Statistic>

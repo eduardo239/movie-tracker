@@ -16,12 +16,14 @@ const MoviePage = () => {
     mediaType,
     setMediaType,
     setPage,
-    userTrackerList,
+
+    userTrackerTv,
+    userTrackerMovie,
   } = useMovie();
 
   useEffect(() => {
     setMediaType("tv");
-    if (page && page !== 1) setPage(page);
+
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
@@ -40,7 +42,9 @@ const MoviePage = () => {
       <GridContainer centered gap="gap-sm">
         <DataGroup
           data={data ? data.results : []}
-          userTrackerList={userTrackerList}
+          userTrackerList={
+            mediaType === "movie" ? userTrackerMovie : userTrackerTv
+          }
         />
         {data?.results.length === 0 && (
           <MessageNotFound message="Série não encontrado" />

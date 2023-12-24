@@ -26,7 +26,6 @@ import {
   IUpdUserList,
 } from "../abstract/interfaces2";
 import { toast } from "react-toastify";
-import { useMovie } from "./MovieContext";
 
 type TMTList = { movieList: DocumentData[]; tvList: DocumentData[] };
 
@@ -59,13 +58,8 @@ type TDataProviderProps = {
   children: ReactNode;
 };
 
-const apiKey = import.meta.env.VITE_TMDB_API_KEY;
-const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
-
 export function DataProvider({ children }: TDataProviderProps) {
   const { user } = useAuth();
-
-  const [userTrackerList, setUserTrackerList] = useState<TMTList | null>(null);
 
   // busca o tracker
   const getUserTracker = async (payload: IGetUserTracker) => {
@@ -77,6 +71,9 @@ export function DataProvider({ children }: TDataProviderProps) {
   const getUserTrackers = async (payload?: IGetUserTrackers) => {
     if (user && payload) {
       const response = await getUserTrackersFB(payload);
+      return response;
+    } else if (user) {
+      const response = await getUserTrackersFB({ user });
       return response;
     }
     return null;

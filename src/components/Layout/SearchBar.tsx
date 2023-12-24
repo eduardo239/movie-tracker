@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Select } from "semantic-ui-react";
-import { useMovie } from "../context/MovieContext";
+import { useMovie } from "../../context/MovieContext";
 
 const SearchBar = () => {
   const { setMediaType, setPage, setTerm, mediaType, setIsSearching } =

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "semantic-ui-react";
 
@@ -12,6 +13,11 @@ const PaginationBar = ({
 }) => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    navigate(url);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+
   return (
     <div className="flex flex-center p-2">
       <Pagination
@@ -24,8 +30,7 @@ const PaginationBar = ({
         totalPages={99}
         onPageChange={(e, x) => {
           if (x.activePage) {
-            setPage(x.activePage ? +x.activePage : 1);
-            navigate(url);
+            setPage(+x.activePage);
           }
         }}
       />

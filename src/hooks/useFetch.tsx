@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
 
 type FetchState<T> = {
   data: T | null;
@@ -7,7 +7,10 @@ type FetchState<T> = {
   error: AxiosError | null;
 };
 
-function useFetch<T>(url: string, options?: unknown): FetchState<T> {
+function useFetch<T>(
+  url: string,
+  options?: AxiosRequestConfig | undefined
+): FetchState<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -15,7 +18,7 @@ function useFetch<T>(url: string, options?: unknown): FetchState<T> {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: AxiosResponse<T> = await axios.get(url);
+        const response: AxiosResponse<T> = await axios.get(url, options);
         setData(response.data);
       } catch (err) {
         if (err instanceof AxiosError) {

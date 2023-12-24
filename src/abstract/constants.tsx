@@ -54,3 +54,8 @@ export const SUC_TRACKER_ADD = "Item adicionado com sucesso.";
 
 export const SUC_ITEMS_DELETED = "Itens removidos com sucesso.";
 export const SUC_LIST_UPDATED = "Lista atualizada com sucesso.";
+
+export const ERR_INFO_NOT_FOUND = "Informação não encontrada.";
+export const ERR_CAST_NOT_FOUND = "Elenco não encontrado.";
+export const ERR_CHAR_NOT_FOUND = "Personagem não encontrado.";
+export const ERR_LIST_NOT_FOUND = "Lista não encontrada.";

@@ -37,17 +37,15 @@ export interface ISetUserList {
   list?: ISetUserListItem[];
   userId: string;
 }
-//
-//
-//
 export interface IUpdUserList {
   id: number;
   name: string;
   poster_path: string;
   media_type: "movie" | "tv";
 }
-
-// multiple items
+//
+// delete items
+//
 export interface IDelMultipleItems {
   list: DocumentData[];
   collection: "list" | "tracker";
@@ -56,3 +54,6 @@ export interface IDelItemById {
   id: string;
   collection: "list" | "tracker";
 }
+
+// movie list data type
+export type TListFilter = "popular" | "trending" | "now";

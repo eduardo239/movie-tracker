@@ -79,9 +79,7 @@ const TvByIdPage = () => {
 
           {/* -------------- options --------------   */}
           <Grid.Column width={16} textAlign="center">
-            <Divider />
             <TvOptions data={data} />
-            <Divider />
           </Grid.Column>
 
           <Grid.Column width={16} textAlign="center">
@@ -97,7 +95,7 @@ const TvByIdPage = () => {
             <DataCast data={{ credits: data.credits }} />
             {/* -------------- similar --------------   */}
 
-            <DataSimilar id={data.id} />
+            <DataSimilar id={data.id} mediaType="tv" />
           </Grid.Column>
         </Grid.Row>
       </Grid>

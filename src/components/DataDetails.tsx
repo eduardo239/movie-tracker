@@ -1,4 +1,3 @@
-import { Header, Segment } from "semantic-ui-react";
 import TitleInfo from "./Elements/TitleInfo";
 
 type TDataDetails = {
@@ -19,9 +18,9 @@ const DataDetails = ({ data }: TDataDetails) => {
       />
 
       <p>
-        <span className="date">Original Name: {data.original_title}</span>
+        <span className="opacity-6">Original Name: {data.original_title}</span>
       </p>
-      <p style={{ fontSize: "1.15rem" }}>{data.overview}</p>
+      <p className="font-size-1-15">{data.overview}</p>
     </div>
   );
 };

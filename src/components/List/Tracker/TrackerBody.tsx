@@ -12,6 +12,7 @@ import {
 } from "semantic-ui-react";
 import { containsItemWithId } from "../../../helper";
 import { useData } from "../../../context/DataContext";
+import { useMovie } from "../../../context/MovieContext";
 
 const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
@@ -20,16 +21,11 @@ type TTrackerBody = {
   list: DocumentData[];
   checkedList: DocumentData[];
   setCheckedList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
-  handleFetchUserTracker: () => Promise<void>;
 };
 
-const TrackerBody = ({
-  list,
-  checkedList,
-  setCheckedList,
-  handleFetchUserTracker,
-}: TTrackerBody) => {
-  const { delUserTracker } = useData();
+const TrackerBody = ({ list, checkedList, setCheckedList }: TTrackerBody) => {
+  const { delUserTracker, getUserTrackers } = useData();
+  const { handleGetUserTrackers } = useMovie();
 
   const navigate = useNavigate();
 
@@ -54,7 +50,10 @@ const TrackerBody = ({
   const handleDeleteItem = async () => {
     if (id) {
       await delUserTracker(id);
-      await handleFetchUserTracker();
+      // atualizar
+      // await handleFetchUserTracker();
+      console.log(4);
+      handleGetUserTrackers();
     }
     setOpen(false);
   };

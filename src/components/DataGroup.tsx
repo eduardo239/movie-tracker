@@ -4,13 +4,13 @@ import { getRandomNumberInRange } from "../helper";
 import { Image, Segment } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
+const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
+const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
+
 type TDataGroup = {
   data: IMovieDetails[];
   userTrackerList?: DocumentData[];
 };
-
-const tmdbPosterUrl = import.meta.env.VITE_TMDB_POSTER_URL;
-const fbPosterDefault = import.meta.env.VITE_FIREBASE_POSTER_DEFAULT_URL;
 
 const DataGroup = ({ data, userTrackerList }: TDataGroup) => {
   return (

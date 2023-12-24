@@ -37,7 +37,7 @@ const ListsPage = () => {
     else return setUserLists([]);
   };
 
-  const handleCheckedItems = (item: DocumentData) => {
+  const handleItemChecked = (item: DocumentData) => {
     const _contains = containsItemWithId(selectedItems, item.id);
     if (_contains) {
       const _filter = selectedItems.filter((x) => x.id !== item.id);
@@ -52,7 +52,7 @@ const ListsPage = () => {
     setId(item.id);
   };
 
-  const handleRemoveItem = async () => {
+  const handleDeleteItem = async () => {
     if (id) {
       await delItemById({ id, collection: "list" });
       await fetchUserLists();
@@ -60,7 +60,7 @@ const ListsPage = () => {
     setOpen(false);
   };
 
-  const handleMultipleRemovals = async () => {
+  const handleDeleteMultipleItems = async () => {
     await delMultipleItems({ list: selectedItems, collection: "list" });
     await fetchUserLists();
     toast.success(SUC_ITEMS_DELETED);
@@ -82,13 +82,12 @@ const ListsPage = () => {
           <Button negative onClick={() => setOpen(false)}>
             No
           </Button>
-          <Button positive onClick={() => handleRemoveItem()}>
+          <Button positive onClick={() => handleDeleteItem()}>
             Yes
           </Button>
         </Modal.Actions>
       </Modal>
 
-      {"  "}
       <Button.Group labeled icon compact color="orange">
         <ModalCreateList fetchUserLists={fetchUserLists} />
       </Button.Group>
@@ -99,7 +98,7 @@ const ListsPage = () => {
           disabled={selectedItems.length === 0}
           icon="trash"
           content="Remover"
-          onClick={() => handleMultipleRemovals()}
+          onClick={() => handleDeleteMultipleItems()}
         />
       </Button.Group>
       {/*  */}
@@ -118,7 +117,7 @@ const ListsPage = () => {
           {userLists.map((item) => (
             <Table.Row key={item.id}>
               <Table.Cell collapsing>
-                <Checkbox onClick={() => handleCheckedItems(item)} />
+                <Checkbox onClick={() => handleItemChecked(item)} />
               </Table.Cell>
               <Table.Cell
                 style={{ cursor: "pointer" }}

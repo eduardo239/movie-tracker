@@ -7,22 +7,14 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import {
-  IGetUserMovieList,
-  IMovieResults,
-  TMediaType,
-} from "../abstract/interfaces";
-import { useSearchParams } from "react-router-dom";
+import { IMovieResults, TMediaType } from "../abstract/interfaces";
 import useFetch from "../hooks/useFetch";
 import { AxiosError } from "axios";
-import {
-  ERROR_UM_AP,
-  ERR_RESPONSE_NOT_FOUND,
-  ERR_USER_NOT_FOUND,
-} from "../abstract/constants";
+import { ERROR_UM_AP } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
-import { getUserWatchListFB } from "../fetch/firebase";
-import { toast } from "react-toastify";
+
+import { useData } from "./DataContext";
+import { TListFilter } from "../abstract/interfaces2";
 
 interface MovieContextType {
   page: number;
@@ -31,18 +23,24 @@ interface MovieContextType {
   mediaType: TMediaType;
   setMediaType: React.Dispatch<React.SetStateAction<TMediaType>>;
   //
+  list: TListFilter;
+  setList: React.Dispatch<React.SetStateAction<TListFilter>>;
+  //
   data: IMovieResults | null;
   loading: boolean;
   error: AxiosError | null;
   //
   userTrackerList: DocumentData[];
   setUserTrackerList: React.Dispatch<React.SetStateAction<DocumentData[]>>;
+
+  userTrackerTv: DocumentData[];
+  userTrackerMovie: DocumentData[];
   //
   term: string;
   setTerm: React.Dispatch<React.SetStateAction<string>>;
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
   //
-  handleGetUserTrackerList: () => void;
+  handleGetUserTrackers: () => void;
 }
 
 type TMovieProviderProps = {
@@ -52,13 +50,25 @@ type TMovieProviderProps = {
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
+
+const options = {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization: `Bearer  ${apiToken}`,
+  },
+};
 
 export function MovieProvider({ children }: TMovieProviderProps) {
   const { user } = useAuth();
+  const { getUserTrackers } = useData();
 
   const [page, setPage] = useState<number>(1);
-  const [params, _] = useSearchParams();
+
+  const [list, setList] = useState<TListFilter>("now");
+
   const [adult, setAdult] = useState(false);
   const [mode, setMode] = useState("popular");
   const [term, setTerm] = useState("lost");
@@ -69,53 +79,85 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   //
   const [userTrackerList, setUserTrackerList] = useState<DocumentData[]>([]);
   //
-  const searchUrl = `${tmdbBaseUrl}/search/${mediaType}?api_key=${apiKey}&language=${lang}&query=${term}&include_adult=${adult}&page=${page}`;
+  const [userTrackerTv, setUserTrackerTv] = useState<DocumentData[]>([]);
+  const [userTrackerMovie, setUserTrackerMovie] = useState<DocumentData[]>([]);
 
-  const baseUrl = `${tmdbBaseUrl}/trending/${mediaType}/day?api_key=${apiKey}&language=${lang}&include_adult=${adult}&page=${page}`;
+  const searchUrl = `${tmdbBaseUrl}/search/${mediaType}?language=${lang}&query=${term}&include_adult=${adult}&page=${page}`;
 
-  const popularUrl = `https://api.themoviedb.org/3/${mediaType}/latest?api_key=${apiKey}&language=${lang}&include_adult=${adult}&page=${page}`;
+  const trendingUrl = `${tmdbBaseUrl}/trending/${mediaType}/day?language=${lang}&include_adult=${adult}&page=${page}`;
+
+  const nowUrl = `${tmdbBaseUrl}/${mediaType}/${
+    mediaType === "movie" ? "now_playing" : "on_the_air"
+  }?language=${lang}&include_adult=${adult}&page=${page}`;
+
+  const popularUrl = `${tmdbBaseUrl}/${mediaType}/popular?language=${lang}&include_adult=${adult}&page=${page}`;
 
   const [url, setUrl] = useState<string | null>(null);
-
-  const _url = url ? url : baseUrl;
-  const { data, loading, error } = useFetch<IMovieResults | null>(_url);
-
-  const handleGetUserTrackerList = useCallback(async () => {
-    if (user && mediaType) {
-      const payload: IGetUserMovieList = {
-        fullList: true,
-        userId: user.uid,
-        mediaType: mediaType,
-      };
-      const response = await getUserWatchListFB(payload);
-      if (!response) {
-        toast.error(ERR_RESPONSE_NOT_FOUND);
-        return;
-      }
-
-      if (mediaType == "tv") {
-        setUserTrackerList(response.tvList);
-      } else {
-        setUserTrackerList(response.movieList);
-      }
-
-      return response;
-    } else {
-      toast.error(ERR_USER_NOT_FOUND);
-    }
-  }, [mediaType, user]);
-
+  const [urlPop, setUrlPop] = useState<string | null>(null);
+  // pop
+  // fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
+  // now
+  // fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
   //
+  // pop
+  // fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page=1', options)
+  // on the air
+  // fetch('https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1', options)
+  //
+  // trending
+  // movie
+  // fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options)
+  // fetch('https://api.themoviedb.org/3/trending/tv/day?language=en-US', options)
+  // all
+  // fetch('https://api.themoviedb.org/3/trending/all/day?language=en-US', options)
+
+  /**
+   * if movie and now
+   * primeiro fetch
+   * else if movie and popular
+   * segundo fetch
+   *
+   * else if tv and pop
+   * terceiro fetch
+   * else if tv and now
+   * quarto fetch
+   *
+   * else
+   * default
+   */
+
+  const _url = url ? url : popularUrl;
+
+  const { data, loading, error } = useFetch<IMovieResults | null>(
+    _url,
+    options
+  );
+
+  const handleGetUserTrackers = useCallback(async () => {
+    const response = await getUserTrackers();
+    if (response) {
+      setUserTrackerTv(response.tvList);
+      setUserTrackerMovie(response.movieList);
+    }
+  }, [getUserTrackers]);
+
   useEffect(() => {
     if (isSearching) setUrl(searchUrl);
-    else setUrl(baseUrl);
+    else {
+      if (list === "now") {
+        setUrl(nowUrl);
+      } else if (list === "popular") {
+        setUrl(popularUrl);
+      } else if (list === "trending") {
+        setUrl(trendingUrl);
+      }
+    }
     return () => {};
-  }, [baseUrl, searchUrl, isSearching, term]);
+  }, [searchUrl, isSearching, term, list, nowUrl, popularUrl, trendingUrl]);
 
   useEffect(() => {
-    if (user) handleGetUserTrackerList();
-  }, [mediaType, user, handleGetUserTrackerList]);
-  //
+    if (user) handleGetUserTrackers();
+  }, [mediaType, user, handleGetUserTrackers]);
 
   return (
     <MovieContext.Provider
@@ -123,18 +165,27 @@ export function MovieProvider({ children }: TMovieProviderProps) {
         data,
         loading,
         error,
+
         page,
         setPage,
+
         term,
         setTerm,
         setIsSearching,
+
         mediaType,
         setMediaType,
+
+        list,
+        setList,
 
         userTrackerList,
         setUserTrackerList,
 
-        handleGetUserTrackerList,
+        handleGetUserTrackers,
+
+        userTrackerTv,
+        userTrackerMovie,
       }}
     >
       {children}

@@ -54,3 +54,7 @@
   > Busca as listas do usuário
 - handleDeleteList
   > Remove uma lista pelo id
+
+////
+load user tracker list when app is on
+update user tracker list when user add or remove item from tracker list
