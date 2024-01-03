@@ -111,11 +111,18 @@ const TvOptions = ({ data }: TTvOptions) => {
           mediaType: "tv",
           user,
         };
+
         const response = await getUserTracker(_payload);
         if (response) setTracker(response);
+        else {
+          setTracker(null);
+          setSavedSeasons([]);
+          return;
+        }
 
-        if (response && !response.seasons) return;
-        else if (response) setSavedSeasons(response.seasons);
+        if (response && response.seasons) {
+          setSavedSeasons(response.seasons);
+        }
       }
     }
   };

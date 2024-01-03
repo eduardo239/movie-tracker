@@ -70,7 +70,6 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   const [list, setList] = useState<TListFilter>("now");
 
   const [adult, setAdult] = useState(false);
-  const [mode, setMode] = useState("popular");
   const [term, setTerm] = useState("lost");
   const [lang, setLang] = useState("pt-BR");
   //
@@ -93,38 +92,6 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   const popularUrl = `${tmdbBaseUrl}/${mediaType}/popular?language=${lang}&include_adult=${adult}&page=${page}`;
 
   const [url, setUrl] = useState<string | null>(null);
-  const [urlPop, setUrlPop] = useState<string | null>(null);
-  // pop
-  // fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
-  // now
-  // fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-  //
-  // pop
-  // fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page=1', options)
-  // on the air
-  // fetch('https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1', options)
-  //
-  // trending
-  // movie
-  // fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options)
-  // fetch('https://api.themoviedb.org/3/trending/tv/day?language=en-US', options)
-  // all
-  // fetch('https://api.themoviedb.org/3/trending/all/day?language=en-US', options)
-
-  /**
-   * if movie and now
-   * primeiro fetch
-   * else if movie and popular
-   * segundo fetch
-   *
-   * else if tv and pop
-   * terceiro fetch
-   * else if tv and now
-   * quarto fetch
-   *
-   * else
-   * default
-   */
 
   const _url = url ? url : popularUrl;
 

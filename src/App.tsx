@@ -14,12 +14,12 @@ import TrackerPage from "./page/TrackerPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
-import { useData } from "./context/DataContext";
 import { useMovie } from "./context/MovieContext";
+import AllLists from "./page/AllLists";
 
 function App() {
   const { user } = useAuth();
-  // const { getUserTrackers } = useData();
+
   const { handleGetUserTrackers } = useMovie();
 
   useEffect(() => {
@@ -51,6 +51,7 @@ function App() {
         {/*  */}
         <Route path="/lists" element={<ListsPage />} />
         <Route path="/list" element={<ListPage />} />
+        <Route path="/all-lists" element={<AllLists />} />
         {/*  */}
         <Route path="/tracker" element={<TrackerPage />} />
         {/*  */}

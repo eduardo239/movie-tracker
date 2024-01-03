@@ -30,7 +30,7 @@ function useFetch<T>(
     };
 
     fetchData();
-  }, [url]);
+  }, [url, options]);
 
   return { data, loading, error };
 }

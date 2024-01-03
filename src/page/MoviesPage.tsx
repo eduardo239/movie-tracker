@@ -51,7 +51,7 @@ const MoviePage = () => {
           }
         />
         {data?.results.length === 0 && (
-          <MessageNotFound message="Filme não encontrado" />
+          <MessageNotFound message="Filmes não encontrado" />
         )}
       </GridContainer>
 

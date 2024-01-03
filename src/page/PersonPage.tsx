@@ -8,8 +8,6 @@ import { useEffect, useState } from "react";
 import GridContainer from "../components/Layout/GridContainer";
 import DataGroup from "../components/DataGroup";
 import { useMovie } from "../context/MovieContext";
-import { useAuth } from "../context/AuthContext";
-import { useData } from "../context/DataContext";
 import PersonInfo from "../components/Person/PersonInfo";
 import PersonPoster from "../components/Person/PersonPoster";
 
@@ -18,7 +16,6 @@ const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
 const PersonPage = () => {
   const { id } = useParams();
-  const { user } = useAuth();
   const { userTrackerTv, userTrackerMovie } = useMovie();
 
   const personUrl = `${tmdbBaseUrl}/person/${id}?api_key=${apiKey}&language=pt-BR&append_to_response=combined_credits`;

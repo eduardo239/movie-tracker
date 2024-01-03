@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext, ReactNode } from "react";
 
 import { ERROR_UM_AP, ERR_USER_NOT_FOUND } from "../abstract/constants";
 import { useAuth } from "./AuthContext";
@@ -15,7 +15,7 @@ import {
   setUserTrackerFB,
   setUserTrackerSeasonFB,
   updUserListFB,
-} from "../fetch/firebase2";
+} from "../fetch/firebase";
 import {
   IDelItemById,
   IDelMultipleItems,
@@ -33,6 +33,7 @@ interface DataContextType {
   //
   // lists
   //
+  getAllLists: () => Promise<DocumentData[] | null>;
   setUserList: (payload: ISetUserList) => Promise<void>;
   getUserLists: () => Promise<DocumentData[] | undefined>;
   getUserList: (listId: string) => Promise<DocumentData | null>;
@@ -103,8 +104,15 @@ export function DataProvider({ children }: TDataProviderProps) {
   //
   //
   //
-  //
 
+  // busca todas as listas
+  const getAllLists = async () => {
+    if (user) {
+      const response = await getUserListsFB(user.uid);
+      if (response) return response;
+    }
+    return null;
+  };
   // cria uma nova lista
   const setUserList = async (payload: ISetUserList) => {
     if (user) {
@@ -154,6 +162,8 @@ export function DataProvider({ children }: TDataProviderProps) {
         setUserTracker,
         setUserTrackerSeason,
         delUserTracker,
+
+        getAllLists,
         setUserList,
         getUserLists,
         getUserList,

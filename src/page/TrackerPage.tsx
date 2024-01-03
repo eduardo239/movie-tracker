@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Table } from "semantic-ui-react";
-import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { DocumentData } from "firebase/firestore";
 import { TListType } from "../abstract/interfaces";
@@ -11,7 +10,6 @@ import { useData } from "../context/DataContext";
 const TrackerPage = () => {
   const navigate = useNavigate();
 
-  const { user } = useAuth();
   const { userTrackerTv, userTrackerMovie } = useMovie();
   const { getUserTrackers, delMultipleItems } = useData();
   const { handleGetUserTrackers } = useMovie();
@@ -23,7 +21,8 @@ const TrackerPage = () => {
 
   const handleFilter = (_listType: TListType | null) => {
     setListType(_listType);
-    if (_listType !== null) {
+
+    if (_listType !== null && listType !== _listType) {
       if (selectedMedia === "movie") {
         const fil1 = userTrackerMovie.filter((x) => x.listType === _listType);
         if (fil1.length > 0) setFilteredList(fil1);
@@ -33,6 +32,9 @@ const TrackerPage = () => {
         if (fil2.length > 0) setFilteredList(fil2);
         else setFilteredList([]);
       }
+    } else if (listType === _listType) {
+      setFilteredList([]);
+      setListType(null);
     } else {
       setFilteredList([]);
     }
@@ -52,29 +54,6 @@ const TrackerPage = () => {
 
   return (
     <>
-      <Button.Group labeled icon compact color="orange">
-        <Button
-          icon="check"
-          content="Todos"
-          onClick={() => handleFilter(null)}
-        />
-
-        <Button
-          icon="list"
-          content="Vou Ver"
-          onClick={() => handleFilter("saw")}
-        />
-        <Button
-          icon="eye"
-          content="Já Vi"
-          onClick={() => handleFilter("see")}
-        />
-        <Button
-          icon="close"
-          content="Bloqueado"
-          onClick={() => handleFilter("block")}
-        />
-      </Button.Group>{" "}
       <Button.Group labeled icon compact color="orange">
         <Button
           icon="film"
@@ -103,13 +82,34 @@ const TrackerPage = () => {
             <Table.HeaderCell>Nome</Table.HeaderCell>
 
             <Table.HeaderCell width={2} textAlign="center">
-              Vou Ver
+              <Button
+                basic
+                size="tiny"
+                compact
+                onClick={() => handleFilter("saw")}
+              >
+                Já Vi
+              </Button>
             </Table.HeaderCell>
             <Table.HeaderCell width={2} textAlign="center">
-              Já Vi
+              <Button
+                basic
+                size="tiny"
+                compact
+                onClick={() => handleFilter("see")}
+              >
+                Vou Ver
+              </Button>
             </Table.HeaderCell>
             <Table.HeaderCell width={2} textAlign="center">
-              Bloqueado
+              <Button
+                basic
+                size="tiny"
+                compact
+                onClick={() => handleFilter("block")}
+              >
+                Bloqueado
+              </Button>
             </Table.HeaderCell>
             <Table.HeaderCell width={2}>Notes</Table.HeaderCell>
           </Table.Row>

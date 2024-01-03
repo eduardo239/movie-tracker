@@ -1,19 +1,10 @@
 import {
-  IAddMovieToList,
-  IAddTvToList,
-  IGetUserMovieList,
-  IList,
-  IUserList,
-  IGetUserWatchList,
-  ISaveItemToWatchList,
-  IListFB,
-} from "../abstract/interfaces";
-import {
   DocumentData,
   addDoc,
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
@@ -26,132 +17,193 @@ import {
   ERROR_F_AD_TV_LS,
   ERR_CREATED_LIST,
   ERR_EXISTS_CREATED_LIST,
-  ERR_MOVIE_OR_TV_NOT_FOUND,
-  ERR_RESPONSE_NOT_FOUND,
-  ERR_USER_NOT_FOUND,
   MEDIA_TV,
   SUC_CREATED_LIST,
   SUC_LIST_REMOVED,
-  SUC_TRACKER_REMOVED,
+  SUC_LIST_UPDATED,
 } from "../abstract/constants";
 import { FirebaseError } from "firebase/app";
 import { toast } from "react-toastify";
 
-// - - - - - - - - - - - - - TRACKER - - - - - - -  - - - - - - - - - - - - - - - - //
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-// - - - - - - - - - - - -  - ADD TRACKER - - - - - - - - - - - - - - - - - - - - //
-/**
- *
- * @param payload listType, data, mediaType, user
- * @returns objeto, com movieWatchList e tvWatchList
- */
-export const saveItemToWatchList = async (payload: ISaveItemToWatchList) => {
-  if (payload.user) {
-    if (payload.data) {
-      // validar se é do tipo filme
-      if ("title" in payload.data) {
-        const content: IAddMovieToList = {
-          mediaType: "movie",
-          listType: payload.listType,
-          movieId: payload.data.id,
-          userId: payload.user.uid,
-          poster: payload.data.poster_path,
-          title: payload.data.title,
-        };
+import {
+  IDelItemById,
+  IDelMultipleItems,
+  IGetUserTracker,
+  IGetUserTrackers,
+  ISetUserList,
+  ISetUserTracker,
+  IUpdUserList,
+} from "../abstract/interfaces2";
 
-        try {
-          await saveItemToWatchListFB(content);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
-          const _data: IGetUserWatchList = {
-            data: payload.data,
-            mediaType: payload.mediaType,
-            userId: payload.user.uid,
-          };
+// get user lists
+export const getAllListsFB = async () => {
+  const _query = query(collection(db, COLLECTION_LIST));
 
-          const response = await getUserWatchList(_data);
-          return response;
-        } catch (error) {
-          if (error instanceof FirebaseError) {
-            toast.error(error.message);
-          }
-        }
+  const querySnapshot = await getDocs(_query);
+  const list: DocumentData[] = [];
 
-        // validar se é do tipo série
-      } else if ("name" in payload.data) {
-        const content: IAddMovieToList = {
-          mediaType: "tv",
-          listType: payload.listType,
-          movieId: payload.data.id,
-          userId: payload.user.uid,
-          poster: payload.data.poster_path,
-          title: payload.data.name,
-        };
+  querySnapshot.forEach((doc) => {
+    list.push({ id: doc.id, ...doc.data() });
+  });
 
-        const _data: IGetUserWatchList = {
-          data: payload.data,
-          mediaType: payload.mediaType,
-          userId: payload.user.uid,
-        };
+  return list;
+};
+// set single list
+export const setUserListFB = async (payload: ISetUserList) => {
+  let exists = false;
+  let id = null;
+  const q = query(
+    collection(db, COLLECTION_LIST),
+    where("user", "==", payload.userId),
+    where("name", "==", payload.name)
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    exists = doc.exists();
+    id = doc.id;
+  });
 
-        await saveItemToWatchListFB(content);
-        const response = await getUserWatchList(_data);
-        return response;
+  if (!exists) {
+    // add new list
+    try {
+      await addDoc(collection(db, COLLECTION_LIST), payload);
+      toast.success(SUC_CREATED_LIST);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        return error.message;
       }
-    } else {
-      toast.error("Filme não encontrado.");
     }
+  } else if (exists && id) {
+    toast.error(ERR_EXISTS_CREATED_LIST);
   } else {
-    toast.error("É necessário entrar na conta.");
+    toast.error(ERR_CREATED_LIST);
   }
 };
+// get single list
+export const getUserListFB = async (listId: string) => {
+  const docRef = doc(db, COLLECTION_LIST, listId);
+  const docSnap = await getDoc(docRef);
 
-// - - - - - - - - - - - GET TRACKER - - - - - - - - - - - - - - - - - - //
-/**
- *
- * @param payload movie, mediaType, user
- * @returns retorna a lista do usuário no formato { movieList: DocumentData[];tvList: DocumentData[]; }
- */
-export const getUserWatchList = async (payload: IGetUserWatchList) => {
-  if (payload.data) {
-    const response = await getUserWatchListFB({
-      userId: payload.userId,
-      movieId: payload.data.id,
-      fullList: false,
-      mediaType: payload.mediaType,
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    toast.error("Lista não encontrada.");
+  }
+};
+// get user lists
+export const getUserListsFB = async (userId: string) => {
+  const _query = query(
+    collection(db, COLLECTION_LIST),
+    where("userId", "==", userId)
+  );
+
+  const querySnapshot = await getDocs(_query);
+  const list: DocumentData[] = [];
+
+  querySnapshot.forEach((doc) => {
+    list.push({ id: doc.id, ...doc.data() });
+  });
+
+  return list;
+};
+// del user list
+export const delUserListFB = async () => {};
+// del user lists
+export const delUserListsFB = async () => {
+  console.info("del users lists ----------------------------");
+};
+// upt user list
+export const updUserListFB = async (list: IUpdUserList[], listId: string) => {
+  console.info("updated list");
+
+  const docRef = doc(db, COLLECTION_LIST, listId);
+  const r = await updateDoc(docRef, {
+    list: list,
+  });
+  toast.info(SUC_LIST_UPDATED);
+};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// set user tracker
+export const setUserTrackerFB = async (payload: ISetUserTracker) => {
+  const _item = {
+    mediaType: payload.mediaType,
+    listType: payload.listType,
+    dataId: payload.data.id,
+    userId: payload.user.uid,
+    poster: payload.data.poster_path,
+    title: "title" in payload.data ? payload.data.title : payload.data.name,
+  };
+
+  let exists = false;
+  let id = null;
+  let listType = null;
+
+  const q = query(
+    collection(db, COLLECTION_TRACKER),
+    where("userId", "==", payload.user.uid),
+    where("dataId", "==", payload.data.id)
+  );
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    listType = doc.data().listType;
+    exists = doc.exists();
+    id = doc.id;
+  });
+  if (!exists) {
+    await addDoc(collection(db, COLLECTION_TRACKER), _item);
+  } else if (exists && id) {
+    if (listType === payload.listType) {
+      // remover se o tipo do tracker for o mesmo
+      await delUserTrackerFB(id);
+    } else {
+      // atualiza se o tipo do tracker for diferente
+      const docRef = doc(db, COLLECTION_TRACKER, id);
+      await updateDoc(docRef, {
+        listType: payload.listType,
+      });
+    }
+  }
+};
+// set user tracker tv season
+export const setUserTrackerSeasonFB = async (payload: ISetUserTracker) => {
+  let exists = false;
+  let id = null;
+
+  const q = query(
+    collection(db, COLLECTION_TRACKER),
+    where("userId", "==", payload.user.uid),
+    where("dataId", "==", payload.data.id)
+  );
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    exists = doc.exists();
+    id = doc.id;
+  });
+
+  if (!exists) {
+    toast.info("Item não encontrado.");
+  } else if (exists && id) {
+    const docRef = doc(db, COLLECTION_TRACKER, id);
+    await updateDoc(docRef, {
+      seasons: payload.seasons,
     });
-
-    return response;
   } else {
-    toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
+    toast.info(ERROR_F_AD_TV_LS);
   }
 };
-// - - - - - - - - - - - GET TRACKER - - - - - - - - - - - - - - - - - - - - - - - //
-
-// - - - - - - - - - - - GET TRACKER FB - - - - - - - - - - - - - - - - - - //
-/**
- *
- * @param payload user, data, mediaType
- * @returns a watch list do usuário
- */
-export const getUserWatchListFB = async (
-  payload: IGetUserMovieList
-): Promise<{ movieList: DocumentData[]; tvList: DocumentData[] }> => {
-  let _query;
-
-  if (payload.fullList) {
-    _query = query(
-      collection(db, COLLECTION_TRACKER),
-      where("userId", "==", payload.userId)
-    );
-  } else {
-    // get only one document
-    _query = query(
-      collection(db, COLLECTION_TRACKER),
-      where("userId", "==", payload.userId),
-      where("movieId", "==", payload.movieId)
-      // movieId for movies and tvs
-    );
-  }
+// get user single tracker
+export const getUserTrackerFB = async (payload: IGetUserTracker) => {
+  const _query = query(
+    collection(db, COLLECTION_TRACKER),
+    where("userId", "==", payload.user.uid),
+    where("dataId", "==", payload.data.id)
+  );
 
   const querySnapshot = await getDocs(_query);
   const movieList: DocumentData[] = [];
@@ -165,279 +217,16 @@ export const getUserWatchListFB = async (
       movieList.push({ id: doc.id, ...doc.data() });
     }
   });
-  return { movieList, tvList };
+
+  if (movieList.length > 0) return movieList[0];
+  if (tvList.length > 0) return tvList[0];
 };
-
-// - - - - - - - - - - - DEL TRACKER - - - - - - - - - - - - - - - - - - - - - //
-
-// - - - - - - - - - - - DEL TRACKER ITEMS BY ID - -- - - - - - - - - - - - - - - //
-/**
- * Remove várias trackers em sequência
- * @param trackerList DocumentData[]
- */
-export const deleteTrackersByIdFB = async (trackerList: DocumentData[]) => {
-  for (let i = 0; i < trackerList.length; i++) {
-    try {
-      await deleteDoc(doc(db, COLLECTION_TRACKER, trackerList[i].id));
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        toast.error(error.message);
-      }
-    }
-  }
-};
-
-// - - - - - - - - - - - ADD TV SEASON TO TRACKER - - - - - - - - - - - - - - - //
-/**
- *
- * @param content mediaType, listType, movieId, userId, poster, title, seasons[]
- */
-export const saveTvSeasonFB = async (content: IAddTvToList) => {
-  let _exists = false;
-  let _docId = null;
-
-  const q = query(
-    collection(db, COLLECTION_TRACKER),
-    where("userId", "==", content.userId),
-    where("movieId", "==", content.movieId)
-  );
-  const querySnapshot = await getDocs(q);
-
-  querySnapshot.forEach((doc) => {
-    _exists = doc.exists();
-    _docId = doc.id;
-  });
-
-  if (!_exists) {
-    const docRef = await addDoc(collection(db, COLLECTION_TRACKER), content);
-    // TODO: remover se não for necessário
-    // update list
-  } else if (_exists && _docId) {
-    // update list
-    const docRef = doc(db, COLLECTION_TRACKER, _docId);
-    await updateDoc(docRef, {
-      seasons: content.seasons,
-    });
-  } else {
-    alert(ERROR_F_AD_TV_LS);
-  }
-};
-
-// - - - - - - - - - - - - - - LISTS - - - - - - - - - - - - - - - - - - - - - - - //
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
-// - - - - - - - - - - - - - - ADD LISTS - - - - - - - - - - - - - - - - - - - - //
-/**
- *
- * @param payload name, description, isPublic, list[], userId
- */
-export const saveNewListFB = async (payload: IList) => {
-  let _exists = false;
-  let _docId = null;
-  const q = query(
-    collection(db, COLLECTION_LIST),
-    where("userId", "==", payload.userId),
-    where("name", "==", payload.name)
-  );
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    _exists = doc.exists();
-    _docId = doc.id;
-  });
-
-  if (!_exists) {
-    // add new list
-    try {
-      await addDoc(collection(db, COLLECTION_LIST), payload);
-      toast.success(SUC_CREATED_LIST);
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        return error.message;
-      }
-    }
-  } else if (_exists && _docId) {
-    toast.error(ERR_EXISTS_CREATED_LIST);
-  } else {
-    toast.error(ERR_CREATED_LIST);
-  }
-};
-
-// - - - - - - - - - - - GET LISTS - - - - - - - - - - - - - - - - - - - - - - - //
-/**
- * Busca as listas do usuário no FB
- * @param content fullList, userId, id
- * @returns um objeto userLists, com a lista
- */
-export const getUserListsFB = async (
-  content: IUserList
-): Promise<{ userLists: DocumentData[] }> => {
-  const _query = query(
-    collection(db, COLLECTION_LIST),
-    where("userId", "==", content.userId)
-  );
-
-  const querySnapshot = await getDocs(_query);
-  const userLists: DocumentData[] = [];
-
-  querySnapshot.forEach((doc) => {
-    userLists.push({ id: doc.id, ...doc.data() });
-  });
-
-  return { userLists };
-};
-
-// - - - - - - - - - - - DEL LIST BY ID - - - - - - - - - - - - - - - - - - - - //
-/**
- * Remove o documento pelo id
- * @param id id do filme/série
- */
-export const deleteListByIdFB = async (id: string) => {
-  try {
-    await deleteDoc(doc(db, COLLECTION_LIST, id));
-    toast.success(SUC_LIST_REMOVED);
-  } catch (error) {
-    if (error instanceof FirebaseError) {
-      toast.error(error.message);
-    }
-  }
-};
-export const deleteMultipleItemsListByIdFB = async (
-  trackerList: DocumentData[]
-) => {
-  for (let i = 0; i < trackerList.length; i++) {
-    try {
-      await deleteDoc(doc(db, COLLECTION_LIST, trackerList[i].id));
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        toast.error(error.message);
-      }
-    }
-  }
-};
-
-/**
- * Remove um item do firebase, pelo Id
- * @param id Id do firebase
- * @param collection "list" | "tracker"
- */
-export const deleteItemByIdFB = async (
-  id: string,
-  collection: "list" | "tracker"
-) => {
-  try {
-    await deleteDoc(doc(db, collection, id));
-    toast.success(SUC_LIST_REMOVED);
-  } catch (error) {
-    if (error instanceof FirebaseError) {
-      toast.error(error.message);
-    }
-  }
-};
-/**
- * Remove vários itens do Firebase, pelo Id
- * @param list Lista de items com Id do firebase
- * @param collection "list" | "tracker"
- */
-export const deleteMultipleItemsByIdFB = async (
-  list: DocumentData[],
-  collection: "list" | "tracker"
-) => {
-  for (let i = 0; i < list.length; i++) {
-    try {
-      await deleteDoc(doc(db, collection, list[i].id));
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        toast.error(error.message);
-      }
-    }
-  }
-};
-export const getListFB = async (
-  payload: IListFB
-): Promise<{ list: DocumentData[] }> => {
-  const _query = query(
-    collection(db, COLLECTION_LIST),
-    where("userId", "==", payload.userId)
-  );
-
-  const querySnapshot = await getDocs(_query);
-  const list: DocumentData[] = [];
-
-  querySnapshot.forEach((doc) => {
-    list.push({ id: doc.id, ...doc.data() });
-  });
-
-  return { list };
-};
-
-// - - - - - - - - - - - ADD TRACKER FB - - - - - - - - - - - - - - - - - - //
-/**
- * Adiciona uma watch list ou atualiza a existente
- * @param payload recebe mediaType, listType, movieId, userId, poster e title
- */
-export const saveItemToWatchListFB = async (payload: IAddMovieToList) => {
-  let exists_ = false;
-  let docId_ = null;
-
-  const q = query(
-    collection(db, COLLECTION_TRACKER),
-    where("userId", "==", payload.userId),
-    where("movieId", "==", payload.movieId)
-  );
-  const querySnapshot = await getDocs(q);
-
-  querySnapshot.forEach((doc) => {
-    exists_ = doc.exists();
-    docId_ = doc.id;
-  });
-
-  if (!exists_) {
-    const docRef = await addDoc(collection(db, COLLECTION_TRACKER), payload);
-    // update list
-  } else if (exists_ && docId_) {
-    // update list
-    const docRef = doc(db, COLLECTION_TRACKER, docId_);
-    await updateDoc(docRef, {
-      listType: payload.listType,
-    });
-  }
-};
-
-export const saveItemToWatchListFB2 = async (payload: IAddMovieToList) => {
-  let exists_ = false;
-  let docId_ = null;
-
-  const q = query(
-    collection(db, COLLECTION_TRACKER),
-    where("userId", "==", payload.userId),
-    where("movieId", "==", payload.movieId)
-  );
-  const querySnapshot = await getDocs(q);
-
-  querySnapshot.forEach((doc) => {
-    exists_ = doc.exists();
-    docId_ = doc.id;
-  });
-
-  if (!exists_) {
-    const docRef = await addDoc(collection(db, COLLECTION_TRACKER), payload);
-    // update list
-  } else if (exists_ && docId_) {
-    // update list
-    const docRef = doc(db, COLLECTION_TRACKER, docId_);
-    await updateDoc(docRef, {
-      listType: payload.listType,
-    });
-  }
-};
-export const getTrackerFB = async (
-  payload: IGetUserWatchList
-): Promise<DocumentData | null> => {
-  if (payload.data) {
+// get user trackers
+export const getUserTrackersFB = async (payload?: IGetUserTrackers) => {
+  if (payload) {
     const _query = query(
       collection(db, COLLECTION_TRACKER),
-      where("userId", "==", payload.userId),
-      where("movieId", "==", payload.data.id)
-      // movieId for movies and tvs
+      where("userId", "==", payload.user.uid)
     );
 
     const querySnapshot = await getDocs(_query);
@@ -446,15 +235,63 @@ export const getTrackerFB = async (
 
     querySnapshot.forEach((doc) => {
       const _mediaType = doc.data().mediaType;
+
       if (_mediaType === MEDIA_TV) {
         tvList.push({ id: doc.id, ...doc.data() });
       } else {
         movieList.push({ id: doc.id, ...doc.data() });
       }
     });
+
     return { movieList, tvList };
-  } else {
-    toast.error(ERR_MOVIE_OR_TV_NOT_FOUND);
   }
-  return null;
+  return { movieList: [], tvList: [] };
+};
+// del user tracker
+export const delUserTrackerFB = async (trackerId: string) => {
+  try {
+    await deleteDoc(doc(db, COLLECTION_TRACKER, trackerId));
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      toast.error(error.message);
+    }
+  }
+};
+// del user trackers
+export const delUserTrackersFB = async (list: DocumentData[]) => {
+  console.info("del users trackers");
+  for (let i = 0; i < list.length; i++) {
+    try {
+      await deleteDoc(doc(db, COLLECTION_TRACKER, list[i].id));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast.error(error.message);
+      }
+    }
+  }
+};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// del item by id
+export const delItemByIdFB = async (payload: IDelItemById) => {
+  try {
+    await deleteDoc(doc(db, payload.collection, payload.id));
+    toast.success(SUC_LIST_REMOVED);
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      toast.error(error.message);
+    }
+  }
+};
+// del multiple items
+export const delMultipleItemsFB = async (payload: IDelMultipleItems) => {
+  for (let i = 0; i < payload.list.length; i++) {
+    try {
+      await deleteDoc(doc(db, payload.collection, payload.list[i].id));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast.error(error.message);
+      }
+    }
+  }
 };

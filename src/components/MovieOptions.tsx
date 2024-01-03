@@ -42,6 +42,7 @@ const MovieOptions = ({ data }: TMovieOptions) => {
       };
       const response = await getUserTracker(payload);
       if (response) setTracker(response);
+      else setTracker(null);
     }
   };
 

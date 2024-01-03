@@ -10,7 +10,7 @@ import {
   Modal,
   Table,
 } from "semantic-ui-react";
-import { containsItemWithId } from "../../../helper";
+import { containsItemWithId, splitAndAddEllipsis } from "../../../helper";
 import { useData } from "../../../context/DataContext";
 import { useMovie } from "../../../context/MovieContext";
 
@@ -24,10 +24,10 @@ type TTrackerBody = {
 };
 
 const TrackerBody = ({ list, checkedList, setCheckedList }: TTrackerBody) => {
-  const { delUserTracker, getUserTrackers } = useData();
-  const { handleGetUserTrackers } = useMovie();
-
   const navigate = useNavigate();
+
+  const { delUserTracker } = useData();
+  const { handleGetUserTrackers } = useMovie();
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState<string | null>(null);
@@ -93,7 +93,9 @@ const TrackerBody = ({ list, checkedList, setCheckedList }: TTrackerBody) => {
                 size="mini"
               />
               <Header.Content>
-                {item.title}
+                {item.title && item.title.length > 35
+                  ? splitAndAddEllipsis(item.title)
+                  : item.title}
                 <Header.Subheader>
                   <small>ID: {item.dataId}</small>
                 </Header.Subheader>

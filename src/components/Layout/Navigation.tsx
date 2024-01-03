@@ -41,9 +41,17 @@ const Navigation = () => {
           active={activeItem === "lists"}
           onClick={() => handleItemClick("/lists")}
         >
-          Listas
+          Minhas Listas
         </Menu.Item>
       )}
+
+      <Menu.Item
+        name="all-lists"
+        active={activeItem === "all-lists"}
+        onClick={() => handleItemClick("/all-lists")}
+      >
+        Todas as Listas
+      </Menu.Item>
 
       {!user && (
         <Menu.Item

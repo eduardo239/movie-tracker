@@ -47,7 +47,7 @@ const MoviePage = () => {
           }
         />
         {data?.results.length === 0 && (
-          <MessageNotFound message="Série não encontrado" />
+          <MessageNotFound message="Séries não encontrado" />
         )}
       </GridContainer>
 
