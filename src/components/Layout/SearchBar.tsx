@@ -1,10 +1,19 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Select } from "semantic-ui-react";
+import { Button, Dropdown, Form, Icon, Input, Select } from "semantic-ui-react";
 import { useMovie } from "../../context/MovieContext";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const SearchBar = () => {
-  const { setMediaType, setPage, setTerm, mediaType, setIsSearching } =
-    useMovie();
+  const {
+    setMediaType,
+    setPage,
+    setTerm,
+    mediaType,
+    setIsSearching,
+    setLang,
+    adult,
+    setAdult,
+  } = useMovie();
 
   const _options = [
     { key: "movie", text: "Filmes", value: "movie" },
@@ -12,6 +21,7 @@ const SearchBar = () => {
   ];
   const [options, _] = useState(_options);
   const [query, setQuery] = useState("");
+  const [, setLocalLang] = useLocalStorage("lang", "pt");
 
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,6 +47,21 @@ const SearchBar = () => {
     else setMediaType("tv");
   };
 
+  const countryOptions = [
+    { key: "br", value: "pt", flag: "br", text: "Português" },
+    { key: "us", value: "en", flag: "us", text: "Inglês" },
+    { key: "es", value: "es", flag: "es", text: "Espanhol" },
+  ];
+
+  const handleLangChange = (lang: string) => {
+    setLocalLang(lang);
+    setLang(lang);
+  };
+
+  const handleAdultChange = (adult: boolean) => {
+    setAdult(adult);
+  };
+
   return (
     <Form onSubmit={onSearchSubmit}>
       <Input
@@ -56,7 +81,25 @@ const SearchBar = () => {
         <Button type="submit" color={query.length > 0 ? "green" : "grey"}>
           Buscar
         </Button>
+
         <Button onClick={resetSearch}>Redefinir</Button>
+        <Dropdown
+          placeholder="Língua"
+          search
+          selection
+          onChange={(e, d) =>
+            d && d.value ? handleLangChange(d.value?.toString()) : "pt"
+          }
+          options={countryOptions}
+        />
+
+        <Button
+          icon
+          color={adult ? "green" : "grey"}
+          onClick={() => handleAdultChange(!adult)}
+        >
+          <Icon name="user secret" />
+        </Button>
       </Input>
     </Form>
   );

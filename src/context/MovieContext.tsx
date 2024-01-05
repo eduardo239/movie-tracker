@@ -15,6 +15,7 @@ import { useAuth } from "./AuthContext";
 
 import { useData } from "./DataContext";
 import { TListFilter } from "../abstract/interfaces2";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 interface MovieContextType {
   page: number;
@@ -22,6 +23,11 @@ interface MovieContextType {
   //
   mediaType: TMediaType;
   setMediaType: React.Dispatch<React.SetStateAction<TMediaType>>;
+  //
+  setLang: React.Dispatch<React.SetStateAction<string>>;
+  //
+  adult: boolean;
+  setAdult: React.Dispatch<React.SetStateAction<boolean>>;
   //
   list: TListFilter;
   setList: React.Dispatch<React.SetStateAction<TListFilter>>;
@@ -49,7 +55,6 @@ type TMovieProviderProps = {
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
 
-const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 const apiToken = import.meta.env.VITE_TMDB_API_TOKEN;
 const tmdbBaseUrl = import.meta.env.VITE_TMDB_BASE_URL;
 
@@ -71,7 +76,8 @@ export function MovieProvider({ children }: TMovieProviderProps) {
 
   const [adult, setAdult] = useState(false);
   const [term, setTerm] = useState("lost");
-  const [lang, setLang] = useState("pt-BR");
+  const [lang, setLang] = useState("pt");
+  const [localLang, setLocalLang] = useLocalStorage("lang", "");
   //
   const [isSearching, setIsSearching] = useState(false);
   const [mediaType, setMediaType] = useState<TMediaType>("movie");
@@ -80,7 +86,9 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   //
   const [userTrackerTv, setUserTrackerTv] = useState<DocumentData[]>([]);
   const [userTrackerMovie, setUserTrackerMovie] = useState<DocumentData[]>([]);
+  //
 
+  //
   const searchUrl = `${tmdbBaseUrl}/search/${mediaType}?language=${lang}&query=${term}&include_adult=${adult}&page=${page}`;
 
   const trendingUrl = `${tmdbBaseUrl}/trending/${mediaType}/day?language=${lang}&include_adult=${adult}&page=${page}`;
@@ -92,13 +100,18 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   const popularUrl = `${tmdbBaseUrl}/${mediaType}/popular?language=${lang}&include_adult=${adult}&page=${page}`;
 
   const [url, setUrl] = useState<string | null>(null);
-
   const _url = url ? url : popularUrl;
 
   const { data, loading, error } = useFetch<IMovieResults | null>(
     _url,
     options
   );
+
+  // const { data: d1 } = useFetch<IMovieResults | null>(
+  //   "https://api.themoviedb.org/3/configuration/languages",
+  //   options
+  // );
+  // console.log(d1);
 
   const handleGetUserTrackers = useCallback(async () => {
     const response = await getUserTrackers();
@@ -126,6 +139,12 @@ export function MovieProvider({ children }: TMovieProviderProps) {
     if (user) handleGetUserTrackers();
   }, [mediaType, user, handleGetUserTrackers]);
 
+  useEffect(() => {
+    setLocalLang(localLang);
+    if (localLang) setLang(localLang);
+    return () => {};
+  }, [localLang, setLocalLang]);
+
   return (
     <MovieContext.Provider
       value={{
@@ -139,6 +158,9 @@ export function MovieProvider({ children }: TMovieProviderProps) {
         term,
         setTerm,
         setIsSearching,
+        setLang,
+        adult,
+        setAdult,
 
         mediaType,
         setMediaType,
