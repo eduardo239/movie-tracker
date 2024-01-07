@@ -94,6 +94,7 @@ const MovieByIdPage = () => {
                 original_language: data.original_language,
               }}
             />
+
             {/* -------------- credits --------------   */}
             <Divider />
             <DataCast data={{ credits: data.credits }} />

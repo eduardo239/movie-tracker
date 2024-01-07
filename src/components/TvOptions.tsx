@@ -131,12 +131,14 @@ const TvOptions = ({ data }: TTvOptions) => {
     if (data) {
       //
       if (data.seasons && data.seasons.length > 0) {
-        // adiciona as temporadas dinamicamente na página
+        // adiciona as temporadas dinamicamente na pagina
         const _array = Array.from(Array(data.seasons.length).keys());
         setSeasons(_array);
       }
     }
-    return () => {};
+    return () => {
+      setSeasons([]);
+    };
   }, [data]);
 
   useEffect(() => {

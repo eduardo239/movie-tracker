@@ -300,3 +300,14 @@ iframe {
   top: 0;
   right: 0;
 }
+
+/*  */
+.poster-title__absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  color: var(--color-lighter);
+  text-align: center;
+}

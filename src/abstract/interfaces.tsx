@@ -1,6 +1,7 @@
 // - - - - - - - - - - movie - - - - - - - - - -
 
 import { User } from "firebase/auth";
+import { FlagNameValues } from "semantic-ui-react";
 
 export interface IMovieDetails {
   adult: boolean;
@@ -21,6 +22,7 @@ export interface IMovieDetails {
   original_language: string;
   release_date: string;
   media_type?: "movie" | "tv";
+  production_countries: FlagNameValues[];
 }
 
 export interface IMovieDetailsSimple {
