@@ -1,4 +1,3 @@
-import React from "react";
 import TitleInfo from "../Elements/TitleInfo";
 import { ERR_INFO_NOT_FOUND } from "../../abstract/constants";
 import { Divider } from "semantic-ui-react";

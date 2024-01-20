@@ -1,10 +1,12 @@
 import { Button, Icon } from "semantic-ui-react";
 import { useMovie } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 const MediaType = () => {
   const { setMediaType, setPage, page, list, setList } = useMovie();
   const navigate = useNavigate();
+  const isSmallScreen = useMediaQuery({ query: "(min-width: 764px)" });
 
   const handleChangePage = (_mediaType: "movie" | "tv") => {
     setPage(page);
@@ -20,8 +22,7 @@ const MediaType = () => {
           labelPosition="right"
           onClick={() => handleChangePage("movie")}
         >
-          <Icon name="film" />
-          Filmes
+          <Icon name="film" /> Filmes
         </Button>
         <Button
           icon

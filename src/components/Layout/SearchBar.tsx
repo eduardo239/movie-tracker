@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Dropdown, Form, Icon, Input, Select } from "semantic-ui-react";
 import { useMovie } from "../../context/MovieContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { useMediaQuery } from "react-responsive";
 
 const SearchBar = () => {
   const {
@@ -22,6 +23,8 @@ const SearchBar = () => {
   const [options, _] = useState(_options);
   const [query, setQuery] = useState("");
   const [, setLocalLang] = useLocalStorage("lang", "pt");
+
+  const isSmallScreen = useMediaQuery({ query: "(min-width: 764px)" });
 
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,11 +81,17 @@ const SearchBar = () => {
           options={options}
           defaultValue={mediaType ? mediaType : "movie"}
         />
-        <Button type="submit" color={query.length > 0 ? "green" : "grey"}>
-          Buscar
+        <Button
+          icon={!isSmallScreen}
+          type="submit"
+          color={query.length > 0 ? "green" : "grey"}
+        >
+          <Icon name="search" /> {isSmallScreen && "Buscar"}
         </Button>
 
-        <Button onClick={resetSearch}>Redefinir</Button>
+        <Button icon={!isSmallScreen} onClick={resetSearch}>
+          <Icon name="repeat" /> {isSmallScreen && "Redefinir"}
+        </Button>
         <Dropdown
           placeholder="Língua"
           search
