@@ -55,7 +55,11 @@ const SearchBar = () => {
     { key: "us", value: "en", flag: "us", text: "Inglês" },
     { key: "es", value: "es", flag: "es", text: "Espanhol" },
   ];
-
+  const countryOptionsMobile = [
+    { key: "br", value: "pt", flag: "br", text: "" },
+    { key: "us", value: "en", flag: "us", text: "" },
+    { key: "es", value: "es", flag: "es", text: "" },
+  ];
   const handleLangChange = (lang: string) => {
     setLocalLang(lang);
     setLang(lang);
@@ -92,14 +96,16 @@ const SearchBar = () => {
         <Button icon={!isSmallScreen} onClick={resetSearch}>
           <Icon name="repeat" /> {isSmallScreen && "Redefinir"}
         </Button>
+
         <Dropdown
+          compact={!isSmallScreen}
           placeholder="Língua"
           search
           selection
           onChange={(e, d) =>
             d && d.value ? handleLangChange(d.value?.toString()) : "pt"
           }
-          options={countryOptions}
+          options={isSmallScreen ? countryOptions : countryOptionsMobile}
         />
 
         <Button

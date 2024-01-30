@@ -34,17 +34,16 @@ const MediaType = () => {
         </Button>
       </Button.Group>{" "}
       <Button.Group color="brown">
-        <Button icon labelPosition="left" onClick={() => setList("now")}>
-          <Icon name="play circle" />
-          Agora
+        <Button icon onClick={() => setList("now")}>
+          <Icon name="play circle" /> {isSmallScreen && "Agora"}
         </Button>
-        <Button icon labelPosition="left" onClick={() => setList("trending")}>
+        <Button icon onClick={() => setList("trending")}>
           <Icon name="chart line" />
-          Em Alta
+          {isSmallScreen && "Em Alta"}
         </Button>
-        <Button icon labelPosition="left" onClick={() => setList("popular")}>
+        <Button icon onClick={() => setList("popular")}>
           <Icon name="favorite" />
-          Popular
+          {isSmallScreen && "Popular"}
         </Button>
       </Button.Group>
     </div>
