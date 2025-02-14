@@ -77,7 +77,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   const [adult, setAdult] = useState(false);
   const [term, setTerm] = useState("lost");
   const [lang, setLang] = useState("pt");
-  const [localLang, setLocalLang] = useLocalStorage("lang", "");
+  const [localLang, setLocalLang] = useLocalStorage("lang", "en");
   //
   const [isSearching, setIsSearching] = useState(false);
   const [mediaType, setMediaType] = useState<TMediaType>("movie");
@@ -142,7 +142,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   useEffect(() => {
     setLocalLang(localLang);
     if (localLang) setLang(localLang);
-    else setLang("lang", "en");
+    else setLang("en");
     return () => {};
   }, [localLang, setLocalLang]);
 
