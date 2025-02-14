@@ -142,6 +142,7 @@ export function MovieProvider({ children }: TMovieProviderProps) {
   useEffect(() => {
     setLocalLang(localLang);
     if (localLang) setLang(localLang);
+    else setLang("lang", "en");
     return () => {};
   }, [localLang, setLocalLang]);
 
